@@ -1,0 +1,20 @@
+.dc-table {
+  position: relative;
+}
+.dc-table-rowheader-wrapper {
+  position: absolute;
+  top: 0;
+}
+.dc-table-col-resize-proxy {
+  position: absolute;
+  left: 200px;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px solid #e7eaec;
+  z-index: 10;
+}
+
+.dc-table .leaf {
+  border-bottom: 0;
+}

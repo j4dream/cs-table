@@ -15,6 +15,16 @@
   z-index: 10;
 }
 
+.dc-table-row-resize-proxy {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  right: 0;
+  height: 0;
+  border-top: 1px solid #e7eaec;
+  z-index: 10;
+}
+
 .dc-table .leaf {
   border-bottom: 0;
 }

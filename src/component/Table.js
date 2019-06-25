@@ -17,6 +17,7 @@ export default class Table extends React.Component {
 
   state = {
     columns: [],
+    rowWidth: [40, 50, 60],
     data: [],
     layout: {},
     rowHeaderWidth: 0
@@ -96,7 +97,12 @@ export default class Table extends React.Component {
         </div>
         <div
           className="dc-table-col-resize-proxy"
-          ref={this.bindRef('resizeProxy')}
+          ref={this.bindRef('colResizeProxy')}
+          style={{ visibility: 'hidden' }}
+        />
+        <div
+          className="dc-table-row-resize-proxy"
+          ref={this.bindRef('rowResizeProxy')}
           style={{ visibility: 'hidden' }}
         />
       </div>

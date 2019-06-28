@@ -1,3 +1,7 @@
+export function getColHeaderHeightIndex(node) {
+  return node.level + node.rowSpan - 2
+}
+
 export function convertToColumnHeader(columns = []) {
   let maxLevel = 1;
 
@@ -11,7 +15,7 @@ export function convertToColumnHeader(columns = []) {
       column.level = 1;
     }
 
-    if (column.children) {
+    if (column.children.length) {
       let colSpan = 0;
       column.children.forEach((subColumn) => {
         traverse(subColumn, column);
@@ -36,11 +40,11 @@ export function convertToColumnHeader(columns = []) {
   const queue = columns.slice();
   for (let i = 0; queue[i]; i++) {
     allColumns.push(queue[i]);
-    if (queue[i].children) queue.push(...queue[i].children);
+    if (queue[i].children.length) queue.push(...queue[i].children);
   }
 
   allColumns.forEach((column) => {
-    if (!column.children) {
+    if (!column.children.length) {
       column.rowSpan = maxLevel - column.level + 1;
     } else {
       column.rowSpan = 1;

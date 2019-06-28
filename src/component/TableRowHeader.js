@@ -13,7 +13,7 @@ export default class TableRowHeader extends React.Component {
 
   render() {
     const { columnHeader } = this.state;
-    const { border, width, store } = this.props;
+    const { border, store } = this.props;
     return (
       <table border={border} cellSpacing="0">
         <colgroup>
@@ -28,7 +28,7 @@ export default class TableRowHeader extends React.Component {
             columnHeader.map( rs => (
               <tr key={getAscId()}>
                 {
-                  rs.map(c => <Th column={c} key={getAscId()}/>)
+                  rs.map(c => <Th type="row" column={c} key={getAscId()}/>)
                 }
               </tr>
             ))

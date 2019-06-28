@@ -25,7 +25,7 @@ export default class TableBody extends React.Component {
                 <tr key={getAscId()}>
                   {
                     store.columns.map(column => {
-                      return (<td key={getAscId()}>{row[column.prop]}</td>);
+                      return (<td key={getAscId()}><div className="cell">{row[column.prop]}</div></td>);
                     })
                   }
                 </tr>

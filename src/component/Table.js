@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TableStore from './TableStore';
 import TableColumnHeader from './TableColumnHeader';
 import TableRowHeader from './TableRowHeader';
 import TableBody from './TableBody';
-import { getLeafColumns } from './util';
+import { getLeafColumns, convertToColumnHeader } from './util';
+import Tree from './tree';
 
 import './style.css';
 
@@ -20,7 +20,8 @@ export default class Table extends React.Component {
     rowWidth: [40, 50, 60],
     data: [],
     layout: {},
-    rowHeaderWidth: 0
+    rowHeaderWidth: 0,
+    columnHeader: []
   }
 
   static childContextTypes = {
@@ -35,7 +36,10 @@ export default class Table extends React.Component {
 
   constructor(props) {
     super(props);
-    this.store = new TableStore(props);
+    const { columnHeader } = props;
+    window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader);
+    
+    console.log(this.colHeaderTree);
   }
 
   bindRef(key) {
@@ -53,10 +57,12 @@ export default class Table extends React.Component {
   }
 
   componentWillMount() {
-    const { data, columnHeader } = this.props;
-    const columns = getLeafColumns(columnHeader);
+    const { data } = this.props;
+    const columns = this.colHeaderTree.getLeafNodes();
+    const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
     this.setState({
       columns,
+      columnHeader,
       data
     });
   }

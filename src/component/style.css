@@ -28,3 +28,8 @@
 .dc-table .leaf {
   border-bottom: 0;
 }
+
+.dc-table .cell {
+  width: 100%;
+  overflow: hidden;
+}

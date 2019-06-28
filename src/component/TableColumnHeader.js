@@ -4,13 +4,6 @@ import Th from './Th';
 
 export default class TableRowHeader extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      columnHeader: convertToColumnHeader(props.columnHeader)
-    };
-  }
-
   handleMouseMove(column, e) {
     if (!this.dragging) {
       let target = e.target;
@@ -32,8 +25,9 @@ export default class TableRowHeader extends React.Component {
   }
 
   render() {
-    const { columnHeader } = this.state;
+    //const { columnHeader } = this.state;
     const { border, width, store } = this.props;
+    const { columnHeader } = store;
     return (
       <table border={border} cellSpacing="0">
         <colgroup>
@@ -49,7 +43,7 @@ export default class TableRowHeader extends React.Component {
               <tr key={getAscId()}>
                 {
                   rs.map((c) => (
-                      <Th column={c} key={getAscId()}/>
+                      <Th type="col" column={c} key={getAscId()}/>
                     )
                   )
                 }

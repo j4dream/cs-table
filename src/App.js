@@ -8,84 +8,6 @@ const state = {
     "name": "服装",
     "field": "category",
     "children": [{
-      "name": "上衣",
-      "field": "sub_category",
-      "children": [{
-        "name": "2,017",
-        "field": "year",
-        "children": [],
-        "subtotals": false,
-        "grandTotals": false,
-        "key": 0,
-        "identity": "服装::上衣::2,017",
-        "aggregateKeys": [],
-        "root": false
-      }, {
-        "name": "2,018",
-        "field": "year",
-        "children": [],
-        "subtotals": false,
-        "grandTotals": false,
-        "key": 1,
-        "identity": "服装::上衣::2,018",
-        "aggregateKeys": [],
-        "root": false
-      }, {
-        "name": "Total",
-        "field": "year",
-        "children": [],
-        "subtotals": true,
-        "grandTotals": false,
-        "key": 2,
-        "identity": "服装::上衣::Total",
-        "aggregateKeys": [0, 1],
-        "root": false
-      }],
-      "subtotals": false,
-      "grandTotals": false,
-      "identity": "服装::上衣",
-      "aggregateKeys": [],
-      "root": false
-    }, {
-      "name": "帽子",
-      "field": "sub_category",
-      "children": [{
-        "name": "2,017",
-        "field": "year",
-        "children": [],
-        "subtotals": false,
-        "grandTotals": false,
-        "key": 3,
-        "identity": "服装::帽子::2,017",
-        "aggregateKeys": [],
-        "root": false
-      }, {
-        "name": "2,018",
-        "field": "year",
-        "children": [],
-        "subtotals": false,
-        "grandTotals": false,
-        "key": 4,
-        "identity": "服装::帽子::2,018",
-        "aggregateKeys": [],
-        "root": false
-      }, {
-        "name": "Total",
-        "field": "year",
-        "children": [],
-        "subtotals": true,
-        "grandTotals": false,
-        "key": 5,
-        "identity": "服装::帽子::Total",
-        "aggregateKeys": [3, 4],
-        "root": false
-      }],
-      "subtotals": false,
-      "grandTotals": false,
-      "identity": "服装::帽子",
-      "aggregateKeys": [],
-      "root": false
-    }, {
       "name": "裤子",
       "field": "sub_category",
       "children": [{
@@ -284,6 +206,8 @@ function App() {
           columnHeader={state.columnHeader}
           rowHeader={state.rowHeader}
           data={state.data}
+          width={400}
+          height={400}
         />
       </div>
     </div>

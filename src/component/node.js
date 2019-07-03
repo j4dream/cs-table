@@ -10,6 +10,7 @@ export default class Node {
   rowSpan = 0;
   width = 0;
   height = 0;
+  minHeight = 26;
   prop = null;
   name = '';
 

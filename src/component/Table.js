@@ -7,6 +7,7 @@ import { getLeafColumns, convertToColumnHeader } from './util';
 import Tree from './tree';
 
 import './style.css';
+import { isNumber } from 'util';
 
 export default class Table extends React.Component {
 
@@ -21,6 +22,8 @@ export default class Table extends React.Component {
     data: [],
     layout: {},
     rowHeaderWidth: 0,
+    colHeaderHeight: 0,
+    bodyWrapperHeight: 0,
     columnHeader: []
   }
 
@@ -38,22 +41,48 @@ export default class Table extends React.Component {
     super(props);
     const { columnHeader } = props;
     window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader);
-    
-    console.log(this.colHeaderTree);
   }
 
   bindRef(key) {
     return (node) => { this[key] = node; }
   }
 
-  scheduleLayout() {
-    this.calculateColumnWidth();
-    this.forceUpdate();
+  handleScroll = () => {
+    const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper } = this;
+    colHeaderWrapper.scrollLeft = bodyWrapper.scrollLeft;
+    rowHeaderWrapper.scrollTop = bodyWrapper.scrollTop;
+
   }
 
-  calculateColumnWidth() {
-    const cw = this.rowHeaderEl.clientWidth;
+  scheduleLayout() {
+    this.calculateWidth();
+    this.forceUpdate(() => {
+      this.calculateHeight();
+    });
+  }
+
+  calculateWidth() {
+    const cw = this.rowHeaderWrapper.clientWidth;
     this.state.rowHeaderWidth = cw - 1;
+
+    const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
+
+    let bodyWidth = this.tableEl.clientWidth;
+    bodyWidth = Math.max(bodyMinWidth, bodyWidth)
+    this.state.colHeaderWidth = bodyWidth;
+  }
+
+  calculateHeight() {
+    this.setState(state => {
+      const { colHeaderWrapper } = this;
+      const colHeaderHeight = colHeaderWrapper.clientHeight;
+      const bodyWrapperHeight = this.props.height - colHeaderHeight;
+      return {
+        colHeaderHeight,
+        bodyWrapperHeight
+      }
+      
+    });
   }
 
   componentWillMount() {
@@ -67,34 +96,68 @@ export default class Table extends React.Component {
     });
   }
 
+  get tableWidth() {
+    const { width } = this.props;
+    if (width > 200) {
+      return width
+    }
+    return 200;
+  }
+
+  get colTabelWidth() {
+
+  }
+
   componentDidMount() {
     this.scheduleLayout();
   }
+  
 
   render() {
-    const { rowHeaderWidth } = this.state;
+    const {
+      rowHeaderWidth,
+      colHeaderWidth,
+      colHeaderHeight,
+      bodyWrapperHeight,
+    } = this.state;
+    const { height } = this.props;
     return (
       <div
         ref={this.bindRef('tableEl')}
         className="dc-table"
+        style={{
+          height,
+          width: this.tableWidth,
+          overflow: 'hidden'
+        }}
       >
         <div
           style={{
             marginLeft: rowHeaderWidth
           }}
         >
-          <TableColumnHeader
-            {...this.props}
-            store={this.state}
-          />
-          <TableBody
-            {...this.props}
-            store={this.state}
-          />
+          <div ref={this.bindRef('colHeaderWrapper')} className="col-header-wrapper">
+            <TableColumnHeader
+              {...this.props}
+              store={this.state}
+              colHeaderWidth={colHeaderWidth}
+            />
+          </div>
+          <div ref={this.bindRef('bodyWrapper')} style={{height: bodyWrapperHeight}} className="body-wrapper" onScroll={this.handleScroll}>
+            <TableBody
+              {...this.props}
+              store={this.state}
+              colHeaderWidth={colHeaderWidth}
+            />
+          </div>
         </div>
         <div
-          className="dc-table-rowheader-wrapper"
-          ref={this.bindRef('rowHeaderEl')}
+          className="row-header-wrapper"
+          ref={this.bindRef('rowHeaderWrapper')}
+          style={{
+            marginTop: colHeaderHeight,
+            height: bodyWrapperHeight
+          }}
         >
           <TableRowHeader
             {...this.props}

@@ -26,6 +26,8 @@ export default class Th extends React.Component {
       while (thEl && thEl.tagName !== 'TH') {
         thEl = thEl.parentNode;
       }
+      
+      
       const thRect = thEl.getBoundingClientRect();
       const minLeft = thRect.left - tableLeft + 30;
       const minTop = thRect.top - tableTop + 30;
@@ -33,6 +35,7 @@ export default class Th extends React.Component {
       const startMouseLeft = e.clientX;
       const startMouseTop = e.clientY;
       const startLeft = thRect.right - tableLeft;
+      console.log('start left:', startLeft);
 
       colResizeProxy.style.visibility = 'visible';
       colResizeProxy.style.left = startLeft + 'px';
@@ -48,6 +51,7 @@ export default class Th extends React.Component {
       const handleMouseMove = (event) => {
         const deltaLeft = event.clientX - startMouseLeft;
         const proxyLeft = startLeft + deltaLeft;
+        console.log(proxyLeft);
         colResizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px';
 
         const deltaTop = event.clientY - startMouseTop;
@@ -61,7 +65,7 @@ export default class Th extends React.Component {
             const lastColumn = this.colHeaderTree.getLastNode(column);
             const offsetWidth = event.clientX - startMouseLeft;
             const calWidth = lastColumn.width + offsetWidth;
-            lastColumn.width = calWidth < 50 ? 50 : calWidth;
+            lastColumn.width = calWidth < 100 ? 100 : calWidth;
             console.log(lastColumn.width);
           }
 
@@ -80,7 +84,7 @@ export default class Th extends React.Component {
           this.draggingColumn = null;
 
           document.body.style.cursor = '';
-          colResizeProxy.style.visibility = 'hidden';
+          // colResizeProxy.style.visibility = 'hidden';
           rowResizeProxy.style.visibility = 'hidden';
           document.removeEventListener('mousemove', handleMouseMove);
           document.removeEventListener('mouseup', handleMouseUp);

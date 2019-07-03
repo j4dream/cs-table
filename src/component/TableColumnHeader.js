@@ -24,12 +24,19 @@ export default class TableRowHeader extends React.Component {
     }
   }
 
+  getColWidth(width) {
+    if (width > 100) {
+      return width;
+    }
+    return 100;
+  }
+
   render() {
     //const { columnHeader } = this.state;
-    const { border, width, store } = this.props;
+    const { border, colHeaderWidth, store } = this.props;
     const { columnHeader } = store;
     return (
-      <table border={border} cellSpacing="0">
+      <table border="0" cellPadding="0" cellSpacing="0" style={{borderBottom: 0, width: colHeaderWidth}}>
         <colgroup>
           {
             store.columns.map((column, index) => (

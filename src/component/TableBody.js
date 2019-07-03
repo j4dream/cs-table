@@ -8,9 +8,9 @@ export default class TableBody extends React.Component {
   }
 
   render() {
-    const { border, width, store } = this.props;
+    const { border, colHeaderWidth, store } = this.props;
     return (
-      <table border={border} cellSpacing="0">
+      <table border="0" cellSpacing="0" style={{width: colHeaderWidth}}>
         <colgroup>
           {
             store.columns.map((column, index) => (

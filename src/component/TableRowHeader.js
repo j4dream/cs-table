@@ -15,7 +15,7 @@ export default class TableRowHeader extends React.Component {
     const { columnHeader } = this.state;
     const { border, store } = this.props;
     return (
-      <table border={border} cellSpacing="0">
+      <table border="0" cellSpacing="0">
         <colgroup>
           {
             store.rowWidth.map((width, index) => (

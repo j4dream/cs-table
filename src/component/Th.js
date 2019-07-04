@@ -142,8 +142,14 @@ export default class Th extends React.Component {
     document.body.style.cursor = "";
   }
 
+  getEextraProps() {
+
+  }
+
   render() {
-    const { colSpan, rowSpan, name, children, height } = this.props.column;
+    const { type, column } = this.props;
+    const { colSpan, rowSpan, name, children, height, minHeight } = column;
+
     return (
       <th
         colSpan={colSpan}
@@ -153,7 +159,7 @@ export default class Th extends React.Component {
         onMouseDown={this.handleMouseDown}
         onClick={this.handleClick}
         className={classnames({leaf: !children})}
-        height={height}
+        height={column.computedHeight()}
       >
         {name}
       </th>

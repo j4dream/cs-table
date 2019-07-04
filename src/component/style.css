@@ -86,3 +86,18 @@
   background-color: black;
   z-index: 1;
 }
+
+.dc-table td, .dc-table th {
+  padding: 0;
+}
+
+.dc-table .corner-block {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid black;
+  border-left: 0;
+  border-top: 0;
+}

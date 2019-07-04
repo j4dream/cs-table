@@ -24,4 +24,8 @@ export default class Node {
   addChild(data) {
     this.children.push(data);
   }
+
+  computedHeight() {
+    return this.height || this.minHeight;
+  }
 }

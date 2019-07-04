@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TableColumnHeader from './TableColumnHeader';
 import TableRowHeader from './TableRowHeader';
 import TableBody from './TableBody';
-import { getLeafColumns, convertToColumnHeader } from './util';
+import { convertToColumnHeader, convertToRowHeader } from './util';
 import Tree from './tree';
 
 import './style.css';
@@ -18,13 +18,15 @@ export default class Table extends React.Component {
 
   state = {
     columns: [],
+    rowGroup: [],
     rowWidth: [40, 50, 60],
     data: [],
     layout: {},
     rowHeaderWidth: 0,
     colHeaderHeight: 0,
     bodyWrapperHeight: 0,
-    columnHeader: []
+    columnHeader: [],
+    rowHeader: []
   }
 
   static childContextTypes = {
@@ -39,8 +41,9 @@ export default class Table extends React.Component {
 
   constructor(props) {
     super(props);
-    const { columnHeader } = props;
+    const { columnHeader, rowHeader } = props;
     window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader);
+    window.rowHeaderTree = this.rowHeaderTree = new Tree(rowHeader);
   }
 
   bindRef(key) {
@@ -67,16 +70,22 @@ export default class Table extends React.Component {
 
     const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
 
-    let bodyWidth = this.tableEl.clientWidth;
-    bodyWidth = Math.max(bodyMinWidth, bodyWidth)
-    this.state.colHeaderWidth = bodyWidth;
+    // let bodyWidth = this.tableEl.clientWidth;
+    // bodyWidth = Math.max(bodyMinWidth, bodyWidth)
+    this.state.colHeaderWidth = bodyMinWidth;
   }
 
   calculateHeight() {
     this.setState(state => {
       const { colHeaderWrapper } = this;
       const colHeaderHeight = colHeaderWrapper.clientHeight;
-      const bodyWrapperHeight = this.props.height - colHeaderHeight;
+      const { height } = this.props;
+      let bodyWrapperHeight = '100%';
+
+      if (height && isNumber(height)) {
+        bodyWrapperHeight = this.props.height - colHeaderHeight;
+      } 
+       
       return {
         colHeaderHeight,
         bodyWrapperHeight
@@ -88,10 +97,14 @@ export default class Table extends React.Component {
   componentWillMount() {
     const { data } = this.props;
     const columns = this.colHeaderTree.getLeafNodes();
+    const rowGroup = this.rowHeaderTree.getLeafNodes();
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
+    const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
     this.setState({
       columns,
+      rowGroup,
       columnHeader,
+      rowHeader,
       data
     });
   }
@@ -101,7 +114,7 @@ export default class Table extends React.Component {
     if (width > 200) {
       return width
     }
-    return 200;
+    return '100%';
   }
 
   get colTabelWidth() {
@@ -164,6 +177,13 @@ export default class Table extends React.Component {
             store={this.state}
           />
         </div>
+        <div
+          className="corner-block"
+          style={{
+            width: rowHeaderWidth,
+            height: colHeaderHeight - 1
+          }}
+        />
         <div
           className="dc-table-col-resize-proxy"
           ref={this.bindRef('colResizeProxy')}

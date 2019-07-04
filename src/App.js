@@ -206,8 +206,6 @@ function App() {
           columnHeader={state.columnHeader}
           rowHeader={state.rowHeader}
           data={state.data}
-          width={400}
-          height={400}
         />
       </div>
     </div>

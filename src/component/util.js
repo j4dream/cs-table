@@ -61,7 +61,6 @@ export function convertToRowHeader(columns = []) {
 
   function traverse(column, parent) {
     if (parent) {
-      column.parent = parent;
       column.level = parent.level + 1;
       if (maxLevel < column.level) {
         maxLevel = column.level;

@@ -9,13 +9,28 @@ export default class Th extends React.Component {
   };
 
   handleClick = () => {
+    const { type } = this.props;
+    if (type === 'col') {
+      this.colClick();
+    }
+    if (type === 'row') {
+      this.rowClick();
+    }
+  }
+
+  colClick = () => {
     const { level, rowSpan } = this.props.column;
     const index = level + rowSpan - 2;
-    console.log(this.colHeaderTree.getDeepesetNodeByIndex(index));
+    console.log(this.headerTree.getDeepesetNodeByIndex(index));
+  }
+
+  rowClick = () => {
+    const { level, rowSpan } = this.props.column;
+    console.log(this.props.column);
   }
 
   handleMouseDown = (e) => {
-    const { column } = this.props;
+    const { column, type } = this.props;
     if (this.draggingColumn) {
       this.dragging = true;
       const { table } = this.context;
@@ -35,23 +50,24 @@ export default class Th extends React.Component {
       const startMouseLeft = e.clientX;
       const startMouseTop = e.clientY;
       const startLeft = thRect.right - tableLeft;
-      console.log('start left:', startLeft);
-
-      colResizeProxy.style.visibility = 'visible';
-      colResizeProxy.style.left = startLeft + 'px';
+      
+      if (this.direction === 'hori') {
+        colResizeProxy.style.visibility = 'visible';
+        colResizeProxy.style.left = startLeft + 'px';
+      }
 
       const startTop =  thRect.bottom - tableTop;
-
-      rowResizeProxy.style.visibility = 'visible';
-      rowResizeProxy.style.top = startTop + 'px';
-
+      if (this.direction === 'vert') {
+        rowResizeProxy.style.visibility = 'visible';
+        rowResizeProxy.style.top = startTop + 'px';
+      }
+ 
       document.onselectstart = () => false;
       document.ondragstart = () => false;
 
       const handleMouseMove = (event) => {
         const deltaLeft = event.clientX - startMouseLeft;
         const proxyLeft = startLeft + deltaLeft;
-        console.log(proxyLeft);
         colResizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px';
 
         const deltaTop = event.clientY - startMouseTop;
@@ -61,30 +77,44 @@ export default class Th extends React.Component {
 
       const handleMouseUp = (event) => {
         if (this.dragging) {
-          if (this.direction === 'col') {
-            const lastColumn = this.colHeaderTree.getLastNode(column);
+          if (this.direction === 'hori') {
             const offsetWidth = event.clientX - startMouseLeft;
-            const calWidth = lastColumn.width + offsetWidth;
-            lastColumn.width = calWidth < 100 ? 100 : calWidth;
-            console.log(lastColumn.width);
+            if (type === 'col') {
+              const lastColumn = this.headerTree.getLastNode(column);
+              const calWidth = lastColumn.width + offsetWidth;
+              lastColumn.width = calWidth < 100 ? 100 : calWidth;
+            }
+            if (type === 'row') {
+              const { level } = column;
+              const index = level - 1;
+              const targetNode = this.headerTree.getDeepesetNodeByIndex(index);
+              const calWidth = targetNode.width + offsetWidth;
+              targetNode.width = calWidth < 100 ? 100 : calWidth;
+            }
           }
 
-          if (this.direction === 'row') {
-            // column.height = columnTop;
-            const { level, rowSpan } = column;
-            const index = level + rowSpan - 2;
-            const targetNode = this.colHeaderTree.getDeepesetNodeByIndex(index);
-            
+          if (this.direction === 'vert') {
             const offsetHeight = event.clientY - startMouseTop;
-            const calHeight = targetNode.height + offsetHeight;
-            targetNode.height = calHeight < 30 ? 30 : calHeight;
+            if (type === 'col') {
+              const { level, rowSpan } = column;
+              const index = level + rowSpan - 2;
+              const targetNode = this.headerTree.getDeepesetNodeByIndex(index);
+              
+              const calHeight = targetNode.height + offsetHeight;
+              targetNode.height = calHeight < 30 ? 30 : calHeight;
+            }
+            if (type === 'row') {
+              const targetNode = this.headerTree.getLastNode(column);
+              const calHeight = targetNode.height + offsetHeight;
+              targetNode.height = calHeight < 30 ? 30 : calHeight;
+            }
           }
 
           this.dragging = false;
           this.draggingColumn = null;
 
           document.body.style.cursor = '';
-          // colResizeProxy.style.visibility = 'hidden';
+          colResizeProxy.style.visibility = 'hidden';
           rowResizeProxy.style.visibility = 'hidden';
           document.removeEventListener('mousemove', handleMouseMove);
           document.removeEventListener('mouseup', handleMouseUp);
@@ -102,8 +132,15 @@ export default class Th extends React.Component {
   }
 
 
-  get colHeaderTree() {
-    return this.context.table.colHeaderTree;
+  get headerTree() {
+    const { type } = this.props;
+    if (type === 'row') {
+      return this.context.table.rowHeaderTree;
+    }
+    if (type === 'col') {
+      return this.context.table.colHeaderTree;
+    }
+    return {};
   }
 
   dispatchEvent(name, ...args) {
@@ -125,10 +162,10 @@ export default class Th extends React.Component {
       if (rect.width > 12 && rect.right - e.pageX < 5) {
         bodyStyle.cursor = 'col-resize';
         this.draggingColumn = column;
-        this.direction = 'col';
+        this.direction = 'hori';
       } else if ( rect.height > 12 && rect.bottom - e.clientY < 5) {
         bodyStyle.cursor = 'row-resize';
-        this.direction = 'row';
+        this.direction = 'vert';
         this.draggingColumn = column;
       } else {
         bodyStyle.cursor = '';
@@ -147,8 +184,8 @@ export default class Th extends React.Component {
   }
 
   render() {
-    const { type, column } = this.props;
-    const { colSpan, rowSpan, name, children, height, minHeight } = column;
+    const { column } = this.props;
+    const { colSpan, rowSpan, name, children } = column;
 
     return (
       <th

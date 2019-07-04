@@ -14,10 +14,11 @@ export default class Node {
   prop = null;
   name = '';
 
-  constructor({children, name, prop, width} = {}) {
+  constructor({children, name, prop, width, height = 30} = {}) {
     this.name = name;
     this.prop = prop;
     this.width = width;
+    this.height = height;
     this.id = getAscId();
   }
 

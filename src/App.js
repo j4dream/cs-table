@@ -7,11 +7,13 @@ const state = {
   rowHeader: [{
     "name": "服装",
     "field": "category",
+    width: 100,
     "children": [{
       "name": "裤子",
       "field": "sub_category",
       "children": [{
         "name": "2,017",
+        width: 100,
         "field": "year",
         "children": [],
         "subtotals": false,
@@ -23,6 +25,7 @@ const state = {
       }, {
         "name": "2,018",
         "field": "year",
+        width: 100,
         "children": [],
         "subtotals": false,
         "grandTotals": false,
@@ -33,6 +36,7 @@ const state = {
       }, {
         "name": "Total",
         "field": "year",
+        width: 100,
         "children": [],
         "subtotals": true,
         "grandTotals": false,
@@ -49,9 +53,11 @@ const state = {
     }, {
       "name": "鞋子",
       "field": "sub_category",
+      width: 100,
       "children": [{
         "name": "2,017",
         "field": "year",
+        width: 100,
         "children": [],
         "subtotals": false,
         "grandTotals": false,
@@ -62,6 +68,7 @@ const state = {
       }, {
         "name": "2,018",
         "field": "year",
+        width: 100,
         "children": [],
         "subtotals": false,
         "grandTotals": false,
@@ -72,6 +79,7 @@ const state = {
       }, {
         "name": "Total",
         "field": "year",
+        width: 100,
         "children": [],
         "subtotals": true,
         "grandTotals": false,
@@ -88,6 +96,7 @@ const state = {
     }, {
       "name": "Total",
       "field": "sub_category",
+      width: 100,
       "children": [],
       "subtotals": true,
       "grandTotals": false,

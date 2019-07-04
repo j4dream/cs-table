@@ -40,6 +40,9 @@
 .dc-table .cell {
   width: 100%;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .dc-table .body-wrapper {

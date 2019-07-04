@@ -12,14 +12,13 @@ export default class TableRowHeader extends React.Component {
   }
 
   render() {
-    const { columnHeader } = this.state;
     const { store } = this.props;
-    const { rowHeader } = store;
+    const { rowTableColGroup, rowHeader } = store;
     return (
       <table border="0" cellSpacing="0">
         <colgroup>
           {
-            store.rowWidth.map((width, index) => (
+            rowTableColGroup.map(({width}, index) => (
               <col width={width} style={{ width }} key={index} />
             ))
           }

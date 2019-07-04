@@ -5,6 +5,8 @@ import TableRowHeader from './TableRowHeader';
 import TableBody from './TableBody';
 import { convertToColumnHeader, convertToRowHeader } from './util';
 import Tree from './tree';
+import Node from './node';
+import Th from './Th';
 
 import './style.css';
 import { isNumber } from 'util';
@@ -19,7 +21,7 @@ export default class Table extends React.Component {
   state = {
     columns: [],
     rowGroup: [],
-    rowWidth: [40, 50, 60],
+    rowTableColGroup: [],
     data: [],
     layout: {},
     rowHeaderWidth: 0,
@@ -65,14 +67,11 @@ export default class Table extends React.Component {
   }
 
   calculateWidth() {
-    const cw = this.rowHeaderWrapper.clientWidth;
-    this.state.rowHeaderWidth = cw - 1;
-
+    const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), -1);
     const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
 
-    // let bodyWidth = this.tableEl.clientWidth;
-    // bodyWidth = Math.max(bodyMinWidth, bodyWidth)
     this.state.colHeaderWidth = bodyMinWidth;
+    this.state.rowHeaderWidth = rowHeaderWidth;
   }
 
   calculateHeight() {
@@ -98,11 +97,13 @@ export default class Table extends React.Component {
     const { data } = this.props;
     const columns = this.colHeaderTree.getLeafNodes();
     const rowGroup = this.rowHeaderTree.getLeafNodes();
+    const rowTableColGroup = this.rowHeaderTree.deepesetNodePath;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
     const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
     this.setState({
       columns,
       rowGroup,
+      rowTableColGroup,
       columnHeader,
       rowHeader,
       data
@@ -134,6 +135,7 @@ export default class Table extends React.Component {
       bodyWrapperHeight,
     } = this.state;
     const { height } = this.props;
+    const cornerNode = new Node();
     return (
       <div
         ref={this.bindRef('tableEl')}
@@ -183,7 +185,9 @@ export default class Table extends React.Component {
             width: rowHeaderWidth,
             height: colHeaderHeight - 1
           }}
-        />
+        >
+          <Th type="corner" column={cornerNode}/>
+        </div>
         <div
           className="dc-table-col-resize-proxy"
           ref={this.bindRef('colResizeProxy')}

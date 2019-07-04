@@ -1,9 +1,7 @@
 import Node from './node';
 
 export default class Tree {
-  parent = null;
   children = [];
-  data = null;
   deepesetNodePath = [];
   root = new Node();
   constructor(data = []) {

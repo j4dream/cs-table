@@ -8,27 +8,6 @@ export default class Th extends React.Component {
     table: PropTypes.any,
   };
 
-  handleClick = () => {
-    const { type } = this.props;
-    if (type === 'col') {
-      this.colClick();
-    }
-    if (type === 'row') {
-      this.rowClick();
-    }
-  }
-
-  colClick = () => {
-    const { level, rowSpan } = this.props.column;
-    const index = level + rowSpan - 2;
-    console.log(this.headerTree.getDeepesetNodeByIndex(index));
-  }
-
-  rowClick = () => {
-    const { level, rowSpan } = this.props.column;
-    console.log(this.props.column);
-  }
-
   handleMouseDown = (e) => {
     const { column, type } = this.props;
     if (this.draggingColumn) {
@@ -79,35 +58,40 @@ export default class Th extends React.Component {
         if (this.dragging) {
           if (this.direction === 'hori') {
             const offsetWidth = event.clientX - startMouseLeft;
+            let targetNode;
             if (type === 'col') {
-              const lastColumn = this.headerTree.getLastNode(column);
-              const calWidth = lastColumn.width + offsetWidth;
-              lastColumn.width = calWidth < 100 ? 100 : calWidth;
+              targetNode = this.headerTree.getLastNode(column);
             }
             if (type === 'row') {
               const { level } = column;
               const index = level - 1;
-              const targetNode = this.headerTree.getDeepesetNodeByIndex(index);
-              const calWidth = targetNode.width + offsetWidth;
-              targetNode.width = calWidth < 100 ? 100 : calWidth;
+              targetNode = this.headerTree.getDeepesetNodeByIndex(index);
             }
+            if (type === 'corner') {
+              const { rowHeaderTree } = this.context.table;
+              targetNode = rowHeaderTree.getDeepesetNodeByIndex();
+            }
+            const calWidth = targetNode.width + offsetWidth;
+            targetNode.width = calWidth < 100 ? 100 : calWidth;
           }
 
           if (this.direction === 'vert') {
             const offsetHeight = event.clientY - startMouseTop;
+            let targetNode;
             if (type === 'col') {
               const { level, rowSpan } = column;
               const index = level + rowSpan - 2;
-              const targetNode = this.headerTree.getDeepesetNodeByIndex(index);
-              
-              const calHeight = targetNode.height + offsetHeight;
-              targetNode.height = calHeight < 30 ? 30 : calHeight;
+              targetNode = this.headerTree.getDeepesetNodeByIndex(index);
             }
             if (type === 'row') {
-              const targetNode = this.headerTree.getLastNode(column);
-              const calHeight = targetNode.height + offsetHeight;
-              targetNode.height = calHeight < 30 ? 30 : calHeight;
+              targetNode = this.headerTree.getLastNode(column);          
             }
+            if (type === 'corner') {
+              const { colHeaderTree } = this.context.table;
+              targetNode = colHeaderTree.getDeepesetNodeByIndex();
+            }
+            const calHeight = targetNode.height + offsetHeight;
+            targetNode.height = calHeight < 30 ? 30 : calHeight;
           }
 
           this.dragging = false;
@@ -122,7 +106,6 @@ export default class Th extends React.Component {
           document.ondragstart = null;
 
           this.context.table.scheduleLayout();
-          //this.dispatchEvent('onHeaderDragEnd', columnWidth, oldWidth, column, event);
         }
       }
 
@@ -194,7 +177,6 @@ export default class Th extends React.Component {
         onMouseMove={this.handleMouseMove}
         onMouseOut={this.handleMouseOut}
         onMouseDown={this.handleMouseDown}
-        onClick={this.handleClick}
         className={classnames({leaf: !children})}
         height={column.computedHeight()}
       >

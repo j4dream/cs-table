@@ -46,6 +46,7 @@ export default class Table extends React.Component {
     const { columnHeader, rowHeader } = props;
     window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader);
     window.rowHeaderTree = this.rowHeaderTree = new Tree(rowHeader);
+    window.cornerNode = this.cornerNode = new Node({name: 'corner'});
   }
 
   bindRef(key) {
@@ -83,7 +84,9 @@ export default class Table extends React.Component {
 
       if (height && isNumber(height)) {
         bodyWrapperHeight = this.props.height - colHeaderHeight;
-      } 
+      }
+
+      this.cornerNode.height = colHeaderHeight;
        
       return {
         colHeaderHeight,
@@ -135,7 +138,7 @@ export default class Table extends React.Component {
       bodyWrapperHeight,
     } = this.state;
     const { height } = this.props;
-    const cornerNode = new Node();
+    
     return (
       <div
         ref={this.bindRef('tableEl')}
@@ -182,11 +185,17 @@ export default class Table extends React.Component {
         <div
           className="corner-block"
           style={{
-            width: rowHeaderWidth,
+            width: rowHeaderWidth + 1,
             height: colHeaderHeight - 1
           }}
         >
-          <Th type="corner" column={cornerNode}/>
+          <table border="0" cellSpacing="0" width="100%">
+            <thead>
+              <tr>
+                <Th type="corner" column={this.cornerNode}/>
+              </tr>
+            </thead>
+          </table>
         </div>
         <div
           className="dc-table-col-resize-proxy"

@@ -70,7 +70,7 @@ export default class Tree {
     return tn;
   }
 
-  getDeepesetNodeByIndex(index) {
+  getDeepesetNodeByIndex(index = this.deepesetNodePath.length - 1) {
     return this.deepesetNodePath[index];
   }
 }

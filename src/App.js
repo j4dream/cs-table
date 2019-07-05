@@ -6,15 +6,15 @@ import Table from './component';
 const state = {
   rowHeader: [{
     "name": "服装",
-    "field": "category",
+    prop: "category",
     width: 100,
     "children": [{
       "name": "裤子",
-      "field": "sub_category",
+      prop: "sub_category",
       "children": [{
         "name": "2,017",
         width: 100,
-        "field": "year",
+        prop: "yearku2017",
         "children": [],
         "subtotals": false,
         "grandTotals": false,
@@ -24,7 +24,7 @@ const state = {
         "root": false
       }, {
         "name": "2,018",
-        "field": "year",
+        prop: "yearku2018",
         width: 100,
         "children": [],
         "subtotals": false,
@@ -35,28 +35,28 @@ const state = {
         "root": false
       }, {
         "name": "Total",
-        "field": "year",
+        prop: "yeartotal",
         width: 100,
         "children": [],
         "subtotals": true,
         "grandTotals": false,
         "key": 8,
-        "identity": "服装::裤子::Total",
+        "identity": "服装裤子Total",
         "aggregateKeys": [6, 7],
         "root": false
       }],
       "subtotals": false,
       "grandTotals": false,
-      "identity": "服装::裤子",
+      "identity": "服装裤子",
       "aggregateKeys": [],
       "root": false
     }, {
       "name": "鞋子",
-      "field": "sub_category",
+      prop: "sub_category",
       width: 100,
       "children": [{
         "name": "2,017",
-        "field": "year",
+        prop: "year",
         width: 100,
         "children": [],
         "subtotals": false,
@@ -67,7 +67,7 @@ const state = {
         "root": false
       }, {
         "name": "2,018",
-        "field": "year",
+        prop: "year",
         width: 100,
         "children": [],
         "subtotals": false,
@@ -78,7 +78,7 @@ const state = {
         "root": false
       }, {
         "name": "Total",
-        "field": "year",
+        prop: "year",
         width: 100,
         "children": [],
         "subtotals": true,
@@ -95,7 +95,7 @@ const state = {
       "root": false
     }, {
       "name": "Total",
-      "field": "sub_category",
+      prop: "sub_category",
       width: 100,
       "children": [],
       "subtotals": true,
@@ -119,6 +119,7 @@ const state = {
     },
     {
       name: "配送信息",
+      prop: "info",
       children: [
         {
           name: "姓名",
@@ -127,6 +128,7 @@ const state = {
         },
         {
           name: "地址",
+          prop: "address",
           children: [
             {
               name: "省份",
@@ -135,7 +137,7 @@ const state = {
             },
             {
               name: "城市",
-              prop: "address",
+              prop: "city",
               width: 400
             },
             {
@@ -201,6 +203,7 @@ const state = {
 }
 
 function App() {
+  const setting = JSON.parse(localStorage.getItem("table"));
   return (
     <div className="App">
       <header className="App-header">
@@ -211,10 +214,13 @@ function App() {
         <p>DC Table Component</p>
       </header>
       <div style={{margin: 15}}>
+        <h2>All feature</h2>
         <Table
+          ref={n => window.tableEl = n}
           columnHeader={state.columnHeader}
           rowHeader={state.rowHeader}
           data={state.data}
+          setting={setting}
         />
       </div>
     </div>

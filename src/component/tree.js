@@ -2,14 +2,23 @@ import Node from './node';
 
 export default class Tree {
   children = [];
-  deepesetNodePath = [];
+  deepestNodePath = [];
+  leafNodes = [];
+  setting = {};
   root = new Node();
-  constructor(data = []) {
+  constructor(data = [], setting = {}) {
+    this.setting = setting;
     this._initTree(data);
-    this.deepesetNodePath = this._findDeepestNodePath();
+    this.deepestNodePath = this._findDeepestNodePath();
+    this.leafNodes = this.getLeafNodes();
   }
 
   _traverse(node, parent) {
+    const { prop } = node;
+    const savedConfig = this.setting[prop];
+    if (savedConfig) {
+      Object.assign(node, savedConfig);
+    }
     const currentNode = new Node(node);
     if (parent) {
       currentNode.parent = parent;
@@ -70,7 +79,7 @@ export default class Tree {
     return tn;
   }
 
-  getDeepesetNodeByIndex(index = this.deepesetNodePath.length - 1) {
-    return this.deepesetNodePath[index];
+  getDeepestNodeByIndex(index = this.deepestNodePath.length - 1) {
+    return this.deepestNodePath[index];
   }
 }

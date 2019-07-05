@@ -15,7 +15,8 @@ export default class Table extends React.Component {
 
   static defaultProps = {
     border: 1,
-    width: 100
+    width: 100,
+    setting: {}
   }
 
   state = {
@@ -43,9 +44,10 @@ export default class Table extends React.Component {
 
   constructor(props) {
     super(props);
-    const { columnHeader, rowHeader } = props;
-    window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader);
-    window.rowHeaderTree = this.rowHeaderTree = new Tree(rowHeader);
+    const { columnHeader, rowHeader, setting } = props;
+    const { r, c } = setting || {};
+    window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader, c);
+    window.rowHeaderTree = this.rowHeaderTree = new Tree(rowHeader, r);
     window.cornerNode = this.cornerNode = new Node({name: 'corner'});
   }
 
@@ -98,9 +100,9 @@ export default class Table extends React.Component {
 
   componentWillMount() {
     const { data } = this.props;
-    const columns = this.colHeaderTree.getLeafNodes();
-    const rowGroup = this.rowHeaderTree.getLeafNodes();
-    const rowTableColGroup = this.rowHeaderTree.deepesetNodePath;
+    const columns = this.colHeaderTree.leafNodes;
+    const rowGroup = this.rowHeaderTree.leafNodes;
+    const rowTableColGroup = this.rowHeaderTree.deepestNodePath;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
     const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
     this.setState({
@@ -121,14 +123,59 @@ export default class Table extends React.Component {
     return '100%';
   }
 
-  get colTabelWidth() {
+  getConfig() {
+    const { rowHeaderTree, colHeaderTree, props, tableWidth } = this;
+    const { height } = props;
+    const colConfig = {},
+          rowConfig = {};
 
+    colHeaderTree.deepestNodePath.forEach(({prop, height}) => {
+      let cell = colConfig[prop];
+      if (!cell) {
+        cell = {};
+      }
+      cell.height = height;
+      colConfig[prop] = cell;
+    });
+
+    colHeaderTree.leafNodes.forEach(({prop, width}) => {
+      let cell = colConfig[prop];
+      if (!cell) {
+        cell = {};
+      }
+      cell.width = width;
+      colConfig[prop] = cell;
+    });
+
+    rowHeaderTree.deepestNodePath.forEach(({prop, width}) => {
+      let cell = rowConfig[prop];
+      if (!cell) {
+        cell = {};
+      }
+      cell.width = width;
+      rowConfig[prop] = cell;
+    });
+
+    rowHeaderTree.leafNodes.forEach(({prop, height}) => {
+      let cell = rowConfig[prop];
+      if (!cell) {
+        cell = {};
+      }
+      cell.height = height;
+      rowConfig[prop] = cell;
+    });
+
+    return {
+      w: tableWidth,
+      h: height,
+      c: colConfig,
+      r: rowConfig
+    };
   }
 
   componentDidMount() {
     this.scheduleLayout();
   }
-  
 
   render() {
     const {

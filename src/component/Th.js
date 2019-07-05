@@ -65,11 +65,11 @@ export default class Th extends React.Component {
             if (type === 'row') {
               const { level } = column;
               const index = level - 1;
-              targetNode = this.headerTree.getDeepesetNodeByIndex(index);
+              targetNode = this.headerTree.getDeepestNodeByIndex(index);
             }
             if (type === 'corner') {
               const { rowHeaderTree } = this.context.table;
-              targetNode = rowHeaderTree.getDeepesetNodeByIndex();
+              targetNode = rowHeaderTree.getDeepestNodeByIndex();
             }
             const calWidth = targetNode.width + offsetWidth;
             targetNode.width = calWidth < 100 ? 100 : calWidth;
@@ -81,14 +81,14 @@ export default class Th extends React.Component {
             if (type === 'col') {
               const { level, rowSpan } = column;
               const index = level + rowSpan - 2;
-              targetNode = this.headerTree.getDeepesetNodeByIndex(index);
+              targetNode = this.headerTree.getDeepestNodeByIndex(index);
             }
             if (type === 'row') {
               targetNode = this.headerTree.getLastNode(column);          
             }
             if (type === 'corner') {
               const { colHeaderTree } = this.context.table;
-              targetNode = colHeaderTree.getDeepesetNodeByIndex();
+              targetNode = colHeaderTree.getDeepestNodeByIndex();
             }
             const calHeight = targetNode.height + offsetHeight;
             targetNode.height = calHeight < 30 ? 30 : calHeight;

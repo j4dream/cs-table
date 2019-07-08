@@ -16,7 +16,11 @@ export default class Table extends React.Component {
   static defaultProps = {
     border: 1,
     width: 100,
-    setting: {}
+    setting: {},
+    resizeWidth: true,
+    resizeHeight: true,
+    showColumnHeader: true,
+    showRowHeader: true
   }
 
   state = {
@@ -56,10 +60,11 @@ export default class Table extends React.Component {
   }
 
   handleScroll = () => {
-    const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper } = this;
+    const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper, showRowHeader } = this;
     colHeaderWrapper.scrollLeft = bodyWrapper.scrollLeft;
-    rowHeaderWrapper.scrollTop = bodyWrapper.scrollTop;
-
+    if (showRowHeader) {
+      rowHeaderWrapper.scrollTop = bodyWrapper.scrollTop;
+    }
   }
 
   scheduleLayout() {
@@ -70,11 +75,12 @@ export default class Table extends React.Component {
   }
 
   calculateWidth() {
-    const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), -1);
     const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
-
     this.state.colHeaderWidth = bodyMinWidth;
-    this.state.rowHeaderWidth = rowHeaderWidth;
+    if (this.showRowHeader) {
+      const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), -1);
+      this.state.rowHeaderWidth = rowHeaderWidth;
+    }
   }
 
   calculateHeight() {
@@ -121,6 +127,26 @@ export default class Table extends React.Component {
       return width
     }
     return '100%';
+  }
+
+  get showCorner() {
+    const { showColumnHeader, showRowHeader } = this.props;
+    const { columns, rowGroup } = this.state;
+    return (
+      showColumnHeader &&
+      showRowHeader &&
+      Boolean(columns.length) &&
+      Boolean(rowGroup.length)
+    );
+  }
+
+  get showRowHeader() {
+    const { showRowHeader } = this.props;
+    const { rowGroup } = this.state;
+    return (
+      showRowHeader &&
+      Boolean(rowGroup.length)
+    );
   }
 
   getConfig() {
@@ -216,34 +242,44 @@ export default class Table extends React.Component {
             />
           </div>
         </div>
-        <div
-          className="row-header-wrapper"
-          ref={this.bindRef('rowHeaderWrapper')}
-          style={{
-            marginTop: colHeaderHeight,
-            height: bodyWrapperHeight
-          }}
-        >
-          <TableRowHeader
-            {...this.props}
-            store={this.state}
-          />
-        </div>
-        <div
-          className="corner-block"
-          style={{
-            width: rowHeaderWidth + 1,
-            height: colHeaderHeight - 1
-          }}
-        >
-          <table border="0" cellSpacing="0" width="100%">
-            <thead>
-              <tr>
-                <Th type="corner" column={this.cornerNode}/>
-              </tr>
-            </thead>
-          </table>
-        </div>
+        {
+          this.showRowHeader && (
+            <div
+              className="row-header-wrapper"
+              ref={this.bindRef('rowHeaderWrapper')}
+              style={{
+                marginTop: colHeaderHeight,
+                height: bodyWrapperHeight
+              }}
+            >
+              <TableRowHeader
+                {...this.props}
+                store={this.state}
+              />
+            </div>
+          )
+        }
+        
+        {
+          this.showCorner && (
+            <div
+              className="corner-block"
+              style={{
+                width: rowHeaderWidth + 1,
+                height: colHeaderHeight - 1
+              }}
+            >
+              <table border="0" cellSpacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <Th type="corner" column={this.cornerNode}/>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          )
+        }
+        
         <div
           className="dc-table-col-resize-proxy"
           ref={this.bindRef('colResizeProxy')}

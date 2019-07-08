@@ -4,9 +4,12 @@ import { getAscId }  from './util';
 export default class TableBody extends React.Component {
 
   getCellHeight(index) {
-    const { rowGroup } = this.props.store;
-
-    return rowGroup[index].computedHeight() - 1;
+    const { showRowHeader, store } = this.props;
+    const { rowGroup } = store;
+    if (showRowHeader && rowGroup && rowGroup.length) {
+      return rowGroup[index].computedHeight() - 1;
+    }
+    return 30;
   }
 
   render() {

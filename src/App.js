@@ -128,7 +128,7 @@ const state = {
         },
         {
           name: "地址",
-          prop: "address",
+          prop: "nx",
           children: [
             {
               name: "省份",
@@ -137,7 +137,7 @@ const state = {
             },
             {
               name: "城市",
-              prop: "city",
+              prop: "address",
               width: 400
             },
             {
@@ -221,6 +221,26 @@ function App() {
           rowHeader={state.rowHeader}
           data={state.data}
           setting={setting}
+        />
+      </div>
+      <div style={{margin: 15}}>
+        <h2>Disable resize</h2>
+        <Table
+          columnHeader={state.columnHeader}
+          rowHeader={state.rowHeader}
+          data={state.data}
+          resizeWidth={false}
+        />
+      </div>
+      <div style={{margin: 15}}>
+        <h2>Hide header</h2>
+        <Table
+          columnHeader={state.columnHeader}
+          rowHeader={state.rowHeader}
+          data={state.data}
+          resizeWidth={false}
+          showColumnHeader={false}
+          showRowHeader={false}
         />
       </div>
     </div>

@@ -131,6 +131,22 @@ export default class Th extends React.Component {
     fn && fn(...args);
   }
 
+  get disableResizeCol() {
+    const { resizeWidth } = this.context.table.props;
+    if (!resizeWidth) {
+      return true;
+    }
+    return false;
+  }
+
+  get disableResizeRow() {
+    const { resizeHeight } = this.context.table.props;
+    if (!resizeHeight) {
+      return true;
+    }
+    return false;
+  }
+
   handleMouseMove = (e) => {
     const { column } = this.props;
     if (!this.dragging) {
@@ -143,10 +159,12 @@ export default class Th extends React.Component {
       const bodyStyle = document.body.style;
 
       if (rect.width > 12 && rect.right - e.pageX < 5) {
+        if (this.disableResizeCol) return;
         bodyStyle.cursor = 'col-resize';
         this.draggingColumn = column;
         this.direction = 'hori';
       } else if ( rect.height > 12 && rect.bottom - e.clientY < 5) {
+        if (this.disableResizeRow) return;
         bodyStyle.cursor = 'row-resize';
         this.direction = 'vert';
         this.draggingColumn = column;

@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Table from './component';
 
-const mockData = {
+const mockReqData = {
   rowHeader: [{
     "name": "服装",
     prop: "category",
@@ -212,7 +212,9 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    //setTimeout();
+    setTimeout(() => {
+      this.setState(mockReqData);
+    }, 2000);
   }
 
   render() {
@@ -259,6 +261,16 @@ export default class App extends React.Component {
             resizeWidth={false}
             showColumnHeader={false}
             showRowHeader={false}
+          />
+        </div>
+        <div style={{margin: 15}}>
+          <h2>Width && Height</h2>
+          <Table
+            columnHeader={columnHeader}
+            rowHeader={rowHeader}
+            data={data}
+            width={400}
+            height={200}
           />
         </div>
       </div>

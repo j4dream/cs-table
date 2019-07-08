@@ -8,6 +8,10 @@ export default class Tree {
   root = new Node();
   constructor(data = [], setting = {}) {
     this.setting = setting;
+    this.buildTree(data);
+  }
+
+  buildTree(data) {
     this._initTree(data);
     this.deepestNodePath = this._findDeepestNodePath();
     this.leafNodes = this.getLeafNodes();

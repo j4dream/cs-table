@@ -20,7 +20,10 @@ export default class Table extends React.Component {
     resizeWidth: true,
     resizeHeight: true,
     showColumnHeader: true,
-    showRowHeader: true
+    showRowHeader: true,
+    data: [],
+    columnHeader: [],
+    rowHeader: [],
   }
 
   state = {
@@ -52,7 +55,7 @@ export default class Table extends React.Component {
     const { r, c } = setting || {};
     window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader, c);
     window.rowHeaderTree = this.rowHeaderTree = new Tree(rowHeader, r);
-    window.cornerNode = this.cornerNode = new Node({name: 'corner'});
+    window.cornerNode = this.cornerNode = new Node({name: ''});
   }
 
   bindRef(key) {
@@ -101,23 +104,6 @@ export default class Table extends React.Component {
         bodyWrapperHeight
       }
       
-    });
-  }
-
-  componentWillMount() {
-    const { data } = this.props;
-    const columns = this.colHeaderTree.leafNodes;
-    const rowGroup = this.rowHeaderTree.leafNodes;
-    const rowTableColGroup = this.rowHeaderTree.deepestNodePath;
-    const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
-    const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
-    this.setState({
-      columns,
-      rowGroup,
-      rowTableColGroup,
-      columnHeader,
-      rowHeader,
-      data
     });
   }
 
@@ -199,8 +185,31 @@ export default class Table extends React.Component {
     };
   }
 
+  refreshTable(data) {
+    const columns = this.colHeaderTree.leafNodes;
+    const rowGroup = this.rowHeaderTree.leafNodes;
+    const rowTableColGroup = this.rowHeaderTree.deepestNodePath;
+    const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
+    const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
+    this.setState({
+      columns,
+      rowGroup,
+      rowTableColGroup,
+      columnHeader,
+      rowHeader,
+      data
+    }, this.scheduleLayout);
+  }
+
   componentDidMount() {
-    this.scheduleLayout();
+    const { data } = this.props;
+    this.refreshTable(data);
+  }
+
+  componentWillReceiveProps({columnHeader, rowHeader, data}) {
+    this.colHeaderTree.buildTree(columnHeader);
+    this.rowHeaderTree.buildTree(rowHeader);
+    this.refreshTable(data);
   }
 
   render() {
@@ -209,6 +218,7 @@ export default class Table extends React.Component {
       colHeaderWidth,
       colHeaderHeight,
       bodyWrapperHeight,
+      data
     } = this.state;
     const { height } = this.props;
     
@@ -240,6 +250,16 @@ export default class Table extends React.Component {
               store={this.state}
               colHeaderWidth={colHeaderWidth}
             />
+            {
+              (!data || !data.length) && (
+                <div
+                  style={{height: bodyWrapperHeight }}
+                  className="nodata-block"
+                >
+                  <div className="nodata-text">No Data</div>
+                </div>
+              )
+            }
           </div>
         </div>
         {

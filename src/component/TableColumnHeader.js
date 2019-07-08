@@ -4,26 +4,6 @@ import Th from './Th';
 
 export default class TableRowHeader extends React.Component {
 
-  handleMouseMove(column, e) {
-    if (!this.dragging) {
-      let target = e.target;
-      while (target && target.tagName !== 'TH') {
-        target = target.parentNode;
-      }
-
-      const rect = target.getBoundingClientRect();
-      const bodyStyle = document.body.style;
-
-      if (rect.width > 12 && rect.right - e.pageX < 8) {
-        bodyStyle.cursor = 'col-resize';
-        this.draggingColumn = column;
-      } else {
-        bodyStyle.cursor = '';
-        this.draggingColumn = null;
-      }
-    }
-  }
-
   getColWidth(width) {
     if (width > 100) {
       return width;

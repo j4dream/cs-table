@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Table from './component';
 
-const state = {
+const mockData = {
   rowHeader: [{
     "name": "服装",
     prop: "category",
@@ -200,51 +200,68 @@ const state = {
     address: '上海市普陀区金沙江路 1518 弄',
     zip: 200333
   }]
-}
+};
 
-function App() {
-  const setting = JSON.parse(localStorage.getItem("table"));
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>DC Table Component</p>
-      </header>
-      <div style={{margin: 15}}>
-        <h2>All feature</h2>
-        <Table
-          ref={n => window.tableEl = n}
-          columnHeader={state.columnHeader}
-          rowHeader={state.rowHeader}
-          data={state.data}
-          setting={setting}
-        />
-      </div>
-      <div style={{margin: 15}}>
-        <h2>Disable resize</h2>
-        <Table
-          columnHeader={state.columnHeader}
-          rowHeader={state.rowHeader}
-          data={state.data}
-          resizeWidth={false}
-        />
-      </div>
-      <div style={{margin: 15}}>
-        <h2>Hide header</h2>
-        <Table
-          columnHeader={state.columnHeader}
-          rowHeader={state.rowHeader}
-          data={state.data}
-          resizeWidth={false}
-          showColumnHeader={false}
-          showRowHeader={false}
-        />
-      </div>
-    </div>
-  );
-}
+export default class App extends React.Component {
 
-export default App;
+  state = {
+    rowHeader: [],
+    columnHeader: [],
+    data: [],
+    
+  }
+
+  componentDidMount() {
+    //setTimeout();
+  }
+
+  render() {
+    const setting = JSON.parse(localStorage.getItem("table"));
+    const {
+      columnHeader,
+      rowHeader,
+      data,
+    } = this.state;
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <p>DC Table Component</p>
+        </header>
+        <div style={{margin: 15}}>
+          <h2>All feature</h2>
+          <Table
+            ref={n => window.tableEl = n}
+            columnHeader={columnHeader}
+            rowHeader={rowHeader}
+            data={data}
+            setting={setting}
+          />
+        </div>
+        <div style={{margin: 15}}>
+          <h2>Disable resize</h2>
+          <Table
+            columnHeader={columnHeader}
+            rowHeader={rowHeader}
+            data={data}
+            resizeWidth={false}
+          />
+        </div>
+        <div style={{margin: 15}}>
+          <h2>Hide header</h2>
+          <Table
+            columnHeader={columnHeader}
+            rowHeader={rowHeader}
+            data={data}
+            resizeWidth={false}
+            showColumnHeader={false}
+            showRowHeader={false}
+          />
+        </div>
+      </div>
+    );
+  }
+};

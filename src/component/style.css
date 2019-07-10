@@ -61,6 +61,7 @@
 }
 
 .dc-table th, .dc-table td {
+  text-align: center;
   box-sizing: border-box;
   border-bottom: 1px;
   border-right: 1px;

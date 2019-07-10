@@ -81,7 +81,7 @@ export default class Table extends React.Component {
     const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
     this.state.colHeaderWidth = bodyMinWidth;
     if (this.showRowHeader) {
-      const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), -1);
+      const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
       this.state.rowHeaderWidth = rowHeaderWidth;
     }
   }
@@ -268,7 +268,7 @@ export default class Table extends React.Component {
               className="row-header-wrapper"
               ref={this.bindRef('rowHeaderWrapper')}
               style={{
-                marginTop: colHeaderHeight,
+                marginTop: colHeaderHeight - 1,
                 height: bodyWrapperHeight
               }}
             >
@@ -285,7 +285,7 @@ export default class Table extends React.Component {
             <div
               className="corner-block"
               style={{
-                width: rowHeaderWidth + 1,
+                width: rowHeaderWidth,
                 height: colHeaderHeight - 1
               }}
             >

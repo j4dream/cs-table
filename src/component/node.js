@@ -12,11 +12,12 @@ export default class Node {
   height = 0;
   minHeight = 30;
   prop = null;
+  field = null;
   name = '';
 
-  constructor({children, name, prop, width = 150, height = 30} = {}) {
+  constructor({children, name, prop, field, width = 120, height = 30} = {}) {
     this.name = name;
-    this.prop = prop;
+    this.prop = prop || field;
     this.width = width;
     this.height = height;
     this.id = getAscId();

@@ -105,6 +105,8 @@ export default class Th extends React.Component {
           document.onselectstart = null;
           document.ondragstart = null;
 
+          this.context.table.onResizeCell();
+
           this.context.table.scheduleLayout();
         }
       }
@@ -198,7 +200,7 @@ export default class Th extends React.Component {
         className={classnames({leaf: !children})}
         height={column.computedHeight()}
       >
-        {name}
+        <div className="cell">{name}</div>
       </th>
     );
   }

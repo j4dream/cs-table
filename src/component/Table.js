@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TableColumnHeader from './TableColumnHeader';
 import TableRowHeader from './TableRowHeader';
 import TableBody from './TableBody';
-import { convertToColumnHeader, convertToRowHeader } from './util';
+import { convertToColumnHeader, convertToRowHeader, getScrollBarWidth } from './util';
 import Tree from './tree';
 import Node from './node';
 import Th from './Th';
@@ -16,6 +16,7 @@ export default class Table extends React.Component {
   static defaultProps = {
     border: 1,
     width: 100,
+    height: '100%',
     setting: {},
     resizeWidth: true,
     resizeHeight: true,
@@ -24,6 +25,7 @@ export default class Table extends React.Component {
     data: [],
     columnHeader: [],
     rowHeader: [],
+    className: ''
   }
 
   state = {
@@ -36,7 +38,10 @@ export default class Table extends React.Component {
     colHeaderHeight: 0,
     bodyWrapperHeight: 0,
     columnHeader: [],
-    rowHeader: []
+    rowHeader: [],
+    gutterWidth: getScrollBarWidth(), // scrollBar width
+    scrollX: null, // has x scroll bar
+    scrollY: null, // has y scroll bar
   }
 
   static childContextTypes = {
@@ -53,9 +58,9 @@ export default class Table extends React.Component {
     super(props);
     const { columnHeader, rowHeader, setting } = props;
     const { r, c } = setting || {};
-    window.colHeaderTree = this.colHeaderTree = new Tree(columnHeader, c);
-    window.rowHeaderTree = this.rowHeaderTree = new Tree(rowHeader, r);
-    window.cornerNode = this.cornerNode = new Node({name: ''});
+    this.colHeaderTree = new Tree(columnHeader, c);
+    this.rowHeaderTree = new Tree(rowHeader, r);
+    this.cornerNode = new Node({name: ''});
   }
 
   bindRef(key) {
@@ -64,7 +69,9 @@ export default class Table extends React.Component {
 
   handleScroll = () => {
     const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper, showRowHeader } = this;
-    colHeaderWrapper.scrollLeft = bodyWrapper.scrollLeft;
+    if (this.showColumnHeader) {
+      colHeaderWrapper.scrollLeft = bodyWrapper.scrollLeft;
+    }
     if (showRowHeader) {
       rowHeaderWrapper.scrollTop = bodyWrapper.scrollTop;
     }
@@ -74,22 +81,33 @@ export default class Table extends React.Component {
     this.calculateWidth();
     this.forceUpdate(() => {
       this.calculateHeight();
+      this.updateScrollY();
     });
   }
 
   calculateWidth() {
     const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
+    const cbwrapperWidth = this.colBodyWrapper.offsetWidth;
+    this.state.scrollX = bodyMinWidth > cbwrapperWidth;
+
     this.state.colHeaderWidth = bodyMinWidth;
     if (this.showRowHeader) {
       const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
       this.state.rowHeaderWidth = rowHeaderWidth;
+    } else {
+      this.state.rowHeaderWidth = 0;
     }
   }
 
   calculateHeight() {
     this.setState(state => {
       const { colHeaderWrapper } = this;
-      const colHeaderHeight = colHeaderWrapper.clientHeight;
+      let colHeaderHeight;
+      if (this.props.showColumnHeader) {
+        colHeaderHeight = colHeaderWrapper.clientHeight;
+      } else {
+        colHeaderHeight = 0;
+      }     
       const { height } = this.props;
       let bodyWrapperHeight = '100%';
 
@@ -104,6 +122,20 @@ export default class Table extends React.Component {
         bodyWrapperHeight
       }
       
+    });
+  }
+
+  updateScrollY() {
+    this.setState((state) => {
+      const { bodyWrapper } = this;
+
+     
+      const body = bodyWrapper.querySelector('.dc-table-real-body');
+      const scrollY = body.clientHeight > state.bodyWrapperHeight;
+
+      return {
+        scrollY
+      };
     });
   }
 
@@ -135,6 +167,10 @@ export default class Table extends React.Component {
     );
   }
 
+  get showColumnHeader() {
+    return this.props.showColumnHeader;
+  }
+ 
   getConfig() {
     const { rowHeaderTree, colHeaderTree, props, tableWidth } = this;
     const { height } = props;
@@ -185,6 +221,11 @@ export default class Table extends React.Component {
     };
   }
 
+  onResizeCell() {
+    this.scheduleLayout();
+    this.props.onResizeCell && this.props.onResizeCell(this.getConfig());
+  }
+
   refreshTable(data) {
     const columns = this.colHeaderTree.leafNodes;
     const rowGroup = this.rowHeaderTree.leafNodes;
@@ -206,10 +247,19 @@ export default class Table extends React.Component {
     this.refreshTable(data);
   }
 
-  componentWillReceiveProps({columnHeader, rowHeader, data}) {
-    this.colHeaderTree.buildTree(columnHeader);
-    this.rowHeaderTree.buildTree(rowHeader);
-    this.refreshTable(data);
+  componentWillReceiveProps({columnHeader, rowHeader, data, showColumnHeader, showRowHeader}) {
+    let refreshed = false;
+    if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
+      console.log('same data, table not update');
+      return;
+    } else {
+      const { r, c } = this.props.setting || {};
+      this.colHeaderTree = new Tree(columnHeader, c);
+      this.rowHeaderTree = new Tree(rowHeader, r);
+      refreshed = true;
+      this.refreshTable(data);
+    }
+     
   }
 
   render() {
@@ -220,12 +270,12 @@ export default class Table extends React.Component {
       bodyWrapperHeight,
       data
     } = this.state;
-    const { height } = this.props;
+    const { height, className } = this.props;
     
     return (
       <div
         ref={this.bindRef('tableEl')}
-        className="dc-table"
+        className={`dc-table ${className}`}
         style={{
           height,
           width: this.tableWidth,
@@ -236,14 +286,19 @@ export default class Table extends React.Component {
           style={{
             marginLeft: rowHeaderWidth
           }}
+          ref={this.bindRef('colBodyWrapper')}
         >
-          <div ref={this.bindRef('colHeaderWrapper')} className="col-header-wrapper">
-            <TableColumnHeader
-              {...this.props}
-              store={this.state}
-              colHeaderWidth={colHeaderWidth}
-            />
-          </div>
+          {
+            this.showColumnHeader && (
+              <div ref={this.bindRef('colHeaderWrapper')} className="col-header-wrapper">
+                <TableColumnHeader
+                  {...this.props}
+                  store={this.state}
+                  colHeaderWidth={colHeaderWidth}
+                />
+              </div>
+            )
+          }
           <div ref={this.bindRef('bodyWrapper')} style={{height: bodyWrapperHeight}} className="body-wrapper" onScroll={this.handleScroll}>
             <TableBody
               {...this.props}
@@ -268,13 +323,14 @@ export default class Table extends React.Component {
               className="row-header-wrapper"
               ref={this.bindRef('rowHeaderWrapper')}
               style={{
-                marginTop: colHeaderHeight - 1,
+                marginTop: colHeaderHeight,
                 height: bodyWrapperHeight
               }}
             >
               <TableRowHeader
                 {...this.props}
                 store={this.state}
+                tree={this.rowHeaderTree}
               />
             </div>
           )
@@ -286,7 +342,7 @@ export default class Table extends React.Component {
               className="corner-block"
               style={{
                 width: rowHeaderWidth,
-                height: colHeaderHeight - 1
+                height: colHeaderHeight
               }}
             >
               <table border="0" cellSpacing="0" width="100%">

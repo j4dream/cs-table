@@ -4,18 +4,11 @@ import Th from './Th';
 
 export default class TableRowHeader extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      columnHeader: convertToRowHeader(props.rowHeader)
-    };
-  }
-
   render() {
-    const { store } = this.props;
-    const { rowTableColGroup, rowHeader } = store;
+    const { store, tree } = this.props;
+    const { rowTableColGroup, rowHeader, rowHeaderWidth } = store;
     return (
-      <table border="0" cellSpacing="0">
+      <table border="0" cellSpacing="0" style={{width: rowHeaderWidth}}>
         <colgroup>
           {
             rowTableColGroup.map(({width}, index) => (
@@ -32,6 +25,15 @@ export default class TableRowHeader extends React.Component {
                 }
               </tr>
             ))
+          }
+          {
+            store.scrollX && store.scrollY && (
+              <tr>
+                <th className="gutter-row" colSpan={tree.deepestNodePath.length} height="17">
+
+                </th>
+              </tr>
+            )
           }
         </thead>
       </table>

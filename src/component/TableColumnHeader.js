@@ -34,6 +34,7 @@ export default class TableRowHeader extends React.Component {
                     )
                   )
                 }
+                <th className="gutter-col" style={{ width: store.scrollY && store.scrollX ? store.gutterWidth : 0 }}></th>
               </tr>
             ))
           }

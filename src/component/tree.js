@@ -18,8 +18,8 @@ export default class Tree {
   }
 
   _traverse(node, parent) {
-    const { prop } = node;
-    const savedConfig = this.setting[prop];
+    const { prop, field } = node;
+    const savedConfig = this.setting[prop] || this.setting[field];
     if (savedConfig) {
       Object.assign(node, savedConfig);
     }

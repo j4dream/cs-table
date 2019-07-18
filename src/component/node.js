@@ -8,14 +8,15 @@ export default class Node {
   level = null;
   colSpan = 0;
   rowSpan = 0;
-  width = 0;
+  width = null;
   height = 0;
   minHeight = 30;
+  minWidth = 50;
   prop = null;
   field = null;
   name = '';
 
-  constructor({children, name, prop, field, width = 120, height = 30} = {}) {
+  constructor({children, name, prop, field, width, height = 30} = {}) {
     this.name = name;
     this.prop = prop || field;
     this.width = width;

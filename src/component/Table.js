@@ -86,17 +86,49 @@ export default class Table extends React.Component {
   }
 
   calculateWidth() {
-    const bodyMinWidth = this.state.columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
-    const cbwrapperWidth = this.colBodyWrapper.offsetWidth;
+    const { columns, rowTableColGroup, gutterWidth } = this.state;
+
+    const bodyMinWidth = columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
+    const cbwrapperWidth = this.colBodyWrapper.clientWidth;
+    const tableElWidth = this.tableEl.clientWidth;
+    
+
     this.state.scrollX = bodyMinWidth > cbwrapperWidth;
 
     this.state.colHeaderWidth = bodyMinWidth;
     if (this.showRowHeader) {
-      const rowHeaderWidth = this.state.rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
+      const rowHeaderWidth = rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
       this.state.rowHeaderWidth = rowHeaderWidth;
     } else {
       this.state.rowHeaderWidth = 0;
     }
+
+    const flexColumns = columns.filter(col => typeof col.width !== 'number');
+
+    if (flexColumns.length) {
+      const totalFlexWidth = tableElWidth - this.state.rowHeaderWidth - gutterWidth - bodyMinWidth;
+      if (totalFlexWidth > 0) {
+        if (flexColumns.length === 1) {
+          flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth;
+        } else {
+          const allColumnsWidth = flexColumns.reduce((pre, col) => pre + col.minWidth, 0);
+          const flexWidthPerPixel = totalFlexWidth / allColumnsWidth;
+
+          let widthWithoutFirst = 0;
+
+          flexColumns.forEach((column, index) => {
+            if (index === 0) return;
+            const flexWidth = Math.floor(column.minWidth * flexWidthPerPixel);
+            widthWithoutFirst += flexWidth;
+            column.realWidth = column.minWidth + flexWidth;
+          });
+
+          flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth - widthWithoutFirst;
+
+        }
+      }
+    }
+    console.log(flexColumns);
   }
 
   calculateHeight() {

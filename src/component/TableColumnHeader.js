@@ -20,7 +20,7 @@ export default class TableRowHeader extends React.Component {
         <colgroup>
           {
             store.columns.map((column, index) => (
-              <col width={column.width} style={{ width: column.width }} key={index} />
+              <col width={column.realWidth} style={{ width: column.realWidth }} key={index} />
             ))
           }
         </colgroup>

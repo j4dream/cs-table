@@ -16,7 +16,6 @@ export default class Table extends React.Component {
   static defaultProps = {
     border: 1,
     width: 100,
-    height: '100%',
     setting: {},
     resizeWidth: true,
     resizeHeight: true,
@@ -140,11 +139,15 @@ export default class Table extends React.Component {
       } else {
         colHeaderHeight = 0;
       }     
-      const { height } = this.props;
+      const { height, maxHeight } = this.props;
       let bodyWrapperHeight = '100%';
 
       if (height && isNumber(height)) {
         bodyWrapperHeight = this.props.height - colHeaderHeight;
+      }
+
+      if (maxHeight && isNumber(maxHeight)) {
+        bodyWrapperHeight = this.props.maxHeight - colHeaderHeight;
       }
 
       this.cornerNode.height = colHeaderHeight;
@@ -177,6 +180,31 @@ export default class Table extends React.Component {
       return width
     }
     return '100%';
+  }
+
+  get tableHeight() {
+    const { height, maxHeight } = this.props;
+    const style = {};
+
+    if (height) {
+      style.height = height || '';
+    } else if (maxHeight) {
+      style.maxHeight = maxHeight;
+    }
+
+    return style;
+  }
+
+  get bodyHeightOrMaxHeight() {
+    const { height, maxHeight } = this.props;
+    const { bodyWrapperHeight } = this.state;
+    const style = {};
+    if (height) {
+      style.height = bodyWrapperHeight || '';
+    } else if (maxHeight) {
+      style.maxHeight = bodyWrapperHeight;
+    }
+    return style;
   }
 
   get showCorner() {
@@ -299,20 +327,22 @@ export default class Table extends React.Component {
       rowHeaderWidth,
       colHeaderWidth,
       colHeaderHeight,
-      bodyWrapperHeight,
       data
     } = this.state;
-    const { height, className } = this.props;
+    const { className } = this.props;
     
     return (
       <div
         ref={this.bindRef('tableEl')}
         className={`dc-table ${className}`}
-        style={{
-          height,
-          width: this.tableWidth,
-          overflow: 'hidden'
-        }}
+        style={
+          Object.assign({
+              width: this.tableWidth,
+              overflow: 'hidden'
+            },
+            this.tableHeight
+          )
+        }
       >
         <div
           style={{
@@ -331,7 +361,7 @@ export default class Table extends React.Component {
               </div>
             )
           }
-          <div ref={this.bindRef('bodyWrapper')} style={{height: bodyWrapperHeight}} className="body-wrapper" onScroll={this.handleScroll}>
+          <div ref={this.bindRef('bodyWrapper')} style={this.bodyHeightOrMaxHeight} className="body-wrapper" onScroll={this.handleScroll}>
             <TableBody
               {...this.props}
               store={this.state}
@@ -340,7 +370,7 @@ export default class Table extends React.Component {
             {
               (!data || !data.length) && (
                 <div
-                  style={{height: bodyWrapperHeight }}
+                  style={this.bodyHeightOrMaxHeight}
                   className="nodata-block"
                 >
                   <div className="nodata-text">No Data</div>
@@ -356,7 +386,7 @@ export default class Table extends React.Component {
               ref={this.bindRef('rowHeaderWrapper')}
               style={{
                 marginTop: colHeaderHeight,
-                height: bodyWrapperHeight
+                ...this.bodyHeightOrMaxHeight
               }}
             >
               <TableRowHeader

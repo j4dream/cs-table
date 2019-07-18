@@ -270,7 +270,7 @@ export default class App extends React.Component {
             rowHeader={rowHeader}
             data={data}
             width={400}
-            height={200}
+            maxHeight={200}
           />
         </div>
       </div>

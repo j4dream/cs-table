@@ -11,7 +11,8 @@ export default class Node {
   width = null;
   height = 0;
   minHeight = 30;
-  minWidth = 50;
+  minWidth = 80;
+  realWidth = 80;
   prop = null;
   field = null;
   name = '';

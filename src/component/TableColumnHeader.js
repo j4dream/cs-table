@@ -12,8 +12,7 @@ export default class TableRowHeader extends React.Component {
   }
 
   render() {
-    //const { columnHeader } = this.state;
-    const { border, colHeaderWidth, store } = this.props;
+    const { colHeaderWidth, store } = this.props;
     const { columnHeader } = store;
     return (
       <table border="0" cellPadding="0" cellSpacing="0" style={{borderBottom: 0, width: colHeaderWidth}}>
@@ -34,7 +33,7 @@ export default class TableRowHeader extends React.Component {
                     )
                   )
                 }
-                <th className="gutter-col" style={{ width: store.scrollY && store.scrollX ? store.gutterWidth : 0 }}></th>
+                <th className="gutter-col" style={{ width: store.scrollY ? store.gutterWidth : 0 }}></th>
               </tr>
             ))
           }

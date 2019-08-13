@@ -170,4 +170,4 @@ export function getAscId(){
   return ascId++;
 }
 
-export const isNumber = val => typeof val === 'number' && val === val;
+export const isNumber = val => typeof val === 'number';

@@ -88,11 +88,7 @@ export default class Table extends React.Component {
     const { columns, rowTableColGroup, gutterWidth } = this.state;
 
     const bodyMinWidth = columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
-    const cbwrapperWidth = this.colBodyWrapper.clientWidth;
     const tableElWidth = this.tableEl.clientWidth;
-    
-
-    this.state.scrollX = bodyMinWidth > cbwrapperWidth;
 
     this.state.colHeaderWidth = bodyMinWidth;
     if (this.showRowHeader) {
@@ -104,8 +100,10 @@ export default class Table extends React.Component {
 
     const flexColumns = columns.filter(col => typeof col.width !== 'number');
 
+    this.state.scrollX = bodyMinWidth > (tableElWidth - this.state.rowHeaderWidth - gutterWidth);
+
     if (flexColumns.length) {
-      const totalFlexWidth = tableElWidth - this.state.rowHeaderWidth - gutterWidth - bodyMinWidth;
+      const totalFlexWidth = tableElWidth - this.state.rowHeaderWidth - gutterWidth- bodyMinWidth;
       if (totalFlexWidth > 0) {
         if (flexColumns.length === 1) {
           flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth;
@@ -127,7 +125,6 @@ export default class Table extends React.Component {
         }
       }
     }
-    console.log(flexColumns);
   }
 
   calculateHeight() {
@@ -163,7 +160,6 @@ export default class Table extends React.Component {
   updateScrollY() {
     this.setState((state) => {
       const { bodyWrapper } = this;
-
      
       const body = bodyWrapper.querySelector('.dc-table-real-body');
       const scrollY = body.clientHeight > state.bodyWrapperHeight;
@@ -308,18 +304,14 @@ export default class Table extends React.Component {
   }
 
   componentWillReceiveProps({columnHeader, rowHeader, data, showColumnHeader, showRowHeader}) {
-    let refreshed = false;
     if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
-      console.log('same data, table not update');
       return;
     } else {
       const { r, c } = this.props.setting || {};
       this.colHeaderTree = new Tree(columnHeader, c);
       this.rowHeaderTree = new Tree(rowHeader, r);
-      refreshed = true;
       this.refreshTable(data);
     }
-     
   }
 
   render() {

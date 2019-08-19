@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAscId }  from './util';
+import { convertToRowHeader, getAscId }  from './util';
 import Th from './Th';
 
 export default class TableRowHeader extends React.Component {

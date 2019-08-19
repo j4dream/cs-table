@@ -11,8 +11,18 @@ export default class TableRowHeader extends React.Component {
     return 100;
   }
 
+  get gutterWidth() {
+    const { forceHideYGutter, scrollY, gutterWidth } = this.props.store;
+    console.log('forceHideYGutter: ', forceHideYGutter );
+    if (forceHideYGutter || !scrollY) {
+      return 0;
+    }
+    return gutterWidth;
+  }
+
   render() {
-    const { colHeaderWidth, store } = this.props;
+    //const { columnHeader } = this.state;
+    const { border, colHeaderWidth, store } = this.props;
     const { columnHeader } = store;
     return (
       <table border="0" cellPadding="0" cellSpacing="0" style={{borderBottom: 0, width: colHeaderWidth}}>
@@ -33,7 +43,7 @@ export default class TableRowHeader extends React.Component {
                     )
                   )
                 }
-                <th className="gutter-col" style={{ width: store.scrollY ? store.gutterWidth : 0 }}></th>
+                <th className="gutter-col" style={{ width: this.gutterWidth}}></th>
               </tr>
             ))
           }

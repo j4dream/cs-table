@@ -16,7 +16,7 @@ export default class TableBody extends React.Component {
     const { colHeaderWidth, store } = this.props;
      
     return (
-      <table border="0" cellSpacing="0" style={{width: colHeaderWidth}} className="dc-table-real-body">
+      <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0)}} className="dc-table-real-body">
         <colgroup>
           {
             store.columns.map((column, index) => (

@@ -41,6 +41,7 @@ export default class Table extends React.Component {
     gutterWidth: getScrollBarWidth(), // scrollBar width
     scrollX: null, // has x scroll bar
     scrollY: null, // has y scroll bar
+    forceHideYGutter: false
   }
 
   static childContextTypes = {
@@ -90,7 +91,6 @@ export default class Table extends React.Component {
     const bodyMinWidth = columns.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
     const tableElWidth = this.tableEl.clientWidth;
 
-    this.state.colHeaderWidth = bodyMinWidth;
     if (this.showRowHeader) {
       const rowHeaderWidth = rowTableColGroup.reduce((acc, col) => acc + (col.width || col.minWidth), 0);
       this.state.rowHeaderWidth = rowHeaderWidth;
@@ -99,32 +99,49 @@ export default class Table extends React.Component {
     }
 
     const flexColumns = columns.filter(col => typeof col.width !== 'number');
+    let bodyWidth = tableElWidth - this.state.rowHeaderWidth;
 
-    this.state.scrollX = bodyMinWidth > (tableElWidth - this.state.rowHeaderWidth - gutterWidth);
+    let scrollX;
 
     if (flexColumns.length) {
-      const totalFlexWidth = tableElWidth - this.state.rowHeaderWidth - gutterWidth- bodyMinWidth;
-      if (totalFlexWidth > 0) {
-        if (flexColumns.length === 1) {
-          flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth;
-        } else {
-          const allColumnsWidth = flexColumns.reduce((pre, col) => pre + col.minWidth, 0);
-          const flexWidthPerPixel = totalFlexWidth / allColumnsWidth;
+      if (bodyMinWidth < bodyWidth - gutterWidth) {
+        scrollX = false;
+        const totalFlexWidth = bodyWidth - gutterWidth - bodyMinWidth;
+        if (totalFlexWidth > 0) {
+          if (flexColumns.length === 1) {
+            flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth;
+          } else {
+            const allColumnsWidth = flexColumns.reduce((pre, col) => pre + col.minWidth, 0);
+            const flexWidthPerPixel = totalFlexWidth / allColumnsWidth;
 
-          let widthWithoutFirst = 0;
+            let widthWithoutFirst = 0;
 
-          flexColumns.forEach((column, index) => {
-            if (index === 0) return;
-            const flexWidth = Math.floor(column.minWidth * flexWidthPerPixel);
-            widthWithoutFirst += flexWidth;
-            column.realWidth = column.minWidth + flexWidth;
-          });
+            flexColumns.forEach((column, index) => {
+              if (index === 0) return;
+              const flexWidth = Math.floor(column.minWidth * flexWidthPerPixel);
+              widthWithoutFirst += flexWidth;
+              column.realWidth = column.minWidth + flexWidth;
+            });
 
-          flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth - widthWithoutFirst;
+            flexColumns[0].realWidth = flexColumns[0].minWidth + totalFlexWidth - widthWithoutFirst;
 
+          }
         }
-      }
+      } else {
+        scrollX = true;
+        flexColumns.forEach((column) => {
+          column.realWidth = column.minWidth;
+        });
+      } 
+    } else {
+      scrollX = bodyMinWidth > bodyWidth;
+      columns.forEach(col => col.realWidth = col.width || col.minWidth )
+      bodyWidth = bodyMinWidth;
     }
+    this.state.colHeaderWidth = Math.max(bodyMinWidth, bodyWidth);
+    this.state.scrollX = scrollX;
+    
+    this.state.forceHideYGutter = this.state.colHeaderWidth < tableElWidth - this.state.rowHeaderWidth;
   }
 
   calculateHeight() {
@@ -304,14 +321,18 @@ export default class Table extends React.Component {
   }
 
   componentWillReceiveProps({columnHeader, rowHeader, data, showColumnHeader, showRowHeader}) {
+    let refreshed = false;
     if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
+      console.log('same data, table not update');
       return;
     } else {
       const { r, c } = this.props.setting || {};
       this.colHeaderTree = new Tree(columnHeader, c);
       this.rowHeaderTree = new Tree(rowHeader, r);
+      refreshed = true;
       this.refreshTable(data);
     }
+     
   }
 
   render() {

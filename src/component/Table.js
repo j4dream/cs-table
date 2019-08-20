@@ -21,6 +21,7 @@ export default class Table extends React.Component {
     resizeHeight: true,
     showColumnHeader: true,
     showRowHeader: true,
+    sortSameLevelColumn: false,
     data: [],
     columnHeader: [],
     rowHeader: [],
@@ -297,6 +298,12 @@ export default class Table extends React.Component {
   onResizeCell() {
     this.scheduleLayout();
     this.props.onResizeCell && this.props.onResizeCell(this.getConfig());
+  }
+
+  refreshColumn() {
+    const columns = this.colHeaderTree.leafNodes;
+    const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
+    this.setState({ columns, columnHeader });
   }
 
   refreshTable(data) {

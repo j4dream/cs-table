@@ -1,11 +1,17 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+// import Draggable, {DraggableCore} from 'react-draggable';
+import Draggable from './Draggable';
 
 export default class Th extends React.Component {
 
   static contextTypes = {
     table: PropTypes.any,
+  };
+
+  state = {
+    style: {}
   };
 
   handleMouseDown = (e) => {
@@ -183,14 +189,40 @@ export default class Th extends React.Component {
     document.body.style.cursor = "";
   }
 
+  onMouseEnter = () => {
+      const { column } = this.props;
+      const { colHeaderTree } = this.context.table;
+      console.log('enter', colHeaderTree.sortingColumn);
+      if (colHeaderTree.sortingColumn) {
+        if (colHeaderTree.sortSameLevelPos(column)) {
+          this.context.table.refreshColumn();
+        };
+      }
+      colHeaderTree.sortingColumn = null;
+  }
+
+  handleSortColumnStart = () => {
+    const { column } = this.props;
+    this.context.table.colHeaderTree.sortingColumn = column;
+  }
+
+  handleSortColumnStop = () => {
+   // this.context.table.scheduleLayout();
+   setTimeout(() => {
+    const { colHeaderTree } = this.context.table; 
+    colHeaderTree.sortingColumn = null;
+   }, 200);
+  }
+
   getEextraProps() {
 
   }
 
   render() {
-    const { column } = this.props;
+    const { column, type } = this.props;
+    const { style } = this.state;
     const { colSpan, rowSpan, name, children } = column;
-
+    const { sortSameLevelColumn } = this.context.table.props;
     return (
       <th
         colSpan={colSpan}
@@ -198,10 +230,32 @@ export default class Th extends React.Component {
         onMouseMove={this.handleMouseMove}
         onMouseOut={this.handleMouseOut}
         onMouseDown={this.handleMouseDown}
+        onMouseEnter={this.onMouseEnter}
         className={classnames({leaf: !children})}
         height={column.computedHeight()}
+        style={style}
       >
-        <div className="cell">{name}</div>
+        {
+          sortSameLevelColumn && type === 'col'
+            ? (
+                <Draggable
+                  handle=".icon"
+                  axis="x"
+                  onDragStart={this.handleSortColumnStart}
+                  onDragStop={this.handleSortColumnStop}
+                >
+                  <div className="cell exchange">
+                    <div className="icon">
+
+                    </div>
+                    {name}
+                  </div>
+                </Draggable>
+              )
+            : (
+              <div className="cell">{name}</div>
+            )
+        }
       </th>
     );
   }

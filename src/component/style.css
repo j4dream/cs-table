@@ -55,6 +55,20 @@
   text-overflow: ellipsis;
 }
 
+.dc-table .cell.exchange {
+  position: relative;
+  background: #f5f5f6;
+  z-index: 1;
+}
+
+.dc-table .cell.exchange .icon {
+  position: absolute;
+  background: red;
+  left: 4px;
+  width: 12px;
+  height: 100%;
+}
+
 .dc-table .body-wrapper {
   overflow: auto;
 }

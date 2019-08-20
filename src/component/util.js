@@ -170,4 +170,32 @@ export function getAscId(){
   return ascId++;
 }
 
+let matchesFun = '';
+function isMatchSelector(el, selector) {
+  if (!matchesFun) {
+    [
+      'matches',
+      'webkitMatchesSelector',
+      'mozMatchesSelector',
+      'msMatchesSelector',
+      'oMatchesSelector',
+    ].forEach(f => {
+      if (typeof el[f] === 'function') {
+        matchesFun = f;
+      }
+    });
+  }
+  return el[matchesFun](selector);
+}
+
+export function matchsSlelector(el, selector, rootDom) {
+  let node = el;
+  while(node) {
+    if (isMatchSelector(el, selector)) return true;
+    if (node === rootDom) return false;
+    node = node.parentNode;
+  }
+  return false;
+}
+
 export const isNumber = val => typeof val === 'number' && val === val;

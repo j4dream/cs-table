@@ -6,6 +6,9 @@ export default class Tree {
   leafNodes = [];
   setting = {};
   root = new Node();
+
+  sortingColumn = null;
+
   constructor(data = [], setting = {}) {
     this.setting = setting;
     this.buildTree(data);
@@ -85,5 +88,26 @@ export default class Tree {
 
   getDeepestNodeByIndex(index = this.deepestNodePath.length - 1) {
     return this.deepestNodePath[index];
+  }
+
+  sortSameLevelPos(rep) {
+    if (this.sortingColumn && (this.sortingColumn.level !== rep.level)) {
+      return false;
+    }
+
+    const parent = this.sortingColumn.parent;
+    const repParent = rep.parent;
+    if (parent !== repParent) {
+      return false;
+    }
+
+    const sortingIndex = parent.children.indexOf(this.sortingColumn);
+    const rIndex = parent.children.indexOf(rep);
+    parent.children.splice(sortingIndex, 1);
+    parent.children.splice(rIndex, 0, this.sortingColumn);
+
+    this.leafNodes = this.getLeafNodes();
+
+    return true;
   }
 }

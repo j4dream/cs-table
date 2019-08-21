@@ -21,6 +21,7 @@ export default class Node {
     this.name = name;
     this.prop = prop || field;
     this.width = width;
+    this.realWidth = width;
     this.height = height;
     this.key = getAscId();
   }

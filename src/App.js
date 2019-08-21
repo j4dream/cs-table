@@ -44,6 +44,9 @@ export default class App extends React.Component {
             sortSameLevelColumn={true}
             data={data}
             setting={setting}
+            onLayoutChange={(d) => {
+              localStorage.setItem('table', JSON.stringify(d));
+            }}
           />
         </div>
         <div style={{margin: 15}}>

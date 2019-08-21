@@ -112,7 +112,7 @@ export default class Th extends React.Component {
           document.onselectstart = null;
           document.ondragstart = null;
 
-          this.context.table.onResizeCell();
+          this.context.table.onLayoutChange();
 
           this.context.table.scheduleLayout();
         }

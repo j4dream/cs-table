@@ -291,19 +291,24 @@ export default class Table extends React.Component {
       w: tableWidth,
       h: height,
       c: colConfig,
-      r: rowConfig
+      // column order
+      r: rowConfig,
     };
   }
 
-  onResizeCell() {
+  safeCallLayoutChange() {
+    this.props.onLayoutChange && this.props.onLayoutChange(this.getConfig());
+  }
+
+  onLayoutChange() {
     this.scheduleLayout();
-    this.props.onResizeCell && this.props.onResizeCell(this.getConfig());
+    this.safeCallLayoutChange();
   }
 
   refreshColumn() {
     const columns = this.colHeaderTree.leafNodes;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
-    this.setState({ columns, columnHeader });
+    this.setState({ columns, columnHeader }, this.safeCallLayoutChange);
   }
 
   refreshTable(data) {

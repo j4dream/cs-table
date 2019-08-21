@@ -44,17 +44,11 @@ export default class Tree {
       this._traverse(item, this.root);
     });
   }
-  // BFS
+  
   _findDeepestNodePath() {
-    const allNodes = [];
-    const queue = this.root.children.slice();
-    for (let i = 0; queue[i]; i++) {
-      allNodes.push(queue[i]);
-      if (queue[i].children) queue.push(...queue[i].children);
-    }
+    const allNodes = this.getBFSNodes();
     // deepest node
     let dn = allNodes[allNodes.length-1];
-
     const deepestPath = [];
     while(dn && dn.parent) {
       deepestPath.unshift(dn);
@@ -62,6 +56,19 @@ export default class Tree {
     }
 
     return deepestPath;
+  }
+
+  // BFS
+  getBFSNodes() {
+    const allNodes = [];
+    const queue = this.root.children.slice();
+
+    for (let i = 0; queue[i]; i++) {
+      allNodes.push(queue[i]);
+      if (queue[i].children) queue.push(...queue[i].children);
+    }
+
+    return allNodes;
   }
 
   getLeafNodes(nodes = this.root.children) {

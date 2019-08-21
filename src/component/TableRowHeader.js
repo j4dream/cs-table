@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertToRowHeader, getAscId }  from './util';
+import { getAscId }  from './util';
 import Th from './Th';
 
 export default class TableRowHeader extends React.Component {
@@ -11,8 +11,8 @@ export default class TableRowHeader extends React.Component {
       <table border="0" cellSpacing="0" style={{width: rowHeaderWidth}}>
         <colgroup>
           {
-            rowTableColGroup.map(({realWidth}, index) => (
-              <col width={realWidth} style={{ realWidth }} key={index} />
+            rowTableColGroup.map(({realWidth, key}) => (
+              <col width={realWidth} style={{ realWidth }} key={key} />
             ))
           }
         </colgroup>

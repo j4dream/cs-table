@@ -13,7 +13,6 @@ export default class TableRowHeader extends React.Component {
 
   get gutterWidth() {
     const { forceHideYGutter, scrollY, gutterWidth } = this.props.store;
-    console.log('forceHideYGutter: ', forceHideYGutter );
     if (forceHideYGutter || !scrollY) {
       return 0;
     }
@@ -21,16 +20,14 @@ export default class TableRowHeader extends React.Component {
   }
 
   render() {
-    //const { columnHeader } = this.state;
-    const { border, colHeaderWidth, store } = this.props;
+    const { colHeaderWidth, store } = this.props;
     const { columnHeader } = store;
-    console.log(store.columns);
     return (
       <table border="0" cellPadding="0" cellSpacing="0" style={{borderBottom: 0, width: colHeaderWidth}}>
         <colgroup>
           {
-            store.columns.map((column, index) => (
-              <col width={column.realWidth} style={{ width: column.realWidth }} key={getAscId()} />
+            store.columns.map(({realWidth, key}) => (
+              <col width={realWidth} style={{ width: realWidth }} key={key} />
             ))
           }
         </colgroup>
@@ -40,7 +37,7 @@ export default class TableRowHeader extends React.Component {
               <tr key={getAscId()}>
                 {
                   rs.map((c) => (
-                      <Th type="col" column={c} key={getAscId()}/>
+                      <Th type="col" column={c} key={c.key}/>
                     )
                   )
                 }

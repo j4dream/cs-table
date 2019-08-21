@@ -327,19 +327,15 @@ export default class Table extends React.Component {
     this.refreshTable(data);
   }
 
-  componentWillReceiveProps({columnHeader, rowHeader, data, showColumnHeader, showRowHeader}) {
-    let refreshed = false;
+  componentWillReceiveProps({columnHeader, rowHeader, data}) {
     if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
-      console.log('same data, table not update');
       return;
     } else {
       const { r, c } = this.props.setting || {};
       this.colHeaderTree = new Tree(columnHeader, c);
       this.rowHeaderTree = new Tree(rowHeader, r);
-      refreshed = true;
       this.refreshTable(data);
     }
-     
   }
 
   render() {

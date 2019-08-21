@@ -3,7 +3,6 @@ import logo from './logo.svg';
 import './App.css';
 import Table from './component';
 import mockReqData from './data';
-import Draggable, {DraggableCore} from 'react-draggable';
 
 export default class App extends React.Component {
 

@@ -198,4 +198,4 @@ export function matchsSlelector(el, selector, rootDom) {
   return false;
 }
 
-export const isNumber = val => typeof val === 'number' && val === val;
+export const isNumber = val => typeof val === 'number';

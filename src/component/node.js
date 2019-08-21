@@ -4,7 +4,7 @@ export default class Node {
   parent = null;
   children = [];
   data = null;
-  id = null;
+  key = null;
   level = null;
   colSpan = 0;
   rowSpan = 0;
@@ -22,7 +22,7 @@ export default class Node {
     this.prop = prop || field;
     this.width = width;
     this.height = height;
-    this.id = getAscId();
+    this.key = getAscId();
   }
 
   addChild(data) {

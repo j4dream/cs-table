@@ -192,7 +192,6 @@ export default class Th extends React.Component {
   onMouseEnter = () => {
       const { column } = this.props;
       const { colHeaderTree } = this.context.table;
-      console.log('enter', colHeaderTree.sortingColumn);
       if (colHeaderTree.sortingColumn) {
         if (colHeaderTree.sortSameLevelPos(column)) {
           this.context.table.refreshColumn();

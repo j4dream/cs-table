@@ -52,7 +52,7 @@ export default {
     }],
   }, {
     name: "2,019",
-    field: "2019",
+    prop: "2019",
     children: [{
       name: "Q1",
       prop: "2019-Q1",

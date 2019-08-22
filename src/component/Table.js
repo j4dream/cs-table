@@ -58,8 +58,8 @@ export default class Table extends React.Component {
   constructor(props) {
     super(props);
     const { columnHeader, rowHeader, setting } = props;
-    const { r, c } = setting || {};
-    this.colHeaderTree = new Tree(columnHeader, c);
+    const { r, c, co } = setting || {};
+    this.colHeaderTree = new Tree(columnHeader, c, co);
     this.rowHeaderTree = new Tree(rowHeader, r);
     this.cornerNode = new Node({name: ''});
   }
@@ -292,6 +292,7 @@ export default class Table extends React.Component {
       h: height,
       c: colConfig,
       // column order
+      co: colHeaderTree.getDFSNodes(),
       r: rowConfig,
     };
   }
@@ -336,8 +337,8 @@ export default class Table extends React.Component {
     if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
       return;
     } else {
-      const { r, c } = this.props.setting || {};
-      this.colHeaderTree = new Tree(columnHeader, c);
+      const { r, c, co } = this.props.setting || {};
+      this.colHeaderTree = new Tree(columnHeader, c, co);
       this.rowHeaderTree = new Tree(rowHeader, r);
       this.refreshTable(data);
     }

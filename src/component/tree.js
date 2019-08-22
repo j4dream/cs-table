@@ -1,16 +1,21 @@
 import Node from './node';
+import cloneDeep from 'lodash.clonedeep';
+// import differenceby from 'lodash.differenceby';
+import remove from 'lodash.remove';
 
 export default class Tree {
   children = [];
   deepestNodePath = [];
   leafNodes = [];
   setting = {};
+  sorting = [];
   root = new Node();
 
   sortingColumn = null;
 
-  constructor(data = [], setting = {}) {
+  constructor(data = [], setting = {}, sorting = []) {
     this.setting = setting;
+    this.sorting = sorting;
     this.buildTree(data);
   }
 
@@ -40,8 +45,38 @@ export default class Tree {
   }
 
   _initTree(data) {
+    // saved col setting
+    const start = new Date().getTime();
+    if (this.sorting) {
+      const mockCloneData = { children: cloneDeep(data), prop: 'root' };
+      const mockData = { children: data, prop: 'root' };
+      const mockSorted = { children: this.sorting, prop: 'root' };
+      this.traverseDF(node => {
+        const prop = node.prop;
+        const dataNode = this.getNodeByProp(prop, mockData);
+        const sortedNode = this.getNodeByProp(prop, mockSorted);
+        if (sortedNode) {
+          this.soredNodesWidthSeq(dataNode.children, sortedNode.children);
+        }
+        
+      }, mockCloneData);
+    }
+    const end = new Date().getTime();
+    console.log('used time: ', end - start);
     data.forEach(item => {
       this._traverse(item, this.root);
+    });
+  }
+
+  // source 原地算法排序
+  soredNodesWidthSeq(source, dest) {
+    dest.forEach((item) => {
+      const tempEl = remove(source, function(i) {
+        return i.prop === item.prop;
+      });
+      if (tempEl.length) {
+        source.push(tempEl[0]);
+      }
     });
   }
   
@@ -69,6 +104,39 @@ export default class Tree {
     }
 
     return allNodes;
+  }
+
+  getNodeByProp(prop, root) {
+    let node = null;
+    this.traverseDF((n)=> {
+      if(n.prop === prop) {
+        node = n;
+        return true;
+      }
+    }, root);
+    return node;
+  }
+
+  getDFSNodes() {
+    const rootNode = cloneDeep(this.root);
+    this.traverseDF((node) => {
+      node.clear();
+    }, rootNode);
+    return rootNode.children;
+  }
+
+  traverseDF(cb, parent) {
+    let pNode = parent || this.root
+    if (!pNode) return;
+    const recurse = (node) => {
+      if(cb(node)) return;
+      if (node.children) {
+        for(let i = 0; i < node.children.length; i++) {
+          recurse(node.children[i]);
+        }
+      }
+    }
+    recurse(pNode);
   }
 
   getLeafNodes(nodes = this.root.children) {
@@ -117,4 +185,33 @@ export default class Tree {
 
     return true;
   }
+
+  // 递归对比每个子节点数据是否一致
+  // isSavedTreeVaild(data, sorting) {
+  //   if (!data.length || !sorting.length) return false;
+  //   if (data.length !== sorting.length) return false;
+  //   const mockData = { children: data, prop: 'root' };
+  //   const mockSorting = { children: sorting, prop: 'root' };
+
+  //   let validTree = true;
+  //   this.traverseDF((node) => {
+  //     const prop = node.prop;
+  //     const sortedNode = this.getNodeByProp(prop, mockSorting);
+  //     // 保存树找不到对象返回 true 结速递归，并标记此保存数据无效。
+  //     if (!sortedNode) {
+  //       validTree = false;
+  //       return true;
+  //     }
+  //     const diff = differenceby(node.children, sortedNode.children, "prop");
+
+  //     // 保存树对比数据不一致返回 true 结速递归，并标记此保存数据无效。
+  //     if (diff.length) {
+  //       validTree = false;
+  //       return true;
+  //     }
+  //   }, mockData);
+
+  //   return validTree;
+  // }
+
 }

@@ -33,4 +33,21 @@ export default class Node {
   computedHeight() {
     return this.height || this.minHeight;
   }
+
+  // for stringify
+  clear() {
+    // keep prop, children
+    this.parent = undefined;
+    this.data = undefined;
+    this.key = undefined;
+    this.colSpan = undefined;
+    this.rowSpan = undefined;
+    this.width = undefined;
+    this.height = undefined;
+    this.minHeight = undefined;
+    this.minWidth = undefined;
+    this.realWidth = undefined;
+    this.field = undefined;
+    this.name = undefined;
+  }
 }

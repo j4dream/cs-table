@@ -45,11 +45,12 @@ export default class App extends React.Component {
             data={data}
             setting={setting}
             onLayoutChange={(d) => {
+              console.log(d);
               localStorage.setItem('table', JSON.stringify(d));
             }}
           />
         </div>
-        <div style={{margin: 15}}>
+        {/* <div style={{margin: 15}}>
           <h2>Disable resize</h2>
           <Table
             columnHeader={columnHeader}
@@ -79,7 +80,7 @@ export default class App extends React.Component {
             width={500}
             maxHeight={250}
           />
-        </div>
+        </div> */}
       </div>
     );
   }

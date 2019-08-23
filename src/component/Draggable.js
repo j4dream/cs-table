@@ -108,6 +108,7 @@ export default class Draggable extends React.Component {
     if (dragging) {
       return {
         position: 'fixed',
+        opacity: .6,
         left,
         top,
         width,

@@ -22,6 +22,7 @@ export default class Table extends React.Component {
     showColumnHeader: true,
     showRowHeader: true,
     sortSameLevelColumn: false,
+    useMapData: false,
     data: [],
     columnHeader: [],
     rowHeader: [],
@@ -309,9 +310,10 @@ export default class Table extends React.Component {
 
   refreshColumn() {
     const columns = this.colHeaderTree.leafNodes;
+    const rowGroup = this.rowHeaderTree.leafNodes;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
     const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
-    this.setState({ columns, columnHeader, rowHeader }, this.safeCallLayoutChange);
+    this.setState({ columns, rowGroup, columnHeader, rowHeader }, this.safeCallLayoutChange);
   }
 
   refreshTable(data) {
@@ -344,6 +346,17 @@ export default class Table extends React.Component {
       this.rowHeaderTree = new Tree(rowHeader, r, ro);
       this.refreshTable(data);
     }
+  }
+
+  get isNoData() {
+    const { data } = this.state;
+    if (Array.isArray(data) && data.length) {
+      return false;
+    }
+    if (Object.keys(data).length) {
+      return false;
+    }
+    return true;
   }
 
   render() {
@@ -392,7 +405,7 @@ export default class Table extends React.Component {
               colHeaderWidth={colHeaderWidth}
             />
             {
-              (!data || !data.length) && (
+              this.isNoData && (
                 <div
                   style={this.bodyHeightOrMaxHeight}
                   className="nodata-block"

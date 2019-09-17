@@ -38,6 +38,7 @@ export default class App extends React.Component {
         <div style={{margin: 15}}>
           <h2>All feature</h2>
           <Table
+            useMapData
             ref={n => window.tableEl = n}
             columnHeader={columnHeader}
             rowHeader={rowHeader}

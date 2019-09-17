@@ -293,6 +293,7 @@ export default class Table extends React.Component {
       c: colConfig,
       // column order
       co: colHeaderTree.getDFSNodes(),
+      ro: rowHeaderTree.getDFSNodes(),
       r: rowConfig,
     };
   }
@@ -309,7 +310,8 @@ export default class Table extends React.Component {
   refreshColumn() {
     const columns = this.colHeaderTree.leafNodes;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
-    this.setState({ columns, columnHeader }, this.safeCallLayoutChange);
+    const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
+    this.setState({ columns, columnHeader, rowHeader }, this.safeCallLayoutChange);
   }
 
   refreshTable(data) {
@@ -337,9 +339,9 @@ export default class Table extends React.Component {
     if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
       return;
     } else {
-      const { r, c, co } = this.props.setting || {};
+      const { r, c, co, ro } = this.props.setting || {};
       this.colHeaderTree = new Tree(columnHeader, c, co);
-      this.rowHeaderTree = new Tree(rowHeader, r);
+      this.rowHeaderTree = new Tree(rowHeader, r, ro);
       this.refreshTable(data);
     }
   }

@@ -49,5 +49,6 @@ export default class Node {
     this.realWidth = undefined;
     this.field = undefined;
     this.name = undefined;
+    this.start = undefined;
   }
 }

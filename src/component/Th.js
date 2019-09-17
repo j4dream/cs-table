@@ -190,26 +190,42 @@ export default class Th extends React.Component {
   }
 
   onMouseEnter = () => {
-      const { column } = this.props;
-      const { colHeaderTree } = this.context.table;
-      if (colHeaderTree.sortingColumn) {
-        if (colHeaderTree.sortSameLevelPos(column)) {
-          this.context.table.refreshColumn();
-        };
+      const { column, type } = this.props;
+      const { colHeaderTree, rowHeaderTree } = this.context.table;
+      if (type === 'col') {
+        if (colHeaderTree.sortingColumn) {
+          if (colHeaderTree.sortSameLevelPos(column)) {
+            this.context.table.refreshColumn();
+          };
+        }
+        colHeaderTree.sortingColumn = null;
+      } else {
+        if (rowHeaderTree.sortingColumn) {
+          if (rowHeaderTree.sortSameLevelPos(column)) {
+            this.context.table.refreshColumn();
+          };
+        }
+        rowHeaderTree.sortingColumn = null;
       }
-      colHeaderTree.sortingColumn = null;
+      
   }
 
-  handleSortColumnStart = () => {
-    const { column } = this.props;
-    this.context.table.colHeaderTree.sortingColumn = column;
+  handleSortStart = () => {
+    const { column, type } = this.props;
+    const { colHeaderTree, rowHeaderTree } = this.context.table; 
+    if (type === 'col') {
+      colHeaderTree.sortingColumn = column;
+    } else {
+      rowHeaderTree.sortingColumn = column;
+    }
   }
 
-  handleSortColumnStop = () => {
+  handleSortStop = () => {
    // this.context.table.scheduleLayout();
    setTimeout(() => {
-    const { colHeaderTree } = this.context.table; 
+    const { colHeaderTree, rowHeaderTree } = this.context.table; 
     colHeaderTree.sortingColumn = null;
+    rowHeaderTree.sortingColumn = null;
    }, 200);
   }
 
@@ -235,16 +251,16 @@ export default class Th extends React.Component {
         style={style}
       >
         {
-          sortSameLevelColumn && type === 'col'
+          sortSameLevelColumn
             ? (
                 <Draggable
                   handle=".icon"
-                  axis="x"
-                  onDragStart={this.handleSortColumnStart}
-                  onDragStop={this.handleSortColumnStop}
+                  axis={type==="col" ? "x": "y"}
+                  onDragStart={this.handleSortStart}
+                  onDragStop={this.handleSortStop}
                 >
                   <div className="cell exchange">
-                    <div className="icon">
+                    <div className={`icon ${type==="col" ? "x": "y"}`}>
 
                     </div>
                     {name}

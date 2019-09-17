@@ -123,7 +123,7 @@ export default class Draggable extends React.Component {
     return (
       <div
         style={this.style()}
-        className={this.props.className + ` dnd-draggable ${this.state.dragging ? 'dragging': ''}`}
+        className={this.props.className}
         onMouseDown={this.onMouseDown}>
         {this.props.children}
       </div>

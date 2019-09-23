@@ -103,6 +103,12 @@ export default class Draggable extends React.Component {
     document.removeEventListener('mouseup', this.onMouseUp);
   }
 
+  componentWillUnmount() {
+    this.setState = (state, callback) => {
+      return
+    }
+  }
+
   style() {
     const { dragging, left, top, width, height } = this.state;
     if (dragging) {

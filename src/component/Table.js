@@ -337,11 +337,11 @@ export default class Table extends React.Component {
     this.refreshTable(data);
   }
 
-  componentWillReceiveProps({columnHeader, rowHeader, data}) {
+  componentWillReceiveProps({columnHeader, rowHeader, data, setting}) {
     if (this.props.columnHeader === columnHeader && this.props.rowHeader === rowHeader && this.props.data === data) {
       return;
     } else {
-      const { r, c, co, ro } = this.props.setting || {};
+      const { r, c, co, ro } = setting || {};
       this.colHeaderTree = new Tree(columnHeader, c, co);
       this.rowHeaderTree = new Tree(rowHeader, r, ro);
       this.refreshTable(data);

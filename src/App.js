@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Table from './component';
-import mockReqData from './data';
+import mockReqData from './real-data';
 
 export default class App extends React.Component {
 
@@ -40,9 +40,10 @@ export default class App extends React.Component {
           <Table
             useMapData
             ref={n => window.tableEl = n}
-            columnHeader={columnHeader}
-            rowHeader={rowHeader}
+            columnHeader={columnHeader.children}
+            rowHeader={rowHeader.children}
             sortSameLevelColumn={true}
+            resizeHeight={false}
             data={data}
             setting={setting}
             onLayoutChange={(d) => {

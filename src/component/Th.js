@@ -158,6 +158,7 @@ export default class Th extends React.Component {
 
   handleMouseMove = (e) => {
     const { column } = this.props;
+    if (this.headerTree.sortingColumn) return;
     if (!this.dragging) {
       let target = e.target;
       while (target && target.tagName !== 'TH') {
@@ -169,44 +170,55 @@ export default class Th extends React.Component {
 
       if (rect.width > 12 && rect.right - e.pageX < 5) {
         if (this.disableResizeCol) return;
-        bodyStyle.cursor = 'col-resize';
+        setTimeout(() => {
+          bodyStyle.cursor = 'col-resize';
+        });
         this.draggingColumn = column;
         this.direction = 'hori';
       } else if ( rect.height > 12 && rect.bottom - e.clientY < 5) {
         if (this.disableResizeRow) return;
-        bodyStyle.cursor = 'row-resize';
+        setTimeout(() => {
+          bodyStyle.cursor = 'row-resize';
+        });
         this.direction = 'vert';
         this.draggingColumn = column;
       } else {
-        bodyStyle.cursor = '';
+        setTimeout(() => {
+          bodyStyle.cursor = '';
+        });
         this.draggingColumn = null;
         this.direction = null;
       }
     }
   }
 
-  handleMouseOut() {
-    document.body.style.cursor = "";
+  handleMouseOut = () => {
+    const start = Date.now();
+    setTimeout(() =>  {
+      document.body.style.cursor = '';
+      const end = Date.now();
+      console.log('Body style: ', end - start);
+    });
   }
 
   onMouseEnter = () => {
-      const { column, type } = this.props;
-      const { colHeaderTree, rowHeaderTree } = this.context.table;
-      if (type === 'col') {
-        if (colHeaderTree.sortingColumn) {
-          if (colHeaderTree.sortSameLevelPos(column)) {
-            this.context.table.refreshColumn();
-          };
-        }
-        colHeaderTree.sortingColumn = null;
-      } else {
-        if (rowHeaderTree.sortingColumn) {
-          if (rowHeaderTree.sortSameLevelPos(column)) {
-            this.context.table.refreshColumn();
-          };
-        }
-        rowHeaderTree.sortingColumn = null;
+    const { column, type } = this.props;
+    const { colHeaderTree, rowHeaderTree } = this.context.table;
+    if (type === 'col') {
+      if (colHeaderTree.sortingColumn) {
+        if (colHeaderTree.sortSameLevelPos(column)) {
+          this.context.table.refreshColumn();
+        };
       }
+      colHeaderTree.sortingColumn = null;
+    } else {
+      if (rowHeaderTree.sortingColumn) {
+        if (rowHeaderTree.sortSameLevelPos(column)) {
+          this.context.table.refreshColumn();
+        };
+      }
+      rowHeaderTree.sortingColumn = null;
+    }
       
   }
 
@@ -221,7 +233,6 @@ export default class Th extends React.Component {
   }
 
   handleSortStop = () => {
-   // this.context.table.scheduleLayout();
    setTimeout(() => {
     const { colHeaderTree, rowHeaderTree } = this.context.table; 
     colHeaderTree.sortingColumn = null;

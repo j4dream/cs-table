@@ -63,7 +63,7 @@
 
 .dc-table .cell.exchange .icon {
   cursor: move;
-  display: none;
+  visibility: hidden;
   position: absolute;
   left: 4px;
   width: 20px;
@@ -82,7 +82,7 @@
 }
 
 .dc-table .cell.exchange:hover .icon {
-  display: block;
+  visibility: visible;
 }
 
 .dc-table .body-wrapper {

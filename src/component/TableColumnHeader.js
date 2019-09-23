@@ -26,8 +26,8 @@ export default class TableRowHeader extends React.Component {
       <table border="0" cellPadding="0" cellSpacing="0" style={{borderBottom: 0, width: colHeaderWidth}}>
         <colgroup>
           {
-            store.columns.map(({realWidth, key}) => (
-              <col width={realWidth} style={{ width: realWidth }} key={key} />
+            store.columns.map(({realWidth, prop}) => (
+              <col width={realWidth} style={{ width: realWidth }} key={prop} />
             ))
           }
         </colgroup>
@@ -37,7 +37,7 @@ export default class TableRowHeader extends React.Component {
               <tr key={getAscId()}>
                 {
                   rs.map((c) => (
-                      <Th type="col" column={c} key={c.key}/>
+                      <Th type="col" column={c} key={c.prop}/>
                     )
                   )
                 }

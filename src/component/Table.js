@@ -26,7 +26,9 @@ export default class Table extends React.Component {
     data: [],
     columnHeader: [],
     rowHeader: [],
-    className: ''
+    className: '',
+    lazyLoading: false,
+    rowsInView: 20,
   }
 
   state = {
@@ -69,13 +71,30 @@ export default class Table extends React.Component {
     return (node) => { this[key] = node; }
   }
 
+  // getRowsInView() {
+  //   const { rowsInView, data, fixed } = this.props
+  //   const dataLength = data.length
+  //   if (rowsInView <= 0 || rowsInView > dataLength || fixed === 'x') return dataLength
+  //   return rowsInView
+  // }
+
   handleScroll = () => {
-    const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper, showRowHeader } = this;
+    const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper, showRowHeader, tableBody } = this;
     if (this.showColumnHeader) {
       colHeaderWrapper.scrollLeft = bodyWrapper.scrollLeft;
     }
     if (showRowHeader) {
       rowHeaderWrapper.scrollTop = bodyWrapper.scrollTop;
+    }
+    if (this.props.lazyLoading) {
+      const startIndex =  Math.floor(bodyWrapper.scrollTop / 30);
+      const { data } = this.state;
+      const records = [];
+      console.log(startIndex);
+      for(let i = 0; i < 20; i++) {
+        records.push(data[startIndex + i]);
+      }
+      tableBody.lazyRenderRows(records);
     }
   }
 
@@ -85,6 +104,10 @@ export default class Table extends React.Component {
       this.calculateHeight();
       this.updateScrollY();
     });
+  }
+
+  componentWillUpdate() {
+    console.log('will update table');
   }
 
   calculateWidth() {
@@ -400,6 +423,7 @@ export default class Table extends React.Component {
           }
           <div ref={this.bindRef('bodyWrapper')} style={this.bodyHeightOrMaxHeight} className="body-wrapper" onScroll={this.handleScroll}>
             <TableBody
+              ref={this.bindRef('tableBody')}
               {...this.props}
               store={this.state}
               colHeaderWidth={colHeaderWidth}

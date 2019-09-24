@@ -1,7 +1,17 @@
 import React from 'react';
 import { getAscId }  from './util';
+import { throttle } from 'throttle-debounce'; 
 
 export default class TableBody extends React.Component {
+
+  state = {
+    recordsInView: []
+  };
+
+  constructor(props) {
+    super(props);
+    this.lazyRenderRows = throttle(500, this.lazyRenderRows);
+  }
 
   getCellHeight(index) {
     const { showRowHeader, store } = this.props;
@@ -18,6 +28,11 @@ export default class TableBody extends React.Component {
       return true;
     } 
     return false;
+  }
+
+  get rows() {
+    const { rowGroup } = this.props.store;
+    return rowGroup.length;
   }
 
   getMapData() {
@@ -41,9 +56,10 @@ export default class TableBody extends React.Component {
     );
   }
 
-  getArrayData() {
+  getLazyData() {
     const { store } = this.props;
-    return store.data.map((row, rowIndex) => {
+    const { recordsInView } = this.state;
+    return recordsInView.map((row, rowIndex) => {
       return (
         <tr key={getAscId()}>
           {
@@ -62,26 +78,43 @@ export default class TableBody extends React.Component {
     });
   }
 
-  render() {
-    const { colHeaderWidth, store } = this.props;
-     
-    return (
-      <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0)}} className="dc-table-real-body">
-        <colgroup>
-          {
-            store.columns.map((column, index) => (
-              <col width={column.realWidth} style={{ width: column.realWidth }} key={column.prop} />
-            ))
-          }
-        </colgroup>
-        <tbody>
-          {
-            this.isUseMapData
-              ? this.getMapData()
-              : this.getArrayData()
-          }
-        </tbody>
-      </table>
-    );
+  lazyRenderRows(recordsInView = []) {
+    console.log('lazy render');
+    if(recordsInView.length) {
+      this.setState({recordsInView});
+    }
   }
+
+  render() {
+    const { colHeaderWidth, store, lazyLoading } = this.props;
+    const { recordsInView } = this.state;
+    return lazyLoading
+            ? <div style={{height: this.rows * 30}}>
+                <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0)}} className="dc-table-real-body">
+                  <colgroup>
+                    {
+                      store.columns.map((column, index) => (
+                        <col width={column.realWidth} style={{ width: column.realWidth }} key={column.prop} />
+                      ))
+                    }
+                  </colgroup>
+                  <tbody>
+                    {this.getLazyData()}
+                  </tbody>
+                </table>
+              </div>
+            : <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0)}} className="dc-table-real-body">
+                <colgroup>
+                  {
+                    store.columns.map((column, index) => (
+                      <col width={column.realWidth} style={{ width: column.realWidth }} key={column.prop} />
+                    ))
+                  }
+                </colgroup>
+                  <tbody>
+                    {this.getMapData()}
+                  </tbody>
+              </table>
+      }
+  
 }

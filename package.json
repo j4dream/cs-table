@@ -7,9 +7,11 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.differenceby": "^4.8.0",
     "lodash.remove": "^4.7.0",
+    "md5": "^2.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "throttle-debounce": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

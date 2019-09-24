@@ -170,22 +170,16 @@ export default class Th extends React.Component {
 
       if (rect.width > 12 && rect.right - e.pageX < 5) {
         if (this.disableResizeCol) return;
-        setTimeout(() => {
-          bodyStyle.cursor = 'col-resize';
-        });
+        bodyStyle.cursor = 'col-resize';
         this.draggingColumn = column;
         this.direction = 'hori';
       } else if ( rect.height > 12 && rect.bottom - e.clientY < 5) {
         if (this.disableResizeRow) return;
-        setTimeout(() => {
-          bodyStyle.cursor = 'row-resize';
-        });
+        bodyStyle.cursor = 'row-resize';
         this.direction = 'vert';
         this.draggingColumn = column;
       } else {
-        setTimeout(() => {
-          bodyStyle.cursor = '';
-        });
+        bodyStyle.cursor = '';
         this.draggingColumn = null;
         this.direction = null;
       }
@@ -193,12 +187,7 @@ export default class Th extends React.Component {
   }
 
   handleMouseOut = () => {
-    const start = Date.now();
-    setTimeout(() =>  {
-      document.body.style.cursor = '';
-      const end = Date.now();
-      console.log('Body style: ', end - start);
-    });
+    document.body.style.cursor = '';
   }
 
   onMouseEnter = () => {

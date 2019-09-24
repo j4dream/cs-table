@@ -38,8 +38,6 @@ export default class App extends React.Component {
         <div style={{margin: 15}}>
           <h2>All feature</h2>
           <Table
-            useMapData
-            lazyLoading
             ref={n => window.tableEl = n}
             columnHeader={columnHeader.children}
             rowHeader={rowHeader.children}
@@ -47,7 +45,7 @@ export default class App extends React.Component {
             resizeHeight={false}
             data={data}
             width={800}
-            maxHeight={600}
+            maxHeight={400}
             setting={setting}
             onLayoutChange={(d) => {
               localStorage.setItem('table', JSON.stringify(d));

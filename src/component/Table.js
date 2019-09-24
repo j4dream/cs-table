@@ -27,8 +27,6 @@ export default class Table extends React.Component {
     columnHeader: [],
     rowHeader: [],
     className: '',
-    lazyLoading: false,
-    rowsInView: 20,
   }
 
   state = {
@@ -45,7 +43,8 @@ export default class Table extends React.Component {
     gutterWidth: getScrollBarWidth(), // scrollBar width
     scrollX: null, // has x scroll bar
     scrollY: null, // has y scroll bar
-    forceHideYGutter: false
+    forceHideYGutter: false,
+    lazyLoading: false,
   }
 
   static childContextTypes = {
@@ -71,13 +70,6 @@ export default class Table extends React.Component {
     return (node) => { this[key] = node; }
   }
 
-  // getRowsInView() {
-  //   const { rowsInView, data, fixed } = this.props
-  //   const dataLength = data.length
-  //   if (rowsInView <= 0 || rowsInView > dataLength || fixed === 'x') return dataLength
-  //   return rowsInView
-  // }
-
   handleScroll = () => {
     const { bodyWrapper, colHeaderWrapper, rowHeaderWrapper, showRowHeader, tableBody } = this;
     if (this.showColumnHeader) {
@@ -86,16 +78,13 @@ export default class Table extends React.Component {
     if (showRowHeader) {
       rowHeaderWrapper.scrollTop = bodyWrapper.scrollTop;
     }
-    if (this.props.lazyLoading) {
-      const startIndex =  Math.floor(bodyWrapper.scrollTop / 30);
-      const { data } = this.state;
-      const records = [];
-      console.log(startIndex);
-      for(let i = 0; i < 20; i++) {
-        records.push(data[startIndex + i]);
-      }
-      tableBody.lazyRenderRows(records);
+    if (this.state.lazyLoading) {
+      tableBody.lazyRenderRows(this.lazyStartIndex);
     }
+  }
+
+  get lazyStartIndex() {
+    return Math.floor(this.bodyWrapper.scrollTop / 30);
   }
 
   scheduleLayout() {
@@ -103,6 +92,9 @@ export default class Table extends React.Component {
     this.forceUpdate(() => {
       this.calculateHeight();
       this.updateScrollY();
+      if (this.state.lazyLoading) {
+        this.tableBody.lazyRenderRows(this.lazyStartIndex);
+      }
     });
   }
 
@@ -336,7 +328,12 @@ export default class Table extends React.Component {
     const rowGroup = this.rowHeaderTree.leafNodes;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
     const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
-    this.setState({ columns, rowGroup, columnHeader, rowHeader }, this.safeCallLayoutChange);
+    this.setState({ columns, rowGroup, columnHeader, rowHeader }, () => {
+      this.safeCallLayoutChange();
+      if (this.state.lazyLoading) {
+        this.tableBody.lazyRenderRows(this.lazyStartIndex);
+      }
+    });
   }
 
   refreshTable(data) {
@@ -345,13 +342,20 @@ export default class Table extends React.Component {
     const rowTableColGroup = this.rowHeaderTree.deepestNodePath;
     const columnHeader = convertToColumnHeader(this.colHeaderTree.root.children);
     const rowHeader = convertToRowHeader(this.rowHeaderTree.root.children);
+
+    // if cell > 300  force use lazy loading.
+    let lazyLoading = false;
+    if (rowGroup.length * columns.length > 3000) {
+      lazyLoading = true;
+    }
     this.setState({
       columns,
       rowGroup,
       rowTableColGroup,
       columnHeader,
       rowHeader,
-      data
+      data,
+      lazyLoading,
     }, this.scheduleLayout);
   }
 
@@ -387,7 +391,6 @@ export default class Table extends React.Component {
       rowHeaderWidth,
       colHeaderWidth,
       colHeaderHeight,
-      data
     } = this.state;
     const { className } = this.props;
     
@@ -425,8 +428,10 @@ export default class Table extends React.Component {
             <TableBody
               ref={this.bindRef('tableBody')}
               {...this.props}
+              lazyLoading={this.state.lazyLoading}
               store={this.state}
               colHeaderWidth={colHeaderWidth}
+              rowsInView={Math.ceil(this.props.maxHeight / 30)}
             />
             {
               this.isNoData && (

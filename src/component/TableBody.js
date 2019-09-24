@@ -4,8 +4,13 @@ import { throttle } from 'throttle-debounce';
 
 export default class TableBody extends React.Component {
 
+  static defaultProps = {
+    rowsInView: 20,
+  }
+
   state = {
-    recordsInView: []
+    recordsInView: [],
+    offsetIndex: 0,
   };
 
   constructor(props) {
@@ -20,14 +25,6 @@ export default class TableBody extends React.Component {
       return rowGroup[index].computedHeight() - 1;
     }
     return 30;
-  }
-
-  get isUseMapData() {
-    const { useMapData, store } = this.props;
-    if (!Array.isArray(store.data) && useMapData) {
-      return true;
-    } 
-    return false;
   }
 
   get rows() {
@@ -78,19 +75,28 @@ export default class TableBody extends React.Component {
     });
   }
 
-  lazyRenderRows(recordsInView = []) {
-    console.log('lazy render');
-    if(recordsInView.length) {
-      this.setState({recordsInView});
+  lazyRenderRows(offsetIndex = 0) {
+    const { rowGroup, data } = this.props.store;
+    if (rowGroup.length) {
+      const recordsInView = [];
+      for(let i = 0; i < this.props.rowsInView; i++) {
+        const rowHeaderItem = rowGroup[offsetIndex + i];
+        if (rowHeaderItem) {
+          const rowProp = rowHeaderItem.prop;
+          const row = data[rowProp];
+          recordsInView.push(row);
+        }
+      }
+      this.setState({recordsInView, offsetIndex});
     }
   }
 
   render() {
     const { colHeaderWidth, store, lazyLoading } = this.props;
-    const { recordsInView } = this.state;
+    const { offsetIndex } = this.state;
     return lazyLoading
             ? <div style={{height: this.rows * 30}}>
-                <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0)}} className="dc-table-real-body">
+                <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0), transform: `translate(0, ${offsetIndex * 30}px)`}} className="dc-table-real-body">
                   <colgroup>
                     {
                       store.columns.map((column, index) => (

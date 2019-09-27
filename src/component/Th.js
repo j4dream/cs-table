@@ -77,8 +77,8 @@ export default class Th extends React.Component {
               const { rowHeaderTree } = this.context.table;
               targetNode = rowHeaderTree.getDeepestNodeByIndex();
             }
-            const calWidth = (targetNode.width || targetNode.realWidth) + offsetWidth;
-            targetNode.width = calWidth < 100 ? 100 : calWidth;
+            const calWidth = (targetNode.width || targetNode.realWidth || targetNode.minWidth) + offsetWidth;
+            targetNode.width = calWidth < 80 ? 80 : calWidth;
             targetNode.realWidth = targetNode.width;
           }
 

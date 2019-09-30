@@ -34,6 +34,9 @@ export default class TableBody extends React.Component {
 
   getMapData() {
     const { rowGroup, data, columns } = this.props.store;
+    if (this.props.isNoData) {
+      return <tr></tr>;
+    }
     return rowGroup.map((row, rowIndex) => (
       <tr key={getAscId()}>
         {
@@ -41,7 +44,7 @@ export default class TableBody extends React.Component {
             return (
               <td key={getAscId()}>
                 <div className="cell" style={{height: this.getCellHeight(rowIndex)}}>
-                  {data[row.prop][column.prop]}
+                  {data[row.prop] && data[row.prop][column.prop]}
                 </div>
               </td>
             );
@@ -54,8 +57,11 @@ export default class TableBody extends React.Component {
   }
 
   getLazyData() {
-    const { store } = this.props;
+    const { store, isNoData } = this.props;
     const { recordsInView } = this.state;
+    if (isNoData) {
+      return <tr></tr>;
+    }
     return recordsInView.map((row, rowIndex) => {
       return (
         <tr key={getAscId()}>
@@ -64,7 +70,7 @@ export default class TableBody extends React.Component {
               return (
                 <td key={getAscId()}>
                   <div className="cell" style={{height: this.getCellHeight(rowIndex)}}>
-                    {row[column.prop]}
+                    {row && row[column.prop]}
                   </div>
                 </td>
               );
@@ -92,10 +98,10 @@ export default class TableBody extends React.Component {
   }
 
   render() {
-    const { colHeaderWidth, store, lazyLoading } = this.props;
+    const { colHeaderWidth, store, lazyLoading, isNoData } = this.props;
     const { offsetIndex } = this.state;
     return lazyLoading
-            ? <div style={{height: this.rows * 30}}>
+            ? <div style={{height: isNoData ? 0 : this.rows * 30}}>
                 <table border="0" cellSpacing="0" style={{width: colHeaderWidth - (store.scrollY ? store.gutterWidth : 0), transform: `translate(0, ${offsetIndex * 30}px)`}} className="dc-table-real-body">
                   <colgroup>
                     {

@@ -432,6 +432,7 @@ export default class Table extends React.Component {
               store={this.state}
               colHeaderWidth={colHeaderWidth}
               rowsInView={Math.ceil(this.props.maxHeight / 30)}
+              isNoData={this.isNoData}
             />
             {
               this.isNoData && (

@@ -2,25 +2,18 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Table from './component';
-import mockReqData from './real-data';
+import data from './data';
 
 export default class App extends React.Component {
 
   state = {
-    rowHeader: [],
-    columnHeader: [],
-    data: [],
-    
+    rowHeader: data.rowHeader,
+    columnHeader: data.columnHeader,
+    data: data.data,
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState(mockReqData);
-    }, 2000);
-  }
 
   render() {
-    const setting = JSON.parse(localStorage.getItem("table"));
     const {
       columnHeader,
       rowHeader,
@@ -33,34 +26,14 @@ export default class App extends React.Component {
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
-          <p>DC Table Component</p>
         </header>
         <div style={{margin: 15}}>
-          <h2>All feature</h2>
-          <Table
-            ref={n => window.tableEl = n}
-            columnHeader={columnHeader.children}
-            rowHeader={rowHeader.children}
-            sortSameLevelColumn={true}
-            resizeHeight={false}
-            data={data}
-            width={800}
-            maxHeight={400}
-            setting={setting}
-            onLayoutChange={(d) => {
-              localStorage.setItem('table', JSON.stringify(d));
-            }}
-          />
-        </div>
-        <div style={{marginBottom: 40}}></div>
-        {/* <div style={{margin: 15}}>
-          <h2>Disable resize</h2>
+          <h2>Data gird, supoort drag & drop， nested header, resize width & height </h2>
           <Table
             columnHeader={columnHeader}
             rowHeader={rowHeader}
             data={data}
-            resizeWidth={false}
-            resizeHeight={false}
+            sortSameLevelColumn={true}
           />
         </div>
         <div style={{margin: 15}}>
@@ -70,7 +43,6 @@ export default class App extends React.Component {
             rowHeader={rowHeader}
             data={data}
             resizeWidth={false}
-            showColumnHeader={false}
             showRowHeader={false}
           />
         </div>
@@ -83,7 +55,7 @@ export default class App extends React.Component {
             width={500}
             maxHeight={250}
           />
-        </div> */}
+        </div>
       </div>
     );
   }

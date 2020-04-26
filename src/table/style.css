@@ -1,0 +1,16 @@
+.cs-table {
+  border: 1px solid #ccc;
+  overflow: auto;
+}
+
+.cs-table .cell {
+  border-style: solid;
+  border-color: #ccc;
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.cs-table .cell:last-child {
+  border-right-width: 0;
+}

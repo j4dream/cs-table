@@ -1,6 +1,6 @@
 .cs-table {
   border: 1px solid #ccc;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .cs-table .cell {
@@ -11,6 +11,6 @@
   border-right-width: 1px;
 }
 
-.cs-table .cell:last-child {
-  border-right-width: 0;
+.cs-table .data-area {
+  overflow: auto;
 }

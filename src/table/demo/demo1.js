@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, memo } from 'react';
 import CSTable from '../index';
 
 const header = [];
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 200; i++) {
   header.push({
     label: `H ${i}`,
     prop: `${i}`,
@@ -10,22 +10,30 @@ for (let i = 0; i < 30; i++) {
 }
 
 const data = [];
-
  
-  for(let prop = 0; prop < 30; prop++) {
-    const row = {};
-    for(let r = 0; r < 100; r++) {
-      row.label = `data `;
-    }
-    data.push(row);
+for(let r = 0; r < 200; r++) {
+  const row = {};
+  for(let c = 0; c < 200; c++) {
+    row[c] = `data ${r}:${c}`;
   }
+  row['email'] = 'hihi this is email field';
+  data.push(row);
+}
  
 
-export default function() {
+export default memo(function() {
+
+  const [count, setCount] = useState(0);
+
+  console.log(header, data);
+
   return (
-    <CSTable
-      header={header}
-      data={data}
-    />
+    <div>
+      <button onClick={() => setCount(count+1)}>Rerender button {count}</button>
+      <CSTable
+        header={header}
+        data={data}
+      />
+    </div>
   );
-}
+});

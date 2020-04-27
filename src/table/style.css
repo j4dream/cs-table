@@ -9,6 +9,7 @@
   border-width: 0;
   border-bottom-width: 1px;
   border-right-width: 1px;
+  box-sizing: border-box;
 }
 
 .cs-table .data-area {

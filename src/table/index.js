@@ -14,7 +14,7 @@ export const Provider = (props) => {
 
   const dataAreaRef = useRef();
   const headerRef = useRef();
-  const fixedLeftRef = useRef();
+  const fixedColLeftRef = useRef();
 
   const [dataAreaState, setDataAreaState] = useState({
     processedData: data.filter((_, index) => index < 11),
@@ -33,11 +33,13 @@ export const Provider = (props) => {
       label: 'Operation',
       prop: 'op',
       width: 80,
+      left: 0,
     },
     {
       label: 'Email',
       prop: 'email',
       width: 200,
+      left: 80,
     }
   ]
 
@@ -53,7 +55,13 @@ export const Provider = (props) => {
     const rowStartIndex = Math.floor(sTop / cellHeight),
           rowRenderCount = Math.ceil(oHeight / cellHeight);
 
-    headerRef.current.scrollLeft = sLeft;
+    if (headerRef.current) {
+      headerRef.current.scrollLeft = sLeft;
+    }
+
+    if (fixedColLeftRef.current) {
+      fixedColLeftRef.current.scrollTop = sTop;
+    }
 
     // if stay on same cell, do not rerender table.
     if (colCacheIndexRef.current === colStartIndex && rowCacheIndexRef.current == rowStartIndex) return;
@@ -97,6 +105,7 @@ export const Provider = (props) => {
     cellHeight,
     dataAreaRef,
     headerRef,
+    fixedColLeftRef,
     handleScroll,
     dataAreaState,
     fixedLeftColWidth: fixedLeftCol.reduce((acc, curr)=> acc + curr.width, 0),

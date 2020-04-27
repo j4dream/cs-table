@@ -4,6 +4,7 @@ import Header from './Header';
 import './style.css';
 import { CSTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
+import FixedLeftHeader from './FixedLeftHeader';
 
 export default function CSTable() {
 
@@ -20,7 +21,7 @@ export default function CSTable() {
     handleScroll,
     dataAreaRef,
     headerRef,
-    fixedLeftCol,
+    fixedColLeftRef,
     fixedLeftColWidth,
   } = useContext(CSTableContext);
 
@@ -34,14 +35,20 @@ export default function CSTable() {
   return (
     <div className="cs-table" style={{position: 'relative', height: 415}}>
 
-      <div id="header" ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div id="header-2"  style={{width: dataAreaState.areaWidth, position: 'relative', height: 41}}>
+      <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
+        <div style={{width: dataAreaState.areaWidth, position: 'relative', height: 40}}>
           <Header />
         </div>
       </div>
 
-      <div>
-        <FixedLeftColumn />
+      <div style={{position:'absolute', width: fixedLeftColWidth, top: 0}}>
+        <FixedLeftHeader />
+      </div>
+
+      <div ref={fixedColLeftRef} style={{overflow: 'hidden', height: 375, width: fixedLeftColWidth, position: 'absolute', left: 0}}>
+        <div style={{height: dataAreaState.areaHeight}}>
+          <FixedLeftColumn />
+        </div>
       </div>
 
       <div

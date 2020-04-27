@@ -15,16 +15,16 @@ export default function()  {
     rowStartIndex,
   } = dataAreaState;
   return (
-    data.map((row, rowIndex) => (
-      fixedLeftCol.map((h, colIndex) => (
+    data.map((_, rowIndex) => (
+      fixedLeftCol.map((h) => (
         <div
           className="cell"
           style={{
             position: 'absolute',
             top: (rowIndex + rowStartIndex) * cellHeight,
             lineHeight: '40px',
-            left: colIndex * cellWidth,
-            width: cellWidth,
+            left: h.left,
+            width: h.width || cellWidth,
             height: cellHeight
           }}
         >

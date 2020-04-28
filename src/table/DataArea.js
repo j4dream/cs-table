@@ -6,8 +6,6 @@ export default function() {
   console.log('render data area');
   const {
     renderCell,
-    width,
-    height,
     cellWidth = 120,
     cellHeight = 40,
     dataAreaState,
@@ -21,10 +19,11 @@ export default function() {
   } = dataAreaState;
 
   return ( 
-    data.map((row, rowIndex) => (
+    data.map((_, rowIndex) => (
       header.map((h, colIndex) => (
         <div
           className="cell"
+          key={`${rowIndex}-${colIndex}`}
           style={{
             position: 'absolute',
             top: (rowIndex + rowStartIndex) * cellHeight,

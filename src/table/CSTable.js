@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';
@@ -13,7 +13,6 @@ export default function CSTable() {
   const {
     header,
     data,
-    renderCell,
     scrollWidth,
     width,
     height = 440,
@@ -37,7 +36,7 @@ export default function CSTable() {
     <div className="cs-table" style={{position: 'relative', height: height}}>
 
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div style={{width: dataAreaState.areaWidth, position: 'relative', height: cellHeight}}>
+        <div style={{width: dataAreaState.areaWidth + scrollWidth, position: 'relative', height: cellHeight}}>
           <Header />
         </div>
       </div>
@@ -56,7 +55,7 @@ export default function CSTable() {
           left: 0
         }}
       >
-        <div style={{height: dataAreaState.areaHeight}}>
+        <div style={{height: dataAreaState.areaHeight + scrollWidth}}>
           <FixedLeftColumn />
         </div>
       </div>

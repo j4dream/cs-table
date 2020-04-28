@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import CSTable from './CSTable';
+import { getScrollBarWidth } from '../component/util';
 
 const CSTableContext = React.createContext({});
 
@@ -7,6 +8,7 @@ export const Provider = (props) => {
   const {
     header,
     data,
+    height = 440,
     cellWidth = 120,
     cellHeight = 40,
     children
@@ -15,6 +17,7 @@ export const Provider = (props) => {
   const dataAreaRef = useRef();
   const headerRef = useRef();
   const fixedColLeftRef = useRef();
+  const scrollBarRef = useRef(getScrollBarWidth());
 
   const [dataAreaState, setDataAreaState] = useState({
     processedData: data.filter((_, index) => index < 11),
@@ -100,7 +103,8 @@ export const Provider = (props) => {
     data,
     // renderCell,
     // width,
-    // height,
+    height,
+    scrollWidth: scrollBarRef.current,
     cellWidth,
     cellHeight,
     dataAreaRef,

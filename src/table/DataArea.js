@@ -28,7 +28,6 @@ export default function() {
           style={{
             position: 'absolute',
             top: (rowIndex + rowStartIndex) * cellHeight,
-            lineHeight: '40px',
             left: (colStartIndex + colIndex) * cellWidth,
             width: cellWidth,
             height: cellHeight

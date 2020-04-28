@@ -4,8 +4,8 @@ import { CSTableContext } from './index';
 export default function()  {
 
   const {
-    cellWidth = 120,
-    cellHeight = 40,
+    cellWidth,
+    cellHeight,
     fixedLeftCol,
   } = useContext(CSTableContext);
 
@@ -15,7 +15,6 @@ export default function()  {
         className="cell"
         style={{
           position: 'absolute',
-          lineHeight: '40px',
           left: h.left,
           width: h.width || cellWidth,
           height: cellHeight

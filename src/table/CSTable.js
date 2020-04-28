@@ -14,8 +14,9 @@ export default function CSTable() {
     header,
     data,
     renderCell,
+    scrollWidth,
     width,
-    height,
+    height = 440,
     cellWidth = 120,
     cellHeight = 40,
     handleScroll,
@@ -30,13 +31,13 @@ export default function CSTable() {
 
   const [dataAreaState, setDataAreaState] = useState({areaWidth: colCount * cellWidth, areaHeight: rowCount * cellHeight});
 
-  console.log(fixedLeftColWidth);
+  console.log(scrollWidth);
 
   return (
-    <div className="cs-table" style={{position: 'relative', height: 415}}>
+    <div className="cs-table" style={{position: 'relative', height: height}}>
 
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div style={{width: dataAreaState.areaWidth, position: 'relative', height: 40}}>
+        <div style={{width: dataAreaState.areaWidth, position: 'relative', height: cellHeight}}>
           <Header />
         </div>
       </div>
@@ -45,7 +46,16 @@ export default function CSTable() {
         <FixedLeftHeader />
       </div>
 
-      <div ref={fixedColLeftRef} style={{overflow: 'hidden', height: 375, width: fixedLeftColWidth, position: 'absolute', left: 0}}>
+      <div
+        ref={fixedColLeftRef}
+        style={{
+          overflow: 'hidden',
+          height: height - cellHeight,
+          width: fixedLeftColWidth,
+          position: 'absolute',
+          left: 0
+        }}
+      >
         <div style={{height: dataAreaState.areaHeight}}>
           <FixedLeftColumn />
         </div>
@@ -57,7 +67,7 @@ export default function CSTable() {
           position: 'relative',
           overflow: 'auto',
           marginLeft: fixedLeftColWidth,
-          height: 360 + 15,
+          height: height - cellHeight,
         }}
         onScroll={handleScroll}
       >

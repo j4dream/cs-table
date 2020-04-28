@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Table from './component';
 import data from './data';
+import CSTable from './table/demo/demo1';
 
 export default class App extends React.Component {
 
@@ -27,7 +28,12 @@ export default class App extends React.Component {
             Edit <code>src/App.js</code> and save to reload.
           </p>
         </header>
+
         <div style={{margin: 15}}>
+          <CSTable />
+        </div>
+
+        {/* <div style={{margin: 15}}>
           <h2>Data gird, supoort drag & drop， nested header, resize width & height </h2>
           <Table
             columnHeader={columnHeader}
@@ -55,7 +61,7 @@ export default class App extends React.Component {
             width={500}
             maxHeight={250}
           />
-        </div>
+        </div> */}
       </div>
     );
   }

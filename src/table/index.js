@@ -107,7 +107,7 @@ export const Provider = (props) => {
     // renderCell,
     // width,
     height,
-    scrollWidth: scrollBarRef.current,
+    scrollBarWidth: scrollBarRef.current,
     cellWidth,
     cellHeight,
     dataAreaRef,

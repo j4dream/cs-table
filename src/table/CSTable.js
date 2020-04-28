@@ -13,7 +13,7 @@ export default function CSTable() {
   const {
     header,
     data,
-    scrollWidth,
+    scrollBarWidth,
     width,
     height = 440,
     cellWidth = 120,
@@ -30,13 +30,13 @@ export default function CSTable() {
 
   const [dataAreaState, setDataAreaState] = useState({areaWidth: colCount * cellWidth, areaHeight: rowCount * cellHeight});
 
-  console.log(scrollWidth);
+  console.log(scrollBarWidth);
 
   return (
     <div className="cs-table" style={{position: 'relative', height: height}}>
 
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div style={{width: dataAreaState.areaWidth + scrollWidth, position: 'relative', height: cellHeight}}>
+        <div style={{width: dataAreaState.areaWidth + scrollBarWidth, position: 'relative', height: cellHeight}}>
           <Header />
         </div>
       </div>
@@ -55,7 +55,7 @@ export default function CSTable() {
           left: 0
         }}
       >
-        <div style={{height: dataAreaState.areaHeight + scrollWidth}}>
+        <div style={{height: dataAreaState.areaHeight + scrollBarWidth}}>
           <FixedLeftColumn />
         </div>
       </div>

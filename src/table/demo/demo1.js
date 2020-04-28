@@ -2,18 +2,20 @@ import React, { useState, memo } from 'react';
 import CSTable from '../index';
 
 const header = [];
-for (let i = 0; i < 200; i++) {
+for (let i = 0; i < 20; i++) {
   header.push({
     label: `H ${i}`,
     prop: `${i}`,
   });
 }
 
+
+
 const data = [];
  
-for(let r = 0; r < 200; r++) {
+for(let r = 0; r < 20; r++) {
   const row = {};
-  for(let c = 0; c < 200; c++) {
+  for(let c = 0; c < 20; c++) {
     row[c] = `data ${r}:${c}`;
   }
   row['email'] = `test_${r}@email.com`;
@@ -33,6 +35,8 @@ export default memo(function() {
       <CSTable
         header={header}
         data={data}
+        // renderCell={(record, prop) => record[prop]}
+        // renderHeader={(header, prop) => header[prop]}
       />
     </div>
   );

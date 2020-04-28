@@ -33,7 +33,11 @@ export default function() {
             height: cellHeight
           }}
         >
-          {data[rowIndex][h.prop]}
+          { 
+            h.renderCell
+              ? h.renderCell(data[rowIndex], h.prop)
+              : renderCell(data[rowIndex], h.prop)
+          }
         </div>
       ))
     ))

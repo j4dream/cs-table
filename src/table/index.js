@@ -1,8 +1,26 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import CSTable from './CSTable';
 import { getScrollBarWidth } from '../component/util';
 
 const CSTableContext = React.createContext({});
+
+const getRangeFromArr = (arr, start, count) => {
+  const res = [];
+  for(let i = 0; i < count; i++) {
+    const record = arr[start + i]
+    record && res.push(record);
+  }
+  return res;
+}
+
+const processFixedHeader = (header) => {
+  const filteredHeader = header.filter((h) => h.fixed);
+  filteredHeader.reduce((acc, curr) => {
+    curr.left = acc;
+    return curr.width + acc;
+  }, 0);
+  return filteredHeader;
+}
 
 export const Provider = (props) => {
   const {
@@ -11,7 +29,9 @@ export const Provider = (props) => {
     height = 440,
     cellWidth = 120,
     cellHeight = 40,
-    children
+    renderCell = (record, prop) => record[prop],
+    renderHeader = (header, prop) => header[prop],
+    children,
   } = props;
 
   const dataAreaRef = useRef();
@@ -19,32 +39,22 @@ export const Provider = (props) => {
   const fixedColLeftRef = useRef();
   const scrollBarRef = useRef(getScrollBarWidth());
 
+  const fixedLeftCol = processFixedHeader(header);
+
   const [dataAreaState, setDataAreaState] = useState({
-    processedData: data.filter((_, index) => index < 11),
-    processedHeader: header.filter((_, index) => index < 13),
+    processedHeader: getRangeFromArr(header, 0, 11),
+    processedData: getRangeFromArr(data, 0, 11),
+    fixedLeftCol,
     rowStartIndex: 0,
     colStartIndex: 0,
   });
 
+  const fixedLeftColWidth = useMemo(() => {
+    return fixedLeftCol.reduce((acc, curr)=> acc + curr.width, 0);
+  }, [fixedLeftCol]);
+
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
-
-  const renderCountRef = useRef(0);
-
-  const fixedLeftCol = [
-    {
-      label: 'Operation',
-      prop: 'op',
-      width: 80,
-      left: 0,
-    },
-    {
-      label: 'Email',
-      prop: 'email',
-      width: 200,
-      left: 80,
-    }
-  ]
 
   const handleScroll = useCallback((e) => {
     const sLeft = e.target.scrollLeft,
@@ -72,16 +82,8 @@ export const Provider = (props) => {
     colCacheIndexRef.current = colStartIndex;
     rowCacheIndexRef.current = rowStartIndex;
 
-    const processedHeader = [];
-    for(let i = 0; i < colRenderCount; i++) {
-      const tC = header[colStartIndex+i];
-      tC && processedHeader.push(tC);
-    }
-    const processedData = [];
-    for(let i = 0; i < rowRenderCount; i++) {
-      const tR = data[rowStartIndex+i]
-      tR && processedData.push(tR);
-    }
+    const processedHeader = getRangeFromArr(header, colStartIndex, colRenderCount);
+    const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);
 
     if (fixedLeftCol.length) {
 
@@ -93,6 +95,7 @@ export const Provider = (props) => {
       processedHeader,
       processedData,
       colStartIndex,
+      fixedLeftCol,
       rowStartIndex,
     });
 
@@ -112,9 +115,10 @@ export const Provider = (props) => {
     fixedColLeftRef,
     handleScroll,
     dataAreaState,
-    fixedLeftColWidth: fixedLeftCol.reduce((acc, curr)=> acc + curr.width, 0),
-    fixedLeftCol,
+    fixedLeftColWidth,
     setDataAreaState,
+    renderCell,
+    renderHeader,
   };
 
   return (

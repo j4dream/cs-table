@@ -6,8 +6,15 @@ export default function()  {
   const {
     cellWidth,
     cellHeight,
-    fixedLeftCol,
+    dataAreaState
   } = useContext(CSTableContext);
+
+
+  const {
+    fixedLeftCol,
+  } = dataAreaState;
+
+  console.log('fixedLeftCol', fixedLeftCol);
 
   return (
     fixedLeftCol.map((h) => (

@@ -7,12 +7,13 @@ export default function()  {
     cellWidth,
     cellHeight,
     dataAreaState,
-    fixedLeftCol,
+    renderCell,
   } = useContext(CSTableContext);
 
   const {
     processedData: data,
     rowStartIndex,
+    fixedLeftCol,
   } = dataAreaState;
   return (
     data.map((_, rowIndex) => (
@@ -27,7 +28,11 @@ export default function()  {
             height: cellHeight
           }}
         >
-          {data[rowIndex][h.prop]}
+          { 
+            h.renderCell
+              ? h.renderCell(data[rowIndex], h.prop)
+              : renderCell(data[rowIndex], h.prop)
+          }
         </div>
       ))
     ))

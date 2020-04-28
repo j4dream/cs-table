@@ -39,19 +39,17 @@ export const Provider = (props) => {
   const fixedColLeftRef = useRef();
   const scrollBarRef = useRef(getScrollBarWidth());
 
-  const fixedLeftCol = processFixedHeader(header);
-
-  const [dataAreaState, setDataAreaState] = useState({
+  const [dataAreaState, setDataAreaState] = useState(() => ({
     processedHeader: getRangeFromArr(header, 0, 11),
     processedData: getRangeFromArr(data, 0, 11),
-    fixedLeftCol,
+    fixedLeftCol: processFixedHeader(header),
     rowStartIndex: 0,
     colStartIndex: 0,
-  });
+  }));
 
   const fixedLeftColWidth = useMemo(() => {
-    return fixedLeftCol.reduce((acc, curr)=> acc + curr.width, 0);
-  }, [fixedLeftCol]);
+    return dataAreaState.fixedLeftCol.reduce((acc, curr)=> acc + curr.width, 0);
+  }, [dataAreaState.fixedLeftCol]);
 
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
@@ -84,20 +82,14 @@ export const Provider = (props) => {
 
     const processedHeader = getRangeFromArr(header, colStartIndex, colRenderCount);
     const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);
-
-    if (fixedLeftCol.length) {
-
-    }
-    const precessedFixedData = [];
     
-
-    setDataAreaState({
+    setDataAreaState((prevState) => ({
+      ...prevState,
       processedHeader,
       processedData,
       colStartIndex,
-      fixedLeftCol,
       rowStartIndex,
-    });
+    }));
 
   }, [header, data]);
 

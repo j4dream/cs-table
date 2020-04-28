@@ -17,7 +17,7 @@ export default function() {
   return (
     header.map((h, i) => (
       <div
-        key={h.prop}
+        key={`h-${i}`}
         className="cell"
         style={{
           position: 'absolute',

@@ -17,9 +17,10 @@ export default function()  {
   } = dataAreaState;
   return (
     data.map((_, rowIndex) => (
-      fixedLeftCol.map((h) => (
+      fixedLeftCol.map((h, colIndex) => (
         <div
           className="cell"
+          key={`f-c-${rowIndex}-${colIndex}`}
           style={{
             position: 'absolute',
             top: (rowIndex + rowStartIndex) * cellHeight,

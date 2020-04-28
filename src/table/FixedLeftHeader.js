@@ -17,8 +17,9 @@ export default function()  {
   console.log('fixedLeftCol', fixedLeftCol);
 
   return (
-    fixedLeftCol.map((h) => (
+    fixedLeftCol.map((h, colIndex) => (
       <div
+        key={`f-h-${colIndex}`}
         className="cell"
         style={{
           position: 'absolute',

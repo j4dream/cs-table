@@ -23,7 +23,7 @@ export default function() {
       header.map((h, colIndex) => (
         <div
           className="cell"
-          key={`${rowIndex}-${colIndex}`}
+          key={`d-a-${rowIndex}-${colIndex}`}
           style={{
             position: 'absolute',
             top: (rowIndex + rowStartIndex) * cellHeight,

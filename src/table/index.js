@@ -4,6 +4,8 @@ import { getScrollBarWidth } from '../component/util';
 
 const CSTableContext = React.createContext({});
 
+const setTester = new Set();
+
 const getRangeFromArr = (arr, start, count) => {
   const res = [];
   for(let i = 0; i < count; i++) {
@@ -30,17 +32,23 @@ export const Provider = (props) => {
     cellWidth = 120,
     cellHeight = 40,
     renderCell = (record, prop) => record[prop],
-    renderHeader = (header, prop) => header[prop],
+    renderHeader = (header) => header.label,
     children,
   } = props;
+
+  
 
   const dataAreaRef = useRef();
   const headerRef = useRef();
   const fixedColLeftRef = useRef();
   const scrollBarRef = useRef(getScrollBarWidth());
 
+  const restHeader = useMemo(() => header.filter(h => !h.fixed), [header]);
+
+  // setTester.add(restHeader);
+
   const [dataAreaState, setDataAreaState] = useState(() => ({
-    processedHeader: getRangeFromArr(header, 0, 11),
+    processedHeader: getRangeFromArr(restHeader, 0, 11),
     processedData: getRangeFromArr(data, 0, 11),
     fixedLeftCol: processFixedHeader(header),
     rowStartIndex: 0,
@@ -48,8 +56,8 @@ export const Provider = (props) => {
   }));
 
   const fixedLeftColWidth = useMemo(() => {
-    return dataAreaState.fixedLeftCol.reduce((acc, curr)=> acc + curr.width, 0);
-  }, [dataAreaState.fixedLeftCol]);
+    return dataAreaState.fixedLeftCol.reduce((acc, curr)=> acc + (curr.width || cellWidth), 0);
+  }, [dataAreaState.fixedLeftCol, cellWidth]);
 
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
@@ -80,7 +88,7 @@ export const Provider = (props) => {
     colCacheIndexRef.current = colStartIndex;
     rowCacheIndexRef.current = rowStartIndex;
 
-    const processedHeader = getRangeFromArr(header, colStartIndex, colRenderCount);
+    const processedHeader = getRangeFromArr(restHeader, colStartIndex, colRenderCount);
     const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);
     
     setDataAreaState((prevState) => ({
@@ -91,10 +99,10 @@ export const Provider = (props) => {
       rowStartIndex,
     }));
 
-  }, [header, data]);
+  }, [restHeader, data]);
 
   const editorContext = {
-    header,
+    header: restHeader,
     data,
     // renderCell,
     // width,

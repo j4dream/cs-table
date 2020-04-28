@@ -41,25 +41,31 @@ export default function CSTable() {
         </div>
       </div>
 
-      <div style={{position:'absolute', width: fixedLeftColWidth, top: 0}}>
-        <FixedLeftHeader />
-      </div>
+      {
+        !!fixedLeftColWidth && (
+          <>
+            <div style={{position:'absolute', width: fixedLeftColWidth, top: 0}}>
+              <FixedLeftHeader />
+            </div>
 
-      <div
-        ref={fixedColLeftRef}
-        style={{
-          overflow: 'hidden',
-          height: height - cellHeight,
-          width: fixedLeftColWidth,
-          position: 'absolute',
-          left: 0
-        }}
-      >
-        <div style={{height: dataAreaState.areaHeight + scrollBarWidth}}>
-          <FixedLeftColumn />
-        </div>
-      </div>
-
+            <div
+              ref={fixedColLeftRef}
+              style={{
+                overflow: 'hidden',
+                height: height - cellHeight,
+                width: fixedLeftColWidth,
+                position: 'absolute',
+                left: 0
+              }}
+            >
+              <div style={{height: dataAreaState.areaHeight + scrollBarWidth}}>
+                <FixedLeftColumn />
+              </div>
+            </div>
+          </>
+        )
+      }
+    
       <div
         ref={dataAreaRef}
         style={{

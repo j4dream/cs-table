@@ -1,7 +1,21 @@
 import React, { useState, memo } from 'react';
 import CSTable from '../index';
 
-const header = [];
+const header = [
+  {
+    label: 'Operation',
+    fixed: true,
+    prop: 'op',
+    width: 90,
+    renderHeader: (h, p) => <a href="#">select all {p}</a>,
+    renderCell: () => <a href="#">Delete</a>
+  },
+  {
+    label: 'Email',
+    fixed: true,
+    prop: 'email',
+  }
+];
 for (let i = 0; i < 20; i++) {
   header.push({
     label: `H ${i}`,

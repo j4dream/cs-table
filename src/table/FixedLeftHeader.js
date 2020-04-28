@@ -6,7 +6,8 @@ export default function()  {
   const {
     cellWidth,
     cellHeight,
-    dataAreaState
+    dataAreaState,
+    renderHeader
   } = useContext(CSTableContext);
 
 
@@ -28,7 +29,11 @@ export default function()  {
           height: cellHeight
         }}
       >
-        {h.label}
+        { 
+          h.renderHeader
+            ? h.renderHeader(h, h.prop)
+            : renderHeader(h, h.prop)
+        }
       </div>
     ))
   );

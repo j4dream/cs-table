@@ -2,6 +2,7 @@
   "name": "virtualized-sc-table",
   "version": "0.1.1",
   "private": false,
+  "main": "./dist/index",
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash.clonedeep": "^4.5.0",

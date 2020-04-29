@@ -63,10 +63,14 @@ export const Provider = (props) => {
   const rowCacheIndexRef = useRef(0);
 
   const handleScroll = useCallback((e) => {
-    const sLeft = e.target.scrollLeft,
-          sTop = e.target.scrollTop,
-          oWidth = e.target.offsetWidth,
-          oHeight = e.target.offsetHeight;
+    const cellTarget = e.current.target;
+    if (!cellTarget) return;
+    const {
+      scrollLeft: sLeft,
+      scrollTop: sTop,
+      offsetWidth: oWidth,
+      offsetHeight: oHeight,
+    } = cellTarget;
 
     const colStartIndex = Math.floor(sLeft / cellWidth),
           colRenderCount = Math.ceil(oWidth / cellWidth);

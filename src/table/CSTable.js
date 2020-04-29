@@ -5,6 +5,7 @@ import './style.css';
 import { CSTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
+import useUpdateEffect from './useUpdateEffect';
 
 export default function CSTable() {
 
@@ -30,7 +31,13 @@ export default function CSTable() {
 
   const [dataAreaState, setDataAreaState] = useState({areaWidth: colCount * cellWidth, areaHeight: rowCount * cellHeight});
 
-  console.log(scrollBarWidth);
+  useUpdateEffect(() => {
+    setDataAreaState({
+      areaWidth: colCount * cellWidth,
+      areaHeight: rowCount * cellHeight
+    });
+  }, [colCount, cellWidth, rowCount, cellHeight]);
+
 
   return (
     <div className="cs-table" style={{position: 'relative', height: height}}>

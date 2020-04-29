@@ -39,14 +39,19 @@ export default memo(function() {
 
   const [count, setCount] = useState(0);
 
-  console.log(header, data);
+  const [h, setH] = useState(header);
+  const [d, setD] = useState(data);
 
   return (
     <div>
-      <button onClick={() => setCount(count+1)}>Rerender button {count}</button>
+      <button onClick={() => setD([{email: 'update_email@test.com'}])}>Update Data</button>
+      <button onClick={() => setH([{label: 'Email', prop: 'email'}])}>Update Header</button>
+      <button onClick={() => {setD(data); setH(header);}}> Rstore</button>
+      <button onClick={() => setCount(count + 1)}>Update Count</button>
+      <p>{count}</p>
       <CSTable
-        header={header}
-        data={data}
+        header={h}
+        data={d}
         cellWidth={200}
         // renderCell={(record, prop) => record[prop]}
         // renderHeader={(header, prop) => header[prop]}

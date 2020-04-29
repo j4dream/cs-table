@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import CSTable from './CSTable';
-import { getScrollBarWidth } from '../component/util';
+import { getScrollBarWidth } from './util';
 
 const CSTableContext = React.createContext({});
 

@@ -1,7 +1,7 @@
 {
-  "name": "dc-table",
+  "name": "virtualized-sc-table",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash.clonedeep": "^4.5.0",
@@ -10,14 +10,15 @@
     "md5": "^2.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
+    "react-scripts": "^3.4.1",
     "throttle-debounce": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,6 +33,15 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/preset-react": "^7.9.4"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-react"
     ]
   }
 }

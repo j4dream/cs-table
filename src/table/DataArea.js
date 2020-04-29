@@ -34,8 +34,8 @@ export default function() {
         >
           { 
             h.renderCell
-              ? h.renderCell(data[rowIndex][h.prop], rowIndex, h.prop, h)
-              : renderCell(data[rowIndex][h.prop], rowIndex, h.prop, h)
+              ? h.renderCell(data[rowIndex][h.prop], (rowIndex + rowStartIndex), h.prop, h)
+              : renderCell(data[rowIndex][h.prop], (rowIndex + rowStartIndex), h.prop, h)
           }
         </div>
       ))

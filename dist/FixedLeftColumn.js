@@ -22,5 +22,5 @@ export default function () {
       width: h.width || cellWidth,
       height: cellHeight
     }
-  }, h.renderCell ? h.renderCell(data[rowIndex][h.prop], rowIndex, h.prop, h) : renderCell(data[rowIndex][h.prop], rowIndex, h.prop, h))));
+  }, h.renderCell ? h.renderCell(data[rowIndex][h.prop], rowIndex + rowStartIndex, h.prop, h) : renderCell(data[rowIndex][h.prop], rowIndex + rowStartIndex, h.prop, h))));
 }

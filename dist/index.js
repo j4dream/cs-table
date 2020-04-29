@@ -54,7 +54,7 @@ export const Provider = props => {
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
   const handleScroll = useCallback(e => {
-    const cellTarget = e.current.target;
+    const cellTarget = e.currentTarget;
     if (!cellTarget) return;
     const {
       scrollLeft: sLeft,

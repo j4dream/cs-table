@@ -12,3 +12,7 @@ Supports large amounts of data, built using react hooks.
   // renderHeader={(header, prop) => header[prop]}
 />
 ```
+props | default
+---|---
+renderCell: Function | (record, rowIndex, prop) => record
+renderHeader: Function | (header, prop) => header.label

@@ -31,8 +31,8 @@ export const Provider = (props) => {
     height = 440,
     cellWidth = 120,
     cellHeight = 40,
-    renderCell = (record, prop) => record[prop],
-    renderHeader = (header) => header.label,
+    renderCell = (record, rowIndex, prop) => record,
+    renderHeader = (header, prop) => header.label,
     children,
   } = props;
 

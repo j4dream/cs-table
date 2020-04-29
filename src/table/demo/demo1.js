@@ -23,8 +23,6 @@ for (let i = 0; i < 20; i++) {
   });
 }
 
-
-
 const data = [];
  
 for(let r = 0; r < 20; r++) {
@@ -49,6 +47,7 @@ export default memo(function() {
       <CSTable
         header={header}
         data={data}
+        cellWidth={200}
         // renderCell={(record, prop) => record[prop]}
         // renderHeader={(header, prop) => header[prop]}
       />

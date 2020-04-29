@@ -44,7 +44,8 @@ export default memo(function () {
     onClick: () => setCount(count + 1)
   }, "Rerender button ", count), /*#__PURE__*/React.createElement(CSTable, {
     header: header,
-    data: data // renderCell={(record, prop) => record[prop]}
+    data: data,
+    cellWidth: 200 // renderCell={(record, prop) => record[prop]}
     // renderHeader={(header, prop) => header[prop]}
 
   }));

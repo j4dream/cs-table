@@ -24,5 +24,5 @@ export default function () {
       width: cellWidth,
       height: cellHeight
     }
-  }, h.renderCell ? h.renderCell(data[rowIndex][h.prop], rowIndex, h.prop) : renderCell(data[rowIndex][h.prop], rowIndex, h.prop))));
+  }, h.renderCell ? h.renderCell(data[rowIndex][h.prop], rowIndex, h.prop, h) : renderCell(data[rowIndex][h.prop], rowIndex, h.prop, h))));
 }

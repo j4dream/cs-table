@@ -14,5 +14,5 @@ Supports large amounts of data, built using react hooks.
 ```
 props | default
 ---|---
-renderCell: Function | (record, rowIndex, prop) => record
+renderCell: Function | (record, rowIndex, prop, header) => record
 renderHeader: Function | (header, prop) => header.label

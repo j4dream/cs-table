@@ -19,7 +19,7 @@ export default function() {
     header.map((h, i) => (
       <div
         key={`h-${i}`}
-        className="cell"
+        className="header"
         style={{
           position: 'absolute',
           width: cellWidth,

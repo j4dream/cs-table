@@ -21,7 +21,7 @@ export default function()  {
     fixedLeftCol.map((h, colIndex) => (
       <div
         key={`f-h-${colIndex}`}
-        className="cell"
+        className="header"
         style={{
           position: 'absolute',
           left: h.left,

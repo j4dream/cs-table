@@ -3,13 +3,18 @@
   overflow: hidden;
 }
 
-.cs-table .cell {
+
+.cs-table .cell, .cs-table .header {
   border-style: solid;
   border-color: #ccc;
   border-width: 0;
   border-bottom-width: 1px;
   border-right-width: 1px;
   box-sizing: border-box;
+}
+
+.cs-table .header {
+  background-color: #fafafa;
 }
 
 .cs-table .data-area {

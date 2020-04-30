@@ -19,7 +19,7 @@ export default function()  {
     data.map((_, rowIndex) => (
       fixedLeftCol.map((h, colIndex) => (
         <div
-          className="cell"
+          className="cell fixed-left"
           key={`f-c-${rowIndex}-${colIndex}`}
           style={{
             position: 'absolute',

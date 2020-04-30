@@ -13,7 +13,7 @@ export default function () {
   } = dataAreaState;
   return header.map((h, i) => /*#__PURE__*/React.createElement("div", {
     key: `h-${i}`,
-    className: "cell",
+    className: "header",
     style: {
       position: 'absolute',
       width: cellWidth,

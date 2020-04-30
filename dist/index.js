@@ -1,13 +1,14 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import CSTable from './CSTable';
 import { getScrollBarWidth } from './util';
+import useUpdateEffect from './useUpdateEffect';
 const CSTableContext = React.createContext({});
 const setTester = new Set();
 
 const getRangeFromArr = (arr, start, count) => {
   const res = [];
 
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i <= count; i++) {
     const record = arr[start + i];
     record && res.push(record);
   }
@@ -39,15 +40,37 @@ export const Provider = props => {
   const headerRef = useRef();
   const fixedColLeftRef = useRef();
   const scrollBarRef = useRef(getScrollBarWidth());
-  const restHeader = useMemo(() => header.filter(h => !h.fixed), [header]); // setTester.add(restHeader);
+  const restHeader = useMemo(() => header.filter(h => !h.fixed), [header]);
+  const fixedLeft = useMemo(() => processFixedHeader(header), [header]); // setTester.add(restHeader);
 
   const [dataAreaState, setDataAreaState] = useState(() => ({
     processedHeader: getRangeFromArr(restHeader, 0, 11),
     processedData: getRangeFromArr(data, 0, 11),
-    fixedLeftCol: processFixedHeader(header),
+    fixedLeftCol: fixedLeft,
     rowStartIndex: 0,
     colStartIndex: 0
   }));
+  useUpdateEffect(() => {
+    setDataAreaState(prev => {
+      return { ...prev,
+        processedData: getRangeFromArr(data, 0, 11)
+      };
+    });
+  }, [data]);
+  useUpdateEffect(() => {
+    setDataAreaState(prev => {
+      return { ...prev,
+        fixedLeftCol: fixedLeft
+      };
+    });
+  }, [fixedLeft]);
+  useUpdateEffect(() => {
+    setDataAreaState(prev => {
+      return { ...prev,
+        processedHeader: getRangeFromArr(restHeader, 0, 11)
+      };
+    });
+  }, [restHeader]);
   const fixedLeftColWidth = useMemo(() => {
     return dataAreaState.fixedLeftCol.reduce((acc, curr) => acc + (curr.width || cellWidth), 0);
   }, [dataAreaState.fixedLeftCol, cellWidth]);
@@ -113,6 +136,6 @@ export const Provider = props => {
   }, children);
 };
 export { CSTableContext };
-export default function CSTableProvider(props) {
+export default React.memo(function CSTableProvider(props) {
   return /*#__PURE__*/React.createElement(Provider, props, /*#__PURE__*/React.createElement(CSTable, null));
-}
+});

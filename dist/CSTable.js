@@ -5,6 +5,7 @@ import './style.css';
 import { CSTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
+import useUpdateEffect from './useUpdateEffect';
 export default function CSTable() {
   console.log('render cs table');
   const {
@@ -27,7 +28,12 @@ export default function CSTable() {
     areaWidth: colCount * cellWidth,
     areaHeight: rowCount * cellHeight
   });
-  console.log(scrollBarWidth);
+  useUpdateEffect(() => {
+    setDataAreaState({
+      areaWidth: colCount * cellWidth,
+      areaHeight: rowCount * cellHeight
+    });
+  }, [colCount, cellWidth, rowCount, cellHeight]);
   return /*#__PURE__*/React.createElement("div", {
     className: "cs-table",
     style: {

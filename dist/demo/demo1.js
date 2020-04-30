@@ -39,12 +39,27 @@ for (let r = 0; r < 20; r++) {
 
 export default memo(function () {
   const [count, setCount] = useState(0);
-  console.log(header, data);
+  const [h, setH] = useState(header);
+  const [d, setD] = useState(data);
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setD([{
+      email: 'update_email@test.com'
+    }])
+  }, "Update Data"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setH([{
+      label: 'Email',
+      prop: 'email'
+    }])
+  }, "Update Header"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setD(data);
+      setH(header);
+    }
+  }, " Rstore"), /*#__PURE__*/React.createElement("button", {
     onClick: () => setCount(count + 1)
-  }, "Rerender button ", count), /*#__PURE__*/React.createElement(CSTable, {
-    header: header,
-    data: data,
+  }, "Update Count"), /*#__PURE__*/React.createElement("p", null, count), /*#__PURE__*/React.createElement(CSTable, {
+    header: h,
+    data: d,
     cellWidth: 200 // renderCell={(record, prop) => record[prop]}
     // renderHeader={(header, prop) => header[prop]}
 

@@ -12,7 +12,10 @@ Supports large amounts of data, built using react hooks.
   // renderHeader={(header, prop) => header[prop]}
 />
 ```
-props | default
----|---
-renderCell: Function | (record, rowIndex, prop, header) => record
-renderHeader: Function | (header, prop) => header.label
+props | default | Desc
+---|---|---|
+header: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
+data: Array | [] | required *, tabel data [{ name: 'DDR' }]
+preventScroll: Bollean | fase | toggle scroll, prevent scroll
+renderCell: Function | (record, rowIndex, prop, header) => record | 
+renderHeader: Function | (header, prop) => header.label | 

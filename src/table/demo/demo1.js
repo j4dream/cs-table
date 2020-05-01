@@ -41,6 +41,7 @@ export default memo(function() {
 
   const [h, setH] = useState(header);
   const [d, setD] = useState(data);
+  const [preventScroll, setPreventScroll] = useState(false);
 
   return (
     <div>
@@ -48,11 +49,13 @@ export default memo(function() {
       <button onClick={() => setH([{label: 'Email', prop: 'email'}])}>Update Header</button>
       <button onClick={() => {setD(data); setH(header);}}> Rstore</button>
       <button onClick={() => setCount(count + 1)}>Update Count</button>
+      <button onClick={() => setPreventScroll(!preventScroll)}>Toggle fix scroll</button>
       <p>{count}</p>
       <CSTable
         header={h}
         data={d}
         cellWidth={200}
+        preventScroll={preventScroll}
         // renderCell={(record, prop) => record[prop]}
         // renderHeader={(header, prop) => header[prop]}
       />

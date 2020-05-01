@@ -24,6 +24,7 @@ export default function CSTable() {
     headerRef,
     fixedColLeftRef,
     fixedLeftColWidth,
+    preventScroll,
   } = useContext(CSTableContext);
 
   const rowCount = data.length,
@@ -41,7 +42,11 @@ export default function CSTable() {
 
   return (
     <div className="cs-table" style={{position: 'relative', height: height}}>
-
+      
+      {
+        preventScroll && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2}}/>
+      }
+      
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
         <div style={{width: dataAreaState.areaWidth + scrollBarWidth, position: 'relative', height: cellHeight}}>
           <Header />

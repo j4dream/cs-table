@@ -35,9 +35,8 @@ export const Provider = (props) => {
     renderCell = (record, rowIndex, prop) => record,
     renderHeader = (header, prop) => header.label,
     children,
+    preventScroll = false,
   } = props;
-
-  
 
   const dataAreaRef = useRef();
   const headerRef = useRef();
@@ -47,7 +46,10 @@ export const Provider = (props) => {
   const restHeader = useMemo(() => header.filter(h => !h.fixed), [header]);
   const fixedLeft = useMemo(() => processFixedHeader(header), [header]);
 
-  // setTester.add(restHeader);
+  // design for some fixed element, when data scroll, it has position offset;
+  // eg: datepicker, multi select in cell.
+  const preventScrollRef = useRef();
+  preventScrollRef.current = preventScroll;
 
   const [dataAreaState, setDataAreaState] = useState(() => ({
     processedHeader: getRangeFromArr(restHeader, 0, 11),
@@ -116,7 +118,7 @@ export const Provider = (props) => {
     }
 
     // if stay on same cell, do not rerender table.
-    if (colCacheIndexRef.current === colStartIndex && rowCacheIndexRef.current == rowStartIndex) return;
+    if (colCacheIndexRef.current === colStartIndex && rowCacheIndexRef.current === rowStartIndex) return;
     // assign new pos.
     colCacheIndexRef.current = colStartIndex;
     rowCacheIndexRef.current = rowStartIndex;
@@ -150,6 +152,7 @@ export const Provider = (props) => {
     dataAreaState,
     fixedLeftColWidth,
     setDataAreaState,
+    preventScroll: preventScrollRef.current,
     renderCell,
     renderHeader,
   };

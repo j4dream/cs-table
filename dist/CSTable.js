@@ -20,7 +20,8 @@ export default function CSTable() {
     dataAreaRef,
     headerRef,
     fixedColLeftRef,
-    fixedLeftColWidth
+    fixedLeftColWidth,
+    preventScroll
   } = useContext(CSTableContext);
   const rowCount = data.length,
         colCount = header.length;
@@ -40,7 +41,16 @@ export default function CSTable() {
       position: 'relative',
       height: height
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, preventScroll && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 2
+    }
+  }), /*#__PURE__*/React.createElement("div", {
     ref: headerRef,
     style: {
       overflow: 'hidden',

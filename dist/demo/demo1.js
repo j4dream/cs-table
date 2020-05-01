@@ -41,6 +41,7 @@ export default memo(function () {
   const [count, setCount] = useState(0);
   const [h, setH] = useState(header);
   const [d, setD] = useState(data);
+  const [preventScroll, setPreventScroll] = useState(false);
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
     onClick: () => setD([{
       email: 'update_email@test.com'
@@ -57,10 +58,13 @@ export default memo(function () {
     }
   }, " Rstore"), /*#__PURE__*/React.createElement("button", {
     onClick: () => setCount(count + 1)
-  }, "Update Count"), /*#__PURE__*/React.createElement("p", null, count), /*#__PURE__*/React.createElement(CSTable, {
+  }, "Update Count"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setPreventScroll(!preventScroll)
+  }, "Toggle fix scroll"), /*#__PURE__*/React.createElement("p", null, count), /*#__PURE__*/React.createElement(CSTable, {
     header: h,
     data: d,
-    cellWidth: 200 // renderCell={(record, prop) => record[prop]}
+    cellWidth: 200,
+    preventScroll: preventScroll // renderCell={(record, prop) => record[prop]}
     // renderHeader={(header, prop) => header[prop]}
 
   }));

@@ -13,7 +13,7 @@ export default function () {
     fixedLeftCol
   } = dataAreaState;
   return data.map((_, rowIndex) => fixedLeftCol.map((h, colIndex) => /*#__PURE__*/React.createElement("div", {
-    className: "cell",
+    className: "cell fixed-left",
     key: `f-c-${rowIndex}-${colIndex}`,
     style: {
       position: 'absolute',

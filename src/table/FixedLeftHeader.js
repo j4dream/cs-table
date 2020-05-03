@@ -15,8 +15,6 @@ export default function()  {
     fixedLeftCol,
   } = dataAreaState;
 
-  console.log('fixedLeftCol', fixedLeftCol);
-
   return (
     fixedLeftCol.map((h, colIndex) => (
       <div

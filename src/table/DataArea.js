@@ -3,7 +3,6 @@ import {CSTableContext} from './index';
 
 export default function() {
 
-  console.log('render data area');
   const {
     renderCell,
     cellWidth = 120,

@@ -9,13 +9,11 @@ import useUpdateEffect from './useUpdateEffect';
 
 export default function CSTable() {
 
-  console.log('render cs table');
-
   const {
     header,
     data,
     scrollBarWidth,
-    width,
+    // width,
     height = 440,
     cellWidth = 120,
     cellHeight = 40,
@@ -46,7 +44,7 @@ export default function CSTable() {
       {
         preventScroll && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2}}/>
       }
-      
+
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
         <div style={{width: dataAreaState.areaWidth + scrollBarWidth, position: 'relative', height: cellHeight}}>
           <Header />

@@ -5,8 +5,6 @@ import useUpdateEffect from './useUpdateEffect';
 
 const CSTableContext = React.createContext({});
 
-const setTester = new Set();
-
 const getRangeFromArr = (arr, start, count) => {
   const res = [];
   for(let i = 0; i <= count; i++) {
@@ -51,40 +49,42 @@ export const Provider = (props) => {
   const preventScrollRef = useRef();
   preventScrollRef.current = preventScroll;
 
+  const initCountRef = useRef(Math.ceil(document.body.offsetWidth / cellWidth));
+
   const [dataAreaState, setDataAreaState] = useState(() => ({
-    processedHeader: getRangeFromArr(restHeader, 0, 11),
-    processedData: getRangeFromArr(data, 0, 11),
+    processedHeader: getRangeFromArr(restHeader, 0, initCountRef.current),
+    processedData: getRangeFromArr(data, 0, initCountRef.current),
     fixedLeftCol: fixedLeft,
     rowStartIndex: 0,
     colStartIndex: 0,
   }));
 
+  // props update
   useUpdateEffect(() => {
-    setDataAreaState((prev) => {
-      return {
-        ...prev,
-        processedData: getRangeFromArr(data, 0, 11),
-      };
-    });
-  }, [data]);
+    setDataAreaState((preState) => {
+      const {
+        processedData: preData,
+        processedHeader: preHeader,
+        fixedLeftCol: preFixedLeftCol,
+      } = preState;
 
-  useUpdateEffect(() => {
-    setDataAreaState((prev) => {
-      return {
-        ...prev,
-        fixedLeftCol: fixedLeft,
-      };
-    });
-  }, [fixedLeft]);
+      if (preData !== data) {
+        preState.processedData = getRangeFromArr(data, 0, 11);
+      }
 
-  useUpdateEffect(() => {
-    setDataAreaState((prev) => {
+      if (preHeader !== header) {
+        preState.processedHeader = getRangeFromArr(restHeader, 0, 11);
+      } 
+
+      if (preFixedLeftCol !== fixedLeft) {
+        preState.fixedLeftCol = fixedLeft
+      }
+
       return {
-        ...prev,
-        processedHeader: getRangeFromArr(restHeader, 0, 11),
+        ...preState,
       };
     });
-  }, [restHeader]);
+  }, [data, restHeader, fixedLeft]);
 
   const fixedLeftColWidth = useMemo(() => {
     return dataAreaState.fixedLeftCol.reduce((acc, curr)=> acc + (curr.width || cellWidth), 0);
@@ -134,7 +134,7 @@ export const Provider = (props) => {
       rowStartIndex,
     }));
 
-  }, [restHeader, data]);
+  }, [restHeader, data, cellWidth, cellHeight]);
 
   const editorContext = {
     header: restHeader,

@@ -48,11 +48,17 @@ export const Provider = (props) => {
   const preventScrollRef = useRef();
   preventScrollRef.current = preventScroll;
 
-  const initCountRef = useRef(Math.ceil(document.body.offsetWidth / cellWidth));
+  // caculate fixed col width.
+  const fixedLeftColWidth = useMemo(() => {
+    return fixedLeft.reduce((acc, curr)=> acc + (curr.width || cellWidth), 0);
+  }, [fixedLeft, cellWidth]);
+
+  const initWidthCountRef = useRef(Math.ceil((document.body.offsetWidth - fixedLeftColWidth) / cellWidth));
+  const initHeightCountRef = useRef(Math.ceil(height / cellHeight));
 
   const [dataAreaState, setDataAreaState] = useState(() => ({
-    processedHeader: getRangeFromArr(restHeader, 0, initCountRef.current),
-    processedData: getRangeFromArr(data, 0, initCountRef.current),
+    processedHeader: getRangeFromArr(restHeader, 0, initWidthCountRef.current),
+    processedData: getRangeFromArr(data, 0, initHeightCountRef.current),
     fixedLeftCol: fixedLeft,
     rowStartIndex: 0,
     colStartIndex: 0,
@@ -68,11 +74,11 @@ export const Provider = (props) => {
       } = preState;
 
       if (preData !== data) {
-        preState.processedData = getRangeFromArr(data, 0, initCountRef.current);
+        preState.processedData = getRangeFromArr(data, 0, initHeightCountRef.current);
       }
 
       if (preHeader !== header) {
-        preState.processedHeader = getRangeFromArr(restHeader, 0, initCountRef.current);
+        preState.processedHeader = getRangeFromArr(restHeader, 0, initWidthCountRef.current);
       } 
 
       if (preFixedLeftCol !== fixedLeft) {
@@ -84,11 +90,6 @@ export const Provider = (props) => {
       };
     });
   }, [data, restHeader, fixedLeft]);
-
-  // caculate fixed col width.
-  const fixedLeftColWidth = useMemo(() => {
-    return dataAreaState.fixedLeftCol.reduce((acc, curr)=> acc + (curr.width || cellWidth), 0);
-  }, [dataAreaState.fixedLeftCol, cellWidth]);
 
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
@@ -111,8 +112,6 @@ export const Provider = (props) => {
       startIndex: colStartIndex,
       count: colRenderCount
     } = getMutableIndexAndCount(restHeader, sLeft, dataAreaRef.current.offsetWidth, cellWidth);
-
-    console.log(colStartIndex, colRenderCount);
 
     const rowStartIndex = Math.floor(sTop / cellHeight),
           rowRenderCount = Math.ceil(oHeight / cellHeight);
@@ -178,7 +177,6 @@ export {
 };
 
 export default React.memo(function CSTableProvider(props) {
-
   return (
     <Provider {...props}>
       <CSTable/>

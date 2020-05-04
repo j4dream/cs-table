@@ -63,9 +63,9 @@ export default function() {
     if (currH) {
       // min 30
       currH.width = Math.max((currH.width || cellWidth) + offset, 30);
-      processHeaderWidth(allHeader, cellWidth);
+      const dataAreaWidth = processHeaderWidth(allHeader, cellWidth, true);
       // force update
-      setDataAreaState((prev) => ({...prev}));
+      setDataAreaState((prev) => ({...prev, dataAreaWidth}));
     }
   }, [cellWidth, colResizeProxyRef, handleResizeStart, header, setDataAreaState, allHeader]);
 

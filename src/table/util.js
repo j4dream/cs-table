@@ -20,11 +20,15 @@ export function getScrollBarWidth() {
   return totalWidth - widthWithoutScroll;
 }
 
-export function processHeaderWidth (header, defaultCellWidth)  {
-  header.reduce((acc, curr) => {
+export function processHeaderWidth (header, defaultCellWidth, returnTotalWidth = false)  {
+  const totalWidth = header.reduce((acc, curr) => {
     curr.left = acc;
-    return (curr.width || defaultCellWidth) + acc;
+    const accWidth = (curr.width || defaultCellWidth) + acc
+    return accWidth;
   }, 0);
+  if (returnTotalWidth) {
+    return totalWidth;
+  }
   return header;
 }
 

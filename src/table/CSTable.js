@@ -5,7 +5,6 @@ import './style.css';
 import { CSTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
-import useUpdateEffect from './useUpdateEffect';
 
 export default function CSTable() {
 
@@ -26,6 +25,7 @@ export default function CSTable() {
     fixedLeftColWidth,
     preventScroll,
     enableResize = true,
+    dataAreaState: { dataAreaWidth: areaWidthAfterResize}
   } = useContext(CSTableContext);
 
   const rowCount = data.length,
@@ -50,7 +50,7 @@ export default function CSTable() {
       }
 
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div style={{width: areaWidth + scrollBarWidth, position: 'relative', height: cellHeight}}>
+        <div style={{width: (areaWidthAfterResize || areaWidth) + scrollBarWidth, position: 'relative', height: cellHeight}}>
           <Header />
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function CSTable() {
         <div
           style={{
             height: areaHeight,
-            width: areaWidth,
+            width: areaWidthAfterResize || areaWidth,
           }}
         >
           <DataArea /> 

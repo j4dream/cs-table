@@ -1,9 +1,11 @@
 {
   "name": "virtualized-sc-table",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "private": false,
   "main": "./dist/index",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "homepage": "./cs-table/build/",
   "dependencies": {
     "classnames": "^2.2.6",

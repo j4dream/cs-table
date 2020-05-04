@@ -22,12 +22,7 @@ export default class App extends React.Component {
     } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
+        <h1>High performance table</h1>
 
         <div style={{margin: 15}}>
           <CSTable />

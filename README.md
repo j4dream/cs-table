@@ -16,6 +16,6 @@ props | default | Desc
 ---|---|---|
 header: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
 data: Array | [] | required *, tabel data [{ name: 'DDR' }]
-preventScroll: Bollean | fase | toggle scroll, prevent scroll
+preventScroll: Boolean | fase | toggle scroll, prevent scroll
 renderCell: Function | (record, rowIndex, prop, header) => record | 
 renderHeader: Function | (header, prop) => header.label | 

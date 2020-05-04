@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';
@@ -21,32 +21,36 @@ export default function CSTable() {
     dataAreaRef,
     headerRef,
     fixedColLeftRef,
+    colResizeProxyRef,
+    tableRef,
     fixedLeftColWidth,
     preventScroll,
+    enableResize = true,
   } = useContext(CSTableContext);
 
   const rowCount = data.length,
         colCount = header.length;
 
-  const [dataAreaState, setDataAreaState] = useState({areaWidth: colCount * cellWidth, areaHeight: rowCount * cellHeight});
+  const areaWidth = useMemo(() => {
+    if (enableResize) {
+      return header.reduce((acc, curr) => acc + (curr.width || cellWidth), 0);
+    }
+    return colCount * cellWidth;
+  }, [enableResize, header, colCount, cellWidth]);
 
-  useUpdateEffect(() => {
-    setDataAreaState({
-      areaWidth: colCount * cellWidth,
-      areaHeight: rowCount * cellHeight
-    });
-  }, [colCount, cellWidth, rowCount, cellHeight]);
-
+  const areaHeight = useMemo(() => {
+    return rowCount * cellHeight
+  }, [rowCount, cellHeight]);
 
   return (
-    <div className="cs-table" style={{position: 'relative', height: height}}>
+    <div ref={tableRef} className="cs-table" style={{position: 'relative', height: height}}>
       
       {
         preventScroll && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2}}/>
       }
 
       <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div style={{width: dataAreaState.areaWidth + scrollBarWidth, position: 'relative', height: cellHeight}}>
+        <div style={{width: areaWidth + scrollBarWidth, position: 'relative', height: cellHeight}}>
           <Header />
         </div>
       </div>
@@ -68,7 +72,7 @@ export default function CSTable() {
                 left: 0
               }}
             >
-              <div style={{height: dataAreaState.areaHeight + scrollBarWidth}}>
+              <div style={{height: areaHeight + scrollBarWidth}}>
                 <FixedLeftColumn />
               </div>
             </div>
@@ -88,13 +92,19 @@ export default function CSTable() {
       >
         <div
           style={{
-            height: dataAreaState.areaHeight,
-            width: dataAreaState.areaWidth,
+            height: areaHeight,
+            width: areaWidth,
           }}
         >
           <DataArea /> 
         </div>
       </div>
+
+      <div
+        className="resize-col-proxy"
+        ref={colResizeProxyRef}
+        style={{ visibility: 'hidden' }}
+      />
     </div>
   );
 }

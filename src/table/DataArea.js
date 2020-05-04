@@ -14,7 +14,6 @@ export default function() {
     processedHeader: header,
     processedData: data,
     rowStartIndex,
-    colStartIndex,
   } = dataAreaState;
 
   return ( 
@@ -26,8 +25,8 @@ export default function() {
           style={{
             position: 'absolute',
             top: (rowIndex + rowStartIndex) * cellHeight,
-            left: (colStartIndex + colIndex) * cellWidth,
-            width: cellWidth,
+            left: h.left,
+            width: h.width || cellWidth,
             height: cellHeight
           }}
         >

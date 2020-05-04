@@ -1,9 +1,8 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import CSTable from './CSTable';
-import { getScrollBarWidth } from './util';
+import { getScrollBarWidth, processHeaderWidth, getMutableIndexAndCount } from './util';
 import useUpdateEffect from './useUpdateEffect';
 const CSTableContext = React.createContext({});
-const setTester = new Set();
 
 const getRangeFromArr = (arr, start, count) => {
   const res = [];
@@ -14,15 +13,6 @@ const getRangeFromArr = (arr, start, count) => {
   }
 
   return res;
-};
-
-const processFixedHeader = header => {
-  const filteredHeader = header.filter(h => h.fixed);
-  filteredHeader.reduce((acc, curr) => {
-    curr.left = acc;
-    return curr.width + acc;
-  }, 0);
-  return filteredHeader;
 };
 
 export const Provider = props => {
@@ -41,43 +31,52 @@ export const Provider = props => {
   const headerRef = useRef();
   const fixedColLeftRef = useRef();
   const scrollBarRef = useRef(getScrollBarWidth());
-  const restHeader = useMemo(() => header.filter(h => !h.fixed), [header]);
-  const fixedLeft = useMemo(() => processFixedHeader(header), [header]); // design for some fixed element, when data scroll, it has position offset;
+  const colResizeProxyRef = useRef();
+  const tableRef = useRef();
+  const restHeader = useMemo(() => processHeaderWidth(header.filter(h => !h.fixed), cellWidth), [header, cellWidth]);
+  const fixedLeft = useMemo(() => processHeaderWidth(header.filter(h => h.fixed), cellWidth), [header, cellWidth]); // design for some fixed element, when data scroll, it has position offset;
   // eg: datepicker, multi select in cell.
 
   const preventScrollRef = useRef();
-  preventScrollRef.current = preventScroll;
+  preventScrollRef.current = preventScroll; // caculate fixed col width.
+
+  const fixedLeftColWidth = useMemo(() => {
+    return fixedLeft.reduce((acc, curr) => acc + (curr.width || cellWidth), 0);
+  }, [fixedLeft, cellWidth]);
+  const initWidthCountRef = useRef(Math.ceil((document.body.offsetWidth - fixedLeftColWidth) / cellWidth));
+  const initHeightCountRef = useRef(Math.ceil(height / cellHeight));
   const [dataAreaState, setDataAreaState] = useState(() => ({
-    processedHeader: getRangeFromArr(restHeader, 0, 11),
-    processedData: getRangeFromArr(data, 0, 11),
+    processedHeader: getRangeFromArr(restHeader, 0, initWidthCountRef.current),
+    processedData: getRangeFromArr(data, 0, initHeightCountRef.current),
     fixedLeftCol: fixedLeft,
     rowStartIndex: 0,
     colStartIndex: 0
-  }));
+  })); // props update
+
   useUpdateEffect(() => {
-    setDataAreaState(prev => {
-      return { ...prev,
-        processedData: getRangeFromArr(data, 0, 11)
+    setDataAreaState(preState => {
+      const {
+        processedData: preData,
+        processedHeader: preHeader,
+        fixedLeftCol: preFixedLeftCol
+      } = preState;
+
+      if (preData !== data) {
+        preState.processedData = getRangeFromArr(data, 0, initHeightCountRef.current);
+      }
+
+      if (preHeader !== header) {
+        preState.processedHeader = getRangeFromArr(restHeader, 0, initWidthCountRef.current);
+      }
+
+      if (preFixedLeftCol !== fixedLeft) {
+        preState.fixedLeftCol = fixedLeft;
+      }
+
+      return { ...preState
       };
     });
-  }, [data]);
-  useUpdateEffect(() => {
-    setDataAreaState(prev => {
-      return { ...prev,
-        fixedLeftCol: fixedLeft
-      };
-    });
-  }, [fixedLeft]);
-  useUpdateEffect(() => {
-    setDataAreaState(prev => {
-      return { ...prev,
-        processedHeader: getRangeFromArr(restHeader, 0, 11)
-      };
-    });
-  }, [restHeader]);
-  const fixedLeftColWidth = useMemo(() => {
-    return dataAreaState.fixedLeftCol.reduce((acc, curr) => acc + (curr.width || cellWidth), 0);
-  }, [dataAreaState.fixedLeftCol, cellWidth]);
+  }, [data, restHeader, fixedLeft]);
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
   const handleScroll = useCallback(e => {
@@ -88,9 +87,14 @@ export const Provider = props => {
       scrollTop: sTop,
       offsetWidth: oWidth,
       offsetHeight: oHeight
-    } = cellTarget;
-    const colStartIndex = Math.floor(sLeft / cellWidth),
-          colRenderCount = Math.ceil(oWidth / cellWidth);
+    } = cellTarget; // disable resize
+    // const colStartIndex = Math.floor(sLeft / cellWidth),
+    //       colRenderCount = Math.ceil(oWidth / cellWidth);
+
+    const {
+      startIndex: colStartIndex,
+      count: colRenderCount
+    } = getMutableIndexAndCount(restHeader, sLeft, dataAreaRef.current.offsetWidth, cellWidth);
     const rowStartIndex = Math.floor(sTop / cellHeight),
           rowRenderCount = Math.ceil(oHeight / cellHeight);
 
@@ -115,7 +119,7 @@ export const Provider = props => {
       colStartIndex,
       rowStartIndex
     }));
-  }, [restHeader, data]);
+  }, [restHeader, data, cellWidth, cellHeight, dataAreaRef]);
   const editorContext = {
     header: restHeader,
     data,
@@ -128,6 +132,8 @@ export const Provider = props => {
     dataAreaRef,
     headerRef,
     fixedColLeftRef,
+    colResizeProxyRef,
+    tableRef,
     handleScroll,
     dataAreaState,
     fixedLeftColWidth,

@@ -7,17 +7,17 @@ const header = [{
   width: 90,
   renderHeader: (h, p) => /*#__PURE__*/React.createElement("a", {
     href: "#"
-  }, "select all ", p),
+  }, "Operation"),
   renderCell: () => /*#__PURE__*/React.createElement("a", {
     href: "#"
-  }, "Delete")
+  }, "OP")
 }, {
-  label: 'Email',
+  label: 'Email (Fixed)',
   fixed: true,
   prop: 'email'
 }];
 
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 200; i++) {
   header.push({
     label: `H ${i}`,
     prop: `${i}`
@@ -26,10 +26,10 @@ for (let i = 0; i < 20; i++) {
 
 const data = [];
 
-for (let r = 0; r < 20; r++) {
+for (let r = 0; r < 10000; r++) {
   const row = {};
 
-  for (let c = 0; c < 20; c++) {
+  for (let c = 0; c < 200; c++) {
     row[c] = `data ${r}:${c}`;
   }
 
@@ -42,25 +42,11 @@ export default memo(function () {
   const [h, setH] = useState(header);
   const [d, setD] = useState(data);
   const [preventScroll, setPreventScroll] = useState(false);
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
-    onClick: () => setD([{
-      email: 'update_email@test.com'
-    }])
-  }, "Update Data"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => setH([{
-      label: 'Email',
-      prop: 'email'
-    }])
-  }, "Update Header"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => {
-      setD(data);
-      setH(header);
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: 23
     }
-  }, " Rstore"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => setCount(count + 1)
-  }, "Update Count"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => setPreventScroll(!preventScroll)
-  }, "Toggle fix scroll"), /*#__PURE__*/React.createElement("p", null, count), /*#__PURE__*/React.createElement(CSTable, {
+  }, " 200 * 10000 (col * row)"), /*#__PURE__*/React.createElement(CSTable, {
     header: h,
     data: d,
     cellWidth: 200,

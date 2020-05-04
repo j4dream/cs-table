@@ -1,18 +1,16 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';
 import { CSTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
-import useUpdateEffect from './useUpdateEffect';
 export default function CSTable() {
-  console.log('render cs table');
   const {
     header,
     data,
     scrollBarWidth,
-    width,
+    // width,
     height = 440,
     cellWidth = 120,
     cellHeight = 40,
@@ -20,22 +18,29 @@ export default function CSTable() {
     dataAreaRef,
     headerRef,
     fixedColLeftRef,
+    colResizeProxyRef,
+    tableRef,
     fixedLeftColWidth,
-    preventScroll
+    preventScroll,
+    enableResize = true,
+    dataAreaState: {
+      dataAreaWidth: areaWidthAfterResize
+    }
   } = useContext(CSTableContext);
   const rowCount = data.length,
         colCount = header.length;
-  const [dataAreaState, setDataAreaState] = useState({
-    areaWidth: colCount * cellWidth,
-    areaHeight: rowCount * cellHeight
-  });
-  useUpdateEffect(() => {
-    setDataAreaState({
-      areaWidth: colCount * cellWidth,
-      areaHeight: rowCount * cellHeight
-    });
-  }, [colCount, cellWidth, rowCount, cellHeight]);
+  const areaWidth = useMemo(() => {
+    if (enableResize) {
+      return header.reduce((acc, curr) => acc + (curr.width || cellWidth), 0);
+    }
+
+    return colCount * cellWidth;
+  }, [enableResize, header, colCount, cellWidth]);
+  const areaHeight = useMemo(() => {
+    return rowCount * cellHeight;
+  }, [rowCount, cellHeight]);
   return /*#__PURE__*/React.createElement("div", {
+    ref: tableRef,
     className: "cs-table",
     style: {
       position: 'relative',
@@ -58,7 +63,7 @@ export default function CSTable() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      width: dataAreaState.areaWidth + scrollBarWidth,
+      width: (areaWidthAfterResize || areaWidth) + scrollBarWidth,
       position: 'relative',
       height: cellHeight
     }
@@ -79,7 +84,7 @@ export default function CSTable() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      height: dataAreaState.areaHeight + scrollBarWidth
+      height: areaHeight + scrollBarWidth
     }
   }, /*#__PURE__*/React.createElement(FixedLeftColumn, null)))), /*#__PURE__*/React.createElement("div", {
     ref: dataAreaRef,
@@ -92,8 +97,14 @@ export default function CSTable() {
     onScroll: handleScroll
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      height: dataAreaState.areaHeight,
-      width: dataAreaState.areaWidth
+      height: areaHeight,
+      width: areaWidthAfterResize || areaWidth
     }
-  }, /*#__PURE__*/React.createElement(DataArea, null))));
+  }, /*#__PURE__*/React.createElement(DataArea, null))), /*#__PURE__*/React.createElement("div", {
+    className: "resize-col-proxy",
+    ref: colResizeProxyRef,
+    style: {
+      visibility: 'hidden'
+    }
+  }));
 }

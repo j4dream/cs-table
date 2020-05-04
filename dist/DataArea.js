@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { CSTableContext } from './index';
 export default function () {
-  console.log('render data area');
   const {
     renderCell,
     cellWidth = 120,
@@ -11,8 +10,7 @@ export default function () {
   const {
     processedHeader: header,
     processedData: data,
-    rowStartIndex,
-    colStartIndex
+    rowStartIndex
   } = dataAreaState;
   return data.map((_, rowIndex) => header.map((h, colIndex) => /*#__PURE__*/React.createElement("div", {
     className: "cell",
@@ -20,8 +18,8 @@ export default function () {
     style: {
       position: 'absolute',
       top: (rowIndex + rowStartIndex) * cellHeight,
-      left: (colStartIndex + colIndex) * cellWidth,
-      width: cellWidth,
+      left: h.left,
+      width: h.width || cellWidth,
       height: cellHeight
     }
   }, h.renderCell ? h.renderCell(data[rowIndex][h.prop], rowIndex + rowStartIndex, h.prop, h) : renderCell(data[rowIndex][h.prop], rowIndex + rowStartIndex, h.prop, h))));

@@ -10,7 +10,6 @@ export default function () {
   const {
     fixedLeftCol
   } = dataAreaState;
-  console.log('fixedLeftCol', fixedLeftCol);
   return fixedLeftCol.map((h, colIndex) => /*#__PURE__*/React.createElement("div", {
     key: `f-h-${colIndex}`,
     className: "header",

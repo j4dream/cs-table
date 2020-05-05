@@ -2,7 +2,7 @@
 
 Supports large amounts of data, built using react hooks.
 
-[Demo](./src/table/demo/demo1.js)
+[Demo](https://j4dream.github.io/cs-table/)
 
 ```
 import Table from 'virtualized-sc-table';

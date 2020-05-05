@@ -1,4 +1,6 @@
-import React, { useContext, useCallback, useRef } from 'react';
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+import React, { useContext, useCallback, useRef, useMemo } from 'react';
 import { CSTableContext } from './index';
 import { processHeaderWidth } from './util';
 
@@ -13,14 +15,14 @@ export default function () {
     setDataAreaState,
     tableRef,
     colResizeProxyRef,
-    header: allHeader
+    header: allHeader,
+    enableResize
   } = useContext(CSTableContext);
   const isDraggingRef = useRef(false);
   const draggingCol = useRef();
   const startPosRef = useRef();
   const {
-    processedHeader: header,
-    colStartIndex
+    processedHeader: header
   } = dataAreaState;
   const handleMouseMove = useCallback(e => {
     if (isDraggingRef.current) return;
@@ -35,7 +37,7 @@ export default function () {
       bodyStyle.cursor = '';
     }
   }, []);
-  const handleMouseOut = useCallback(e => {
+  const handleMouseOut = useCallback(() => {
     document.body.style.cursor = '';
   }, []);
   const handleResizeStart = useCallback(e => {
@@ -79,7 +81,12 @@ export default function () {
       document.addEventListener('mouseup', handleResizeStop);
     }
   }, [colResizeProxyRef, handleResizeStart, handleResizeStop, tableRef]);
-  return header.map((h, i) => /*#__PURE__*/React.createElement("div", {
+  const resizeProps = useMemo(() => enableResize ? {
+    onMouseMove: handleMouseMove,
+    onMouseOut: handleMouseOut,
+    onMouseDown: handleMouseDown
+  } : {}, [enableResize, handleMouseMove, handleMouseOut, handleMouseDown]);
+  return header.map((h, i) => /*#__PURE__*/React.createElement("div", _extends({
     key: `h-${i}`,
     className: "header",
     style: {
@@ -88,10 +95,6 @@ export default function () {
       height: cellHeight,
       left: h.left
     },
-    "data-prop": h.prop,
-    onMouseMove: handleMouseMove,
-    onMouseOut: handleMouseOut,
-    onMouseDown: handleMouseDown,
-    onMouseMove: handleMouseMove
-  }, h.renderHeader ? h.renderHeader(h, h.prop) : renderHeader(h, h.prop)));
+    "data-prop": h.prop
+  }, resizeProps), h.renderHeader ? h.renderHeader(h, h.prop) : renderHeader(h, h.prop)));
 }

@@ -25,7 +25,8 @@ export const Provider = props => {
     renderCell = (record, rowIndex, prop) => record,
     renderHeader = (header, prop) => header.label,
     children,
-    preventScroll = false
+    preventScroll = false,
+    enableResize = false
   } = props;
   const dataAreaRef = useRef();
   const headerRef = useRef();
@@ -91,10 +92,20 @@ export const Provider = props => {
     // const colStartIndex = Math.floor(sLeft / cellWidth),
     //       colRenderCount = Math.ceil(oWidth / cellWidth);
 
-    const {
-      startIndex: colStartIndex,
-      count: colRenderCount
-    } = getMutableIndexAndCount(restHeader, sLeft, dataAreaRef.current.offsetWidth, cellWidth);
+    let colStartIndex, colRenderCount;
+
+    if (enableResize) {
+      const {
+        startIndex,
+        count
+      } = getMutableIndexAndCount(restHeader, sLeft, dataAreaRef.current.offsetWidth, cellWidth);
+      colStartIndex = startIndex;
+      colRenderCount = count;
+    } else {
+      colStartIndex = Math.floor(sLeft / cellWidth);
+      colRenderCount = Math.ceil(oWidth / cellWidth);
+    }
+
     const rowStartIndex = Math.floor(sTop / cellHeight),
           rowRenderCount = Math.ceil(oHeight / cellHeight);
 
@@ -119,7 +130,7 @@ export const Provider = props => {
       colStartIndex,
       rowStartIndex
     }));
-  }, [restHeader, data, cellWidth, cellHeight, dataAreaRef]);
+  }, [restHeader, data, cellWidth, cellHeight, dataAreaRef, enableResize]);
   const editorContext = {
     header: restHeader,
     data,
@@ -140,7 +151,8 @@ export const Provider = props => {
     setDataAreaState,
     preventScroll: preventScrollRef.current,
     renderCell,
-    renderHeader
+    renderHeader,
+    enableResize
   };
   return /*#__PURE__*/React.createElement(CSTableContext.Provider, {
     value: editorContext

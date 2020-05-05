@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import CSTable from '../index';
+import Table from '../index';
 const header = [{
   label: 'Operation',
   fixed: true,
@@ -46,11 +46,12 @@ export default memo(function () {
     style: {
       margin: 23
     }
-  }, " 200 * 10000 (col * row)"), /*#__PURE__*/React.createElement(CSTable, {
+  }, " 200 * 10000 (col * row)"), /*#__PURE__*/React.createElement(Table, {
     header: h,
     data: d,
     cellWidth: 200,
-    preventScroll: preventScroll // renderCell={(record, prop) => record[prop]}
+    preventScroll: preventScroll,
+    enableResize: true // renderCell={(record, prop) => record[prop]}
     // renderHeader={(header, prop) => header[prop]}
 
   }));

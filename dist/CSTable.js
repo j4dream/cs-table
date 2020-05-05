@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';

@@ -2,15 +2,22 @@
   "name": "virtualized-sc-table",
   "version": "0.2.0",
   "private": false,
-  "main": "https://j4dream.github.io/cs-table/",
+  "main": "./dist/index",
   "files": [
     "dist"
   ],
-  "homepage": "./cs-table/build/",
+  "homepage": "https://j4dream.github.io/cs-table/",
   "license": "MIT",
-  "keywords": ["react", "table", "virtualized", "resizable", "resize"],
+  "keywords": [
+    "react",
+    "table",
+    "virtualized",
+    "resizable",
+    "resize"
+  ],
   "dependencies": {
     "classnames": "^2.2.6",
+    "gh-pages": "^2.2.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.differenceby": "^4.8.0",
     "lodash.remove": "^4.7.0",
@@ -25,7 +32,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files"
+    "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"

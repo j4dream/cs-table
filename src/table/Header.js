@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useRef } from 'react';
+import React, { useContext, useCallback, useRef, useMemo } from 'react';
 import {CSTableContext} from './index';
 import { processHeaderWidth } from './util';
 
@@ -15,6 +15,7 @@ export default function() {
     tableRef,
     colResizeProxyRef,
     header: allHeader,
+    enableResize,
   } = useContext(CSTableContext);
 
   const isDraggingRef = useRef(false);
@@ -23,7 +24,6 @@ export default function() {
 
   const {
     processedHeader: header,
-    colStartIndex,
   } = dataAreaState;
 
   const handleMouseMove = useCallback((e) => {
@@ -40,7 +40,7 @@ export default function() {
     }
   }, []);
 
-  const handleMouseOut = useCallback((e) => {
+  const handleMouseOut = useCallback(() => {
     document.body.style.cursor = '';
   }, []);
 
@@ -87,6 +87,18 @@ export default function() {
 
     }
   }, [colResizeProxyRef, handleResizeStart, handleResizeStop, tableRef]);
+
+  const resizeProps = useMemo(() => (
+    enableResize
+      ? {
+          onMouseMove: handleMouseMove,
+          onMouseOut: handleMouseOut,
+          onMouseDown: handleMouseDown,
+        }
+      : {}
+    ),
+    [enableResize, handleMouseMove, handleMouseOut, handleMouseDown]
+  );
   
   return (
     header.map((h, i) => (
@@ -100,10 +112,7 @@ export default function() {
           left: h.left,
         }}
         data-prop={h.prop}
-        onMouseMove={handleMouseMove}
-        onMouseOut={handleMouseOut}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
+        {...resizeProps}
       >
         { 
           h.renderHeader

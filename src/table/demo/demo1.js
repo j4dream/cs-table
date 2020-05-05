@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import CSTable from '../index';
+import Table from '../index';
 
 const header = [
   {
@@ -52,7 +52,7 @@ export default memo(function() {
 
       <p style={{margin: 23}}> 200 * 10000 (col * row)</p>
 
-      <CSTable
+      <Table
         header={h}
         data={d}
         cellWidth={200}

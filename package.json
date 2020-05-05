@@ -2,11 +2,13 @@
   "name": "virtualized-sc-table",
   "version": "0.2.0",
   "private": false,
-  "main": "./dist/index",
+  "main": "https://j4dream.github.io/cs-table/",
   "files": [
     "dist"
   ],
   "homepage": "./cs-table/build/",
+  "license": "MIT",
+  "keywords": ["react", "table", "virtualized", "resizable", "resize"],
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash.clonedeep": "^4.5.0",

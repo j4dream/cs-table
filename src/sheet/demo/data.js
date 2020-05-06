@@ -40,7 +40,7 @@ export default {
       children: [],
     }],
   }],
-  columnHeader:[{
+  colHeader:[{
     name: "2,018",
     prop: "2018",
     children: [{

@@ -5,6 +5,8 @@ import Table from './component';
 import data from './data';
 import CSTable from './table/demo/demo1';
 
+import Sheet from './sheet/demo/demo1';
+
 export default class App extends React.Component {
 
   state = {
@@ -28,35 +30,10 @@ export default class App extends React.Component {
           <CSTable />
         </div>
 
-        {/* <div style={{margin: 15}}>
-          <h2>Data gird, supoort drag & drop， nested header, resize width & height </h2>
-          <Table
-            columnHeader={columnHeader}
-            rowHeader={rowHeader}
-            data={data}
-            sortSameLevelColumn={true}
-          />
-        </div>
+        <h1>Sheet</h1>
         <div style={{margin: 15}}>
-          <h2>Hide header</h2>
-          <Table
-            columnHeader={columnHeader}
-            rowHeader={rowHeader}
-            data={data}
-            resizeWidth={false}
-            showRowHeader={false}
-          />
+          <Sheet />
         </div>
-        <div style={{margin: 15}}>
-          <h2>Width && MaxHeight</h2>
-          <Table
-            columnHeader={columnHeader}
-            rowHeader={rowHeader}
-            data={data}
-            width={500}
-            maxHeight={250}
-          />
-        </div> */}
       </div>
     );
   }

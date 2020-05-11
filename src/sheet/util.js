@@ -4,6 +4,7 @@ export function convertToColumnHeader(columns = []) {
   function traverse(column, parent) {
     if (parent) {
       column.level = parent.level + 1;
+      column.parent = parent;
       if (maxLevel < column.level) {
         maxLevel = column.level;
       }
@@ -47,8 +48,37 @@ export function convertToColumnHeader(columns = []) {
     }
     rows[column.level - 1].push(column);
   });
-
-  debugger;
-  return rows;
+  console.log(allColumns);
+  return {
+    flattenRow: rows,
+    allColumns,
+  };
   
+}
+
+export function getLeafNodes(nodes = []) {
+  const result = [];
+  nodes.forEach((node) => {
+    if (node.children && node.children.length) {
+      result.push(...getLeafNodes(node.children));
+    } else {
+      result.push(node);
+    }
+  });
+  return result;
+}
+
+export function calcNodesWidth(nodes, defaultWidth = 100) {
+  nodes.forEach((n) => {
+    let curr = n;
+    curr.width = curr.width || defaultWidth
+    let accWidth = curr.width;
+    let parent = curr.parent;
+    while(parent) {
+      let parentWidth = parent.width || 0;
+      parent.width = parentWidth + accWidth;
+      accWidth = parentWidth + accWidth;
+      parent = parent.parent;
+    }
+  })
 }

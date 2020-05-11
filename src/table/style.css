@@ -4,7 +4,7 @@
 }
 
 
-.cs-table .cell, .cs-table .header {
+.cs-table .cell, .cs-table .header, .cs-sheet .header {
   border-style: solid;
   border-color: #ccc;
   border-width: 0;

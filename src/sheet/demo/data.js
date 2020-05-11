@@ -1,82 +1,82 @@
 export default {
   rowHeader:[{
-    name: "服装",
+    label: "服装",
     prop: 'a',
     children: [{
-      name: "上衣",
+      label: "上衣",
       prop: '0',
       children: [],
     }, {
-      name: "帽子",
+      label: "帽子",
       prop: '1',
       children: [],
     }, {
-      name: "裤子",
+      label: "裤子",
       prop: '2',
       children: [],
     }, {
       prop: '3',
-      name: "鞋子",
+      label: "鞋子",
       children: [],
     }],
   }, {
-    name: "电器",
+    label: "电器",
     prop: 'b',
     children: [{
       prop: '4',
-      name: "冰箱",
+      label: "冰箱",
       children: [],
     }, {
       prop: '5',
-      name: "电视",
+      label: "电视",
       children: [],
     }, {
       prop: '6',
-      name: "空调",
+      label: "空调",
       children: [],
     }, {
-      name: "风扇",
+      label: "风扇",
       prop: '7',
       children: [],
     }],
   }],
   colHeader:[{
-    name: "2,018",
+    label: "2,018",
     prop: "2018",
     children: [{
-      name: "Q1",
+      label: "Q1",
       prop: "2018-Q1",
       children: [],
     }, {
-      name: "Q2",
+      label: "Q2",
       prop: "2018-Q2",
       children: [],
     }, {
-      name: "Q3",
+      label: "Q3",
       prop: "2018-Q3",
       children: [],
     }, {
-      name: "Q4",
+      label: "Q4",
       prop: "2018-Q4",
       children: [],
     }],
   }, {
-    name: "2,019",
+    label: "2,019",
     prop: "2019",
     children: [{
-      name: "Q1",
+      label: "Q1",
       prop: "2019-Q1",
       children: [],
     }, {
-      name: "Q2",
+      label: "Q2",
       prop: "2019-Q2",
       children: [],
     }, {
-      name: "Q3",
+      label: "Q3",
       prop: "2019-Q3",
       children: [],
     }, {
-      name: "Q4",
+      label: "Q4",
       prop: "2019-Q4",
       children: [],
     }],

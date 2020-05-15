@@ -26,7 +26,8 @@ export const Provider = props => {
     renderHeader = (header, prop) => header.label,
     children,
     preventScroll = false,
-    enableResize = false
+    enableResize = false,
+    keepScrollStatus = false
   } = props;
   const dataAreaRef = useRef();
   const headerRef = useRef();
@@ -54,11 +55,13 @@ export const Provider = props => {
     colStartIndex: 0
   })); // when data update, scroll to other pos, need to cache prev pos;
 
-  const colIndexCacheRef = useRef(0);
-  const rowIndexCacheRef = useRef(0);
-  const renderColCountCacheRef = useRef(initWidthCountRef.current);
-  const renderRowCountCacheRef = useRef(initHeightCountRef.current);
-  const fixedLeftScrollTop = useRef(0); // props update
+  const scrollStatusCacheRef = useRef({
+    colIndex: 0,
+    rowIndex: 0,
+    scrollTop: 0,
+    colCount: initWidthCountRef.current,
+    rowCount: initHeightCountRef.current
+  }); // props update
 
   useUpdateEffect(() => {
     setDataAreaState(preState => {
@@ -67,28 +70,37 @@ export const Provider = props => {
         processedHeader: preHeader,
         fixedLeftCol: preFixedLeftCol
       } = preState;
-      debugger;
+      const {
+        colIndex,
+        rowIndex,
+        colCount,
+        rowCount,
+        scrollTop
+      } = scrollStatusCacheRef.current;
 
       if (preData !== data) {
-        preState.processedData = getRangeFromArr(data, rowIndexCacheRef.current, renderRowCountCacheRef.current || initHeightCountRef.current);
+        preState.processedData = getRangeFromArr(data, keepScrollStatus ? rowIndex : 0, rowCount || initHeightCountRef.current);
       }
 
       if (preHeader !== header) {
-        preState.processedHeader = getRangeFromArr(restHeader, colIndexCacheRef.current, renderColCountCacheRef.current || initWidthCountRef.current);
+        preState.processedHeader = getRangeFromArr(restHeader, keepScrollStatus ? colIndex : 0, colCount || initWidthCountRef.current);
       }
 
       if (preFixedLeftCol !== fixedLeft) {
         preState.fixedLeftCol = fixedLeft;
       }
 
-      if (fixedColLeftRef.current) {
-        fixedColLeftRef.current.scrollTop = fixedLeftScrollTop.current;
+      if (keepScrollStatus) {
+        fixedColLeftRef.current && fixedColLeftRef.current.scrollTo(0, scrollTop);
+      } else {
+        dataAreaRef.current && dataAreaRef.current.scrollTo(0, 0);
+        fixedColLeftRef.current && fixedColLeftRef.current.scrollTo(0, 0);
       }
 
       return { ...preState
       };
     });
-  }, [data, restHeader, fixedLeft]);
+  }, [data, restHeader, fixedLeft, keepScrollStatus]);
   const handleScroll = useCallback(e => {
     const cellTarget = e.currentTarget;
     if (!cellTarget) return;
@@ -97,10 +109,7 @@ export const Provider = props => {
       scrollTop: sTop,
       offsetWidth: oWidth,
       offsetHeight: oHeight
-    } = cellTarget; // disable resize
-    // const colStartIndex = Math.floor(sLeft / cellWidth),
-    //       colRenderCount = Math.ceil(oWidth / cellWidth);
-
+    } = cellTarget;
     let colStartIndex, colRenderCount;
 
     if (enableResize) {
@@ -124,16 +133,17 @@ export const Provider = props => {
 
     if (fixedColLeftRef.current) {
       fixedColLeftRef.current.scrollTop = sTop;
-    } // if stay on same cell, do not rerender table.
+    }
 
+    const scrollStatus = scrollStatusCacheRef.current; // if stay on same cell, do not rerender table.
 
-    if (colIndexCacheRef.current === colStartIndex && rowIndexCacheRef.current === rowStartIndex) return; // assign new pos.
+    if (scrollStatus.colIndex === colStartIndex && scrollStatus.rowIndex === rowStartIndex) return; // assign new pos.
 
-    colIndexCacheRef.current = colStartIndex;
-    rowIndexCacheRef.current = rowStartIndex;
-    renderColCountCacheRef.current = colRenderCount;
-    renderRowCountCacheRef.current = rowRenderCount;
-    fixedLeftScrollTop.current = sTop;
+    scrollStatus.colIndex = colStartIndex;
+    scrollStatus.rowIndex = rowStartIndex;
+    scrollStatus.colCount = colRenderCount;
+    scrollStatus.rowCount = rowRenderCount;
+    scrollStatus.scrollTop = sTop;
     const processedHeader = getRangeFromArr(restHeader, colStartIndex, colRenderCount);
     const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);
     setDataAreaState(prevState => ({ ...prevState,

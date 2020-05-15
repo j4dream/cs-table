@@ -43,12 +43,12 @@ export default memo(function() {
 
   return (
     <div>
-      <button onClick={() => setD([{email: 'update_email@test.com'}])}>Update Data</button>
+      {/* <button onClick={() => setD([{email: 'update_email@test.com'}])}>Update Data</button>
       <button onClick={() => setH([{label: 'Email', prop: 'email'}])}>Update Header</button>
       <button onClick={() => {setD(data); setH(header);}}> Rstore</button>
       <button onClick={() => setCount(count + 1)}>Update Count</button>
       <button onClick={() => setPreventScroll(!preventScroll)}>Toggle fix scroll</button>
-      <p>{count}</p>
+      <p>{count}</p> */}
 
       <p style={{margin: 23}}> 10 * 100000 (col * row)</p>
 
@@ -58,6 +58,7 @@ export default memo(function() {
         cellWidth={200}
         preventScroll={preventScroll}
         enableResize={true}
+        // keepScrollStatus={true}
         // renderCell={(record, prop) => record[prop]}
         // renderHeader={(header, prop) => header[prop]}
       />

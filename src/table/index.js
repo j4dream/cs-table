@@ -65,6 +65,13 @@ export const Provider = (props) => {
     colStartIndex: 0,
   }));
 
+  // when data update, scroll to other pos, need to cache prev pos;
+  const colIndexCacheRef = useRef(0);
+  const rowIndexCacheRef = useRef(0);
+  const renderColCountCacheRef = useRef(initWidthCountRef.current);
+  const renderRowCountCacheRef = useRef(initHeightCountRef.current);
+  const fixedLeftScrollTop = useRef(0);
+
   // props update
   useUpdateEffect(() => {
     setDataAreaState((preState) => {
@@ -74,16 +81,22 @@ export const Provider = (props) => {
         fixedLeftCol: preFixedLeftCol,
       } = preState;
 
+      debugger;
+
       if (preData !== data) {
-        preState.processedData = getRangeFromArr(data, 0, initHeightCountRef.current);
+        preState.processedData = getRangeFromArr(data, rowIndexCacheRef.current, renderRowCountCacheRef.current || initHeightCountRef.current);
       }
 
       if (preHeader !== header) {
-        preState.processedHeader = getRangeFromArr(restHeader, 0, initWidthCountRef.current);
+        preState.processedHeader = getRangeFromArr(restHeader, colIndexCacheRef.current, renderColCountCacheRef.current || initWidthCountRef.current);
       } 
 
       if (preFixedLeftCol !== fixedLeft) {
         preState.fixedLeftCol = fixedLeft
+      }
+
+      if (fixedColLeftRef.current) {
+        fixedColLeftRef.current.scrollTop = fixedLeftScrollTop.current;
       }
 
       return {
@@ -91,9 +104,6 @@ export const Provider = (props) => {
       };
     });
   }, [data, restHeader, fixedLeft]);
-
-  const colCacheIndexRef = useRef(0);
-  const rowCacheIndexRef = useRef(0);
 
   const handleScroll = useCallback((e) => {
     const cellTarget = e.currentTarget;
@@ -131,10 +141,13 @@ export const Provider = (props) => {
     }
 
     // if stay on same cell, do not rerender table.
-    if (colCacheIndexRef.current === colStartIndex && rowCacheIndexRef.current === rowStartIndex) return;
+    if (colIndexCacheRef.current === colStartIndex && rowIndexCacheRef.current === rowStartIndex) return;
     // assign new pos.
-    colCacheIndexRef.current = colStartIndex;
-    rowCacheIndexRef.current = rowStartIndex;
+    colIndexCacheRef.current = colStartIndex;
+    rowIndexCacheRef.current = rowStartIndex;
+    renderColCountCacheRef.current = colRenderCount;
+    renderRowCountCacheRef.current = rowRenderCount;
+    fixedLeftScrollTop.current = sTop;
 
     const processedHeader = getRangeFromArr(restHeader, colStartIndex, colRenderCount);
     const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);

@@ -17,7 +17,7 @@ const header = [{
   prop: 'email'
 }];
 
-for (let i = 0; i < 200; i++) {
+for (let i = 0; i < 10; i++) {
   header.push({
     label: `H ${i}`,
     prop: `${i}`
@@ -26,10 +26,10 @@ for (let i = 0; i < 200; i++) {
 
 const data = [];
 
-for (let r = 0; r < 10000; r++) {
+for (let r = 0; r < 100000; r++) {
   const row = {};
 
-  for (let c = 0; c < 200; c++) {
+  for (let c = 0; c < 10; c++) {
     row[c] = `data ${r}:${c}`;
   }
 
@@ -46,7 +46,7 @@ export default memo(function () {
     style: {
       margin: 23
     }
-  }, " 200 * 10000 (col * row)"), /*#__PURE__*/React.createElement(Table, {
+  }, " 10 * 100000 (col * row)"), /*#__PURE__*/React.createElement(Table, {
     header: h,
     data: d,
     cellWidth: 200,

@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Table from './component';
 import data from './data';
@@ -34,6 +33,11 @@ export default class App extends React.Component {
         <div style={{margin: 15}}>
           <Sheet />
         </div>
+        <Table
+          columnHeader={columnHeader}
+          rowHeader={rowHeader}
+          data={data}
+        />
       </div>
     );
   }

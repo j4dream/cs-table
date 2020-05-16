@@ -1,17 +1,23 @@
 import { useRef, useState } from "react";
-import { convertToColumnHeader, getLeafNodes, calcNodesWidth } from './util';
+import {
+  convertToColumnHeader,
+  getLeafNodes,
+  calcNodesWidth,
+  calcNodesHeight,
+  calcNodesLeft,
+  getDeepestNodePath
+} from './util';
 
-export default function useTree({colHeader: rawColHeader}) {
-  const children = useRef();
+export default function useTree(rawColHeader) {
   const [{flattenRow, allColumns}] = useState(convertToColumnHeader(rawColHeader));
-  // use deepestnode calc height
-  const deepestNodePath = useRef([]);
-  // use leaf nodes calc width
+  // use deepestnode store height
+  const deepestNodePath = useRef(getDeepestNodePath(allColumns));
+  // use leaf nodes calc width & prop
   const leafNodesRef = useRef(getLeafNodes(rawColHeader));
 
   calcNodesWidth(leafNodesRef.current);
-
-  console.log('all clounms', allColumns);
+  calcNodesLeft(flattenRow);
+  calcNodesHeight(allColumns, deepestNodePath.current);
 
   return {
     colHeader: flattenRow,

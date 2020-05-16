@@ -4,15 +4,17 @@ import useTree from './useTree';
 
 export default function(props) {
 
-  const { rowHeader, colHeader, data } = useTree(props);
+  const { colHeader } = useTree(props.colHeader);
+  const { rowHeader } = useTree(props.rowHeader);
 
-  console.log('ddr :', rowHeader, colHeader, data);
+  console.log('ddr :', rowHeader);
 
   return (
     <div
       className="cs-sheet"
       style={{
         height: 400,
+        position: 'relative',
       }}
     >
       <div className="cs-sheet-col-header">
@@ -25,8 +27,8 @@ export default function(props) {
                   position: 'absolute',
                   top: cl.top,
                   left: cl.left,
-                  width: 120,
-                  height: 40,
+                  width: cl.width,
+                  height: cl.height,
                 }}
               >
                 {cl.label}

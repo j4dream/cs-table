@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import useTree from './useTree';
+import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 
 export default function(props) {
 
-  const { header: colHeader } = useTree(props.colHeader);
+  const { header: colHeader } = useColHeader(props.colHeader);
   const { header: rowHeader } = useRowHeader(props.rowHeader);
 
-  console.log('ddr :', rowHeader);
+  // const [, forceUpdate] = useState(0);
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     forceUpdate(e => e + 1);
+  //   }, 3000);
+  // }, []);
 
   return (
     <div

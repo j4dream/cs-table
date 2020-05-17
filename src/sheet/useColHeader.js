@@ -1,0 +1,37 @@
+import { useState, useMemo } from "react";
+import {
+  precessTree,
+  calcNodeOffsetFormFalttenHeader,
+  getLeafNodes,
+  travelToRootFromLeafNodes,
+  calcMeasureFromDeepestPath,
+  getDeepestNodePath
+} from './util';
+
+export default function useColHeader(rawHeader) {
+
+  const [{flattenRow, allColumns}] = useState(
+    () =>  precessTree(rawHeader, ['colSpan', 'rowSpan'], { calcTop: 40 })
+  );
+
+  useMemo(() => {
+    // use leaf nodes calc width & prop
+    const leafNodes = getLeafNodes(rawHeader);
+
+    // calculate width;
+    travelToRootFromLeafNodes(leafNodes, 'width', 100);
+
+    // calculate left;
+    calcNodeOffsetFormFalttenHeader(flattenRow, 'left', 'width');
+
+    // use deepestnode store height
+    const deepestNodePath = getDeepestNodePath(allColumns);
+    calcMeasureFromDeepestPath(allColumns, deepestNodePath, 'height');
+
+  }, [rawHeader, flattenRow, allColumns]);
+
+  return {
+    header: flattenRow,
+  };
+  
+}

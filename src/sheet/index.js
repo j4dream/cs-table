@@ -5,8 +5,19 @@ import useRowHeader from './useRowHeader';
 
 export default function(props) {
 
-  const { header: colHeader } = useColHeader(props.colHeader);
-  const { header: rowHeader } = useRowHeader(props.rowHeader);
+  const {
+    header: colHeader,
+    colHeaderWidth,
+    colHeaderHeight,
+    colHeaderLeaf,
+  } = useColHeader(props.colHeader);
+
+  const {
+    header: rowHeader,
+    rowHeaderWidth,
+    rowHeaderHeight,
+    rowHeaderLeaf,
+  } = useRowHeader(props.rowHeader);
 
   // const [, forceUpdate] = useState(0);
 
@@ -24,7 +35,23 @@ export default function(props) {
         position: 'relative',
       }}
     >
-      <div className="cs-sheet-col-header">
+
+      <div
+        className="corner"
+        style={{
+          height: colHeaderHeight,
+          width: rowHeaderWidth,
+          position: 'absolute',
+        }}
+      />
+
+      <div
+        className="cs-sheet-col-header"
+        style={{
+          marginLeft: rowHeaderWidth,
+          position: 'relative',
+        }}
+      >
         {
           colHeader.map( cls => (
             cls.map(cl => (
@@ -48,7 +75,7 @@ export default function(props) {
       <div
         style={{
           position: 'relative',
-          marginTop: 80,
+          marginTop: colHeaderHeight,
         }}
       >
         <div className="cs-sheet-col-header">
@@ -66,6 +93,34 @@ export default function(props) {
                   }}
                 >
                   {cl.label}
+                </div>
+              ))
+            ))
+          }
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          top: colHeaderHeight,
+          left: rowHeaderWidth,
+          bottom: 0,
+          right: 0,
+          overflow: 'auto',
+        }}
+      >
+        <div
+          style={{
+            width: colHeaderWidth,
+            height: rowHeaderHeight,
+          }}
+        >
+          {
+            colHeaderLeaf.map(col => (
+              rowHeaderLeaf.map((row) => (
+                <div>
+                  cell
                 </div>
               ))
             ))

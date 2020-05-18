@@ -14,7 +14,7 @@ export default function useColHeader(rawHeader) {
     () =>  precessTree(rawHeader, ['colSpan', 'rowSpan'], { calcTop: 40 })
   );
 
-  useMemo(() => {
+  const measure = useMemo(() => {
     // use leaf nodes calc width & prop
     const leafNodes = getLeafNodes(rawHeader);
 
@@ -27,11 +27,20 @@ export default function useColHeader(rawHeader) {
     // use deepestnode store height
     const deepestNodePath = getDeepestNodePath(allColumns);
     calcMeasureFromDeepestPath(allColumns, deepestNodePath, 'height');
+    
+    const colHeaderHeight = deepestNodePath.reduce((acc, curr) => acc + curr.height, 0);
+    const colHeaderWidth = leafNodes.reduce((acc, curr) => acc + curr.width, 0);
 
+    return {
+      colHeaderHeight,
+      colHeaderWidth,
+      colHeaderLeaf: leafNodes,
+    }
   }, [rawHeader, flattenRow, allColumns]);
 
   return {
     header: flattenRow,
+    ...measure,
   };
   
 }

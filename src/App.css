@@ -25,9 +25,9 @@
 }
 
 .cs-table .cell,
-.cs-table .header
-.cs-sheet .cell,
-.cs-sheet .header
+.cs-table .header,
+.cs-sheet .header,
+.cs-sheet .cell
 {
   display: flex;
   justify-content: center;

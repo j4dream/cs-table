@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useCallback } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
+import { getScrollBarWidth } from '../table/util';
 
 export default function(props) {
+
+  const { height = 400 } = props;
 
   const {
     header: colHeader,
@@ -19,19 +22,23 @@ export default function(props) {
     rowHeaderLeaf,
   } = useRowHeader(props.rowHeader);
 
-  // const [, forceUpdate] = useState(0);
+  const dataAreaRef = useRef();
+  const rowHeaderRef = useRef();
+  const colHeaderRef = useRef();
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     forceUpdate(e => e + 1);
-  //   }, 3000);
-  // }, []);
+  const handleScroll = useCallback((e) => {
+    const target = e.currentTarget;
+    if (!target) return;
+    const { scrollTop, scrollLeft } = target;
+    colHeaderRef.current.scrollLeft = scrollLeft;
+    rowHeaderRef.current.scrollTop = scrollTop;
+  }, []);
 
   return (
     <div
       className="cs-sheet"
       style={{
-        height: 400,
+        height,
         position: 'relative',
       }}
     >
@@ -49,9 +56,17 @@ export default function(props) {
         className="cs-sheet-col-header"
         style={{
           marginLeft: rowHeaderWidth,
-          position: 'relative',
+          overflow: 'hidden',
         }}
+        ref={colHeaderRef}
       >
+        <div
+          style={{
+            position: 'relative',
+            height: colHeaderHeight,
+            width: colHeaderWidth + getScrollBarWidth(),
+          }}        
+        >
         {
           colHeader.map( cls => (
             cls.map(cl => (
@@ -70,15 +85,24 @@ export default function(props) {
             ))
           ))
         }
+        </div>
       </div>
 
-      <div
+      <div className="cs-sheet-row-header"
         style={{
-          position: 'relative',
-          marginTop: colHeaderHeight,
+          overflow: 'hidden',
+          height: height - colHeaderHeight,
+          // marginTop: colHeaderHeight,
         }}
+        ref={rowHeaderRef}
       >
-        <div className="cs-sheet-col-header">
+        <div
+          style={{
+            position: 'relative',
+            width: rowHeaderWidth,
+            height: rowHeaderHeight + getScrollBarWidth(),
+          }}
+        >
           {
             rowHeader.map( cls => (
               cls.map(cl => (
@@ -109,6 +133,8 @@ export default function(props) {
           right: 0,
           overflow: 'auto',
         }}
+        onScroll={handleScroll}
+        ref={dataAreaRef}
       >
         <div
           style={{
@@ -117,9 +143,19 @@ export default function(props) {
           }}
         >
           {
-            colHeaderLeaf.map(col => (
-              rowHeaderLeaf.map((row) => (
-                <div>
+            colHeaderLeaf.map((col, colIndex) => (
+              rowHeaderLeaf.map((row, rowIndex) => (
+                <div
+                  className="cell"
+                  key={`d-a-${rowIndex}-${colIndex}`}
+                  style={{
+                    position: 'absolute',
+                    width: col.width,
+                    height: row.height,
+                    left: col.left,
+                    top: row.top,
+                  }}
+                >
                   cell
                 </div>
               ))

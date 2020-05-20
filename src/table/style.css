@@ -12,7 +12,10 @@
   box-sizing: border-box;
 }
 
-.cs-table .cell, .cs-table .header, .cs-sheet .header {
+.cs-table .cell,
+.cs-table .header,
+.cs-sheet .header,
+.cs-sheet .cell {
   border-style: solid;
   border-color: #ccc;
   border-width: 0;
@@ -21,8 +24,11 @@
   box-sizing: border-box;
 }
 
-.cs-table .header {
+.cs-table .header,
+.cs-sheet .header,
+.cs-sheet .corner {
   background-color: #fafafa;
+  font-weight: bold;
 }
 
 .cs-table .data-area {

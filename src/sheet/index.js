@@ -2,6 +2,7 @@ import React, { useRef, useCallback } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
+import { getSubTreeFromStartNode, binSearch } from './util';
 import { getScrollBarWidth } from '../table/util';
 
 export default function(props) {
@@ -26,13 +27,37 @@ export default function(props) {
   const rowHeaderRef = useRef();
   const colHeaderRef = useRef();
 
+  const cacheRef = useRef({
+    colIndexCache: 0,
+    rowIndexCache: 0,
+  });
+
   const handleScroll = useCallback((e) => {
     const target = e.currentTarget;
     if (!target) return;
     const { scrollTop, scrollLeft } = target;
     colHeaderRef.current.scrollLeft = scrollLeft;
     rowHeaderRef.current.scrollTop = scrollTop;
+
+    const { colIndexCache, rowIndexCache } = cacheRef.current;
+
+    const currColIndex = binSearch(scrollLeft, colHeaderLeaf, 'width');
+    if (colIndexCache !== currColIndex) {
+      // todo get sub tree;
+      // getSubTreeFromStartNode(scrollLeft, colHeaderLeaf, 800, 'left');
+    }
+
+    const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
+    if (rowIndexCache !== currRowIndex) {
+      // todo get sub tree;
+      // getSubTreeFromStartNode(scrollTop, rowHeaderLeaf, 800, 'top');
+    }
+
+    
+    
   }, []);
+
+  console.log(colHeader);
 
   return (
     <div

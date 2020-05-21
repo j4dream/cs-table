@@ -159,3 +159,31 @@ export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
     };
   }
 }
+
+export function binSearch(scroll, arr, measure) {
+  let start = 0,
+      mid = Math.floor(arr.length / 2),
+      end = arr.length;
+  
+  if (arr.length && arr[0][measure] > scroll) {
+    console.log('bin without calc: ', arr[0][measure], scroll);
+    return start;
+  }
+
+  const offset = measure === 'width' ? 'left' : 'top';
+  while ((end - start) > 1) {
+    if (arr[mid][offset] < scroll) {
+      start = mid;
+    }
+    if (arr[mid][offset] >= scroll) {
+      end = mid;
+    }
+    mid = Math.floor((start + end) / 2);
+  }
+  console.log('bin: ', start);
+  return start;
+}
+
+export function getSubTreeFromStartNode(offSet, leafNodes, length, measure) {
+  const startIndex = binSearch(offSet, leafNodes, measure);
+}

@@ -24,7 +24,11 @@
   color: #61dafb;
 }
 
-.cs-table .cell, .cs-table .header {
+.cs-table .cell,
+.cs-table .header,
+.cs-sheet .header,
+.cs-sheet .cell
+{
   display: flex;
   justify-content: center;
   align-items: center;

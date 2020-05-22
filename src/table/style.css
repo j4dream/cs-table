@@ -1,10 +1,21 @@
-.cs-table {
+.cs-table, .cs-sheet {
   border: 1px solid #ccc;
   overflow: hidden;
 }
 
+.cs-sheet .corner {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  box-sizing: border-box;
+}
 
-.cs-table .cell, .cs-table .header {
+.cs-table .cell,
+.cs-table .header,
+.cs-sheet .header,
+.cs-sheet .cell {
   border-style: solid;
   border-color: #ccc;
   border-width: 0;
@@ -13,8 +24,11 @@
   box-sizing: border-box;
 }
 
-.cs-table .header {
+.cs-table .header,
+.cs-sheet .header,
+.cs-sheet .corner {
   background-color: #fafafa;
+  font-weight: bold;
 }
 
 .cs-table .data-area {

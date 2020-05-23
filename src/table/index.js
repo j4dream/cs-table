@@ -95,6 +95,7 @@ export const Provider = (props) => {
   const colCacheIndexRef = useRef(0);
   const rowCacheIndexRef = useRef(0);
 
+  // cache index, No need 'throttle' for the moment.
   const handleScroll = useCallback((e) => {
     const cellTarget = e.currentTarget;
     if (!cellTarget) return;

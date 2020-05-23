@@ -166,7 +166,6 @@ export function binSearch(scroll, arr, measure) {
       end = arr.length;
   
   if (arr.length && arr[0][measure] > scroll) {
-    console.log('bin without calc: ', arr[0][measure], scroll);
     return start;
   }
 
@@ -180,10 +179,33 @@ export function binSearch(scroll, arr, measure) {
     }
     mid = Math.floor((start + end) / 2);
   }
-  console.log('bin: ', start);
   return start;
 }
 
-export function getSubTreeFromStartNode(offSet, leafNodes, length, measure) {
-  const startIndex = binSearch(offSet, leafNodes, measure);
+export function getSubTreeFromStartNode(startIndex, leafNodes, measure, measuerLength) {
+  let acc = 0;
+  const parentHeaderInView = [];
+  const subLeafNode = [];
+
+  // prevent blank;
+  const safeLength = measuerLength + 30;
+  for(let i = startIndex, l = leafNodes.length; i < l; i++) {
+    acc += leafNodes[i][measure];
+    subLeafNode.push(leafNodes[i]);
+    if (acc > safeLength) {
+      break;
+    }
+  }
+
+  const ws = new Set();
+  subLeafNode.forEach((n) => {
+    while (n.parent && !ws.has(n.parent)) {
+      parentHeaderInView.push(n.parent);
+      ws.add(n.parent);
+    }
+  });
+
+  return [
+    [...parentHeaderInView, ...subLeafNode]
+  ];
 }

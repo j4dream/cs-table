@@ -32,28 +32,30 @@ export default function(props) {
     rowIndexCache: 0,
   });
 
+  // cache index, No need 'throttle' for the moment.
   const handleScroll = useCallback((e) => {
     const target = e.currentTarget;
     if (!target) return;
-    const { scrollTop, scrollLeft } = target;
+    const { scrollTop, scrollLeft, clientHeight, clientWidth } = target;
     colHeaderRef.current.scrollLeft = scrollLeft;
     rowHeaderRef.current.scrollTop = scrollTop;
 
     const { colIndexCache, rowIndexCache } = cacheRef.current;
 
+    // 
     const currColIndex = binSearch(scrollLeft, colHeaderLeaf, 'width');
     if (colIndexCache !== currColIndex) {
       // todo get sub tree;
-      // getSubTreeFromStartNode(scrollLeft, colHeaderLeaf, 800, 'left');
+      const cls = getSubTreeFromStartNode(currColIndex, colHeaderLeaf,  'width', clientWidth);
+      console.log('cls', cls);
     }
 
     const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
     if (rowIndexCache !== currRowIndex) {
       // todo get sub tree;
-      // getSubTreeFromStartNode(scrollTop, rowHeaderLeaf, 800, 'top');
+      const wls = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
+      console.log('wls', wls);
     }
-
-    
     
   }, []);
 
@@ -93,21 +95,19 @@ export default function(props) {
           }}        
         >
         {
-          colHeader.map( cls => (
-            cls.map(cl => (
-              <div
-                className="header"
-                style={{
-                  position: 'absolute',
-                  top: cl.top,
-                  left: cl.left,
-                  width: cl.width,
-                  height: cl.height,
-                }}
-              >
-                {cl.label}
-              </div>
-            ))
+          colHeader.map(({top, left, width, height, label}) => (
+            <div
+              className="header"
+              style={{
+                position: 'absolute',
+                top: top,
+                left: left,
+                width: width,
+                height: height,
+              }}
+            >
+              {label}
+            </div>
           ))
         }
         </div>
@@ -129,21 +129,19 @@ export default function(props) {
           }}
         >
           {
-            rowHeader.map( cls => (
-              cls.map(cl => (
-                <div
-                  className="header"
-                  style={{
-                    position: 'absolute',
-                    top: cl.top,
-                    left: cl.left,
-                    width: cl.width,
-                    height: cl.height,
-                  }}
-                >
-                  {cl.label}
-                </div>
-              ))
+            rowHeader.map( ({top, left, width, height, label}) => (
+              <div
+                className="header"
+                style={{
+                  position: 'absolute',
+                  top: top,
+                  left: left,
+                  width: width,
+                  height: height,
+                }}
+              >
+                {label}
+              </div>
             ))
           }
         </div>

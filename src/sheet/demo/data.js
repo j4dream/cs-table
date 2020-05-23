@@ -1,87 +1,87 @@
 export default {
   rowHeader:[{
-    label: "服装",
-    prop: 'a',
+    label: "广东",
+    prop: 'gd',
     children: [{
-      label: "上衣",
-      prop: '0',
+      label: "广州",
+      prop: 'gd-gz',
       children: [],
     }, {
-      label: "帽子",
+      label: "佛山",
       prop: '1',
       children: [],
     }, {
-      label: "裤子",
-      prop: '2',
+      label: "珠海",
+      prop: 'gd-zh',
       children: [],
     }, {
-      prop: '3',
-      label: "鞋子",
+      label: "东莞",
+      prop: 'gd-dg',
       children: [],
     }],
   }, {
-    label: "电器",
-    prop: 'b',
+    label: "江苏",
+    prop: 'js',
     children: [{
-      prop: '4',
-      label: "冰箱",
+      label: "南京",
+      prop: 'js-nj',
       children: [],
     }, {
-      prop: '5',
-      label: "电视",
+      label: "无锡",
+      prop: 'js-wx',
       children: [],
     }, {
-      prop: '6',
-      label: "空调",
+      label: "徐州",
+      prop: 'js-xz',
       children: [],
     }, {
-      label: "风扇",
-      prop: '7',
+      label: "常州",
+      prop: 'js-cz',
       children: [],
     }],
   },{
-    label: "服装",
-    prop: 'a',
+    label: "山东",
+    prop: 'sd',
     children: [{
-      label: "上衣",
-      prop: '0',
+      label: "济南",
+      prop: 'sd-jn',
       children: [],
     }, {
-      label: "帽子",
-      prop: '1',
+      label: "青岛",
+      prop: 'sd-qd',
       children: [],
     }, {
-      label: "裤子",
-      prop: '2',
+      label: "烟台",
+      prop: 'sd-yt',
       children: [],
     }, {
-      prop: '3',
-      label: "鞋子",
+      label: "济宁",
+      prop: 'sd-jn',
       children: [],
     }],
   }, {
-    label: "电器",
-    prop: 'b',
+    label: "浙江",
+    prop: 'zj',
     children: [{
-      prop: '4',
-      label: "冰箱",
+      label: "杭州",
+      prop: 'zj-hz',
       children: [],
     }, {
-      prop: '5',
-      label: "电视",
+      label: "宁波",
+      prop: 'zj-nb',
       children: [],
     }, {
-      prop: '6',
-      label: "空调",
+      label: "温州",
+      prop: 'zj-wz',
       children: [],
     }, {
-      label: "风扇",
-      prop: '7',
+      label: "绍兴",
+      prop: 'zj-zx',
       children: [],
     }],
   }],
   colHeader:[{
-    label: "2,018",
+    label: "2018",
     prop: "2018",
     children: [{
       label: "Q1",
@@ -101,7 +101,7 @@ export default {
       children: [],
     }],
   }, {
-    label: "2,019",
+    label: "2019",
     prop: "2019",
     children: [{
       label: "Q1",
@@ -121,43 +121,43 @@ export default {
       children: [],
     }],
   },{
-    label: "2,018",
-    prop: "2018",
+    label: "2020",
+    prop: "2020",
     children: [{
       label: "Q1",
-      prop: "2018-Q1",
+      prop: "2020-Q1",
       children: [],
     }, {
       label: "Q2",
-      prop: "2018-Q2",
+      prop: "2020-Q2",
       children: [],
     }, {
       label: "Q3",
-      prop: "2018-Q3",
+      prop: "2020-Q3",
       children: [],
     }, {
       label: "Q4",
-      prop: "2018-Q4",
+      prop: "2020-Q4",
       children: [],
     }],
   }, {
-    label: "2,019",
-    prop: "2019",
+    label: "2021",
+    prop: "2021",
     children: [{
       label: "Q1",
-      prop: "2019-Q1",
+      prop: "2021-Q1",
       children: [],
     }, {
       label: "Q2",
-      prop: "2019-Q2",
+      prop: "2021-Q2",
       children: [],
     }, {
       label: "Q3",
-      prop: "2019-Q3",
+      prop: "2021-Q3",
       children: [],
     }, {
       label: "Q4",
-      prop: "2019-Q4",
+      prop: "2021-Q4",
       children: [],
     }],
   }],

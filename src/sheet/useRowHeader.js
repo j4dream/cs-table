@@ -39,7 +39,7 @@ export default function useRowHeader(rawHeader) {
   }, [rawHeader, flattenRow, allColumns]);
 
   return {
-    header: allColumns,
+    rowHeader: allColumns,
     ...measure,
   };
   

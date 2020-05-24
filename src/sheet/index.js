@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
@@ -7,17 +7,22 @@ import { getScrollBarWidth } from '../table/util';
 
 export default function(props) {
 
-  const { height = 400 } = props;
+  const {
+    colHeader,
+    rowHeader,
+    data,
+    height = 400,
+    width = 800,
+    renderCell  = (record, rowProp, colProp, data) => record,
+  } = props;
 
   const {
-    header: colHeader,
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
   } = useColHeader(props.colHeader);
 
   const {
-    header: rowHeader,
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
@@ -26,6 +31,14 @@ export default function(props) {
   const dataAreaRef = useRef();
   const rowHeaderRef = useRef();
   const colHeaderRef = useRef();
+
+  // component state
+  const [{dynColHeader, dynRowHeader}, setState] = useState(() => {
+    return {
+      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf,  'width', width),
+      dynRowHeader: getSubTreeFromStartNode(0, rowHeaderLeaf, 'height', height),
+    };
+  });
 
   const cacheRef = useRef({
     colIndexCache: 0,
@@ -42,24 +55,34 @@ export default function(props) {
 
     const { colIndexCache, rowIndexCache } = cacheRef.current;
 
-    // 
     const currColIndex = binSearch(scrollLeft, colHeaderLeaf, 'width');
+    const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
+
+    // if stay on same cell, do not rerender table.
+    if (colIndexCache === currColIndex && rowIndexCache === currRowIndex) return;
+
+    let newCol;
     if (colIndexCache !== currColIndex) {
       // todo get sub tree;
-      const cls = getSubTreeFromStartNode(currColIndex, colHeaderLeaf,  'width', clientWidth);
-      console.log('cls', cls);
+      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf,  'width', clientWidth);
+      cacheRef.current.colIndexCache = currColIndex;
     }
 
-    const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
+    let newRow;
     if (rowIndexCache !== currRowIndex) {
       // todo get sub tree;
-      const wls = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
-      console.log('wls', wls);
+      newRow = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
+      cacheRef.current.rowIndexCache = currRowIndex;
     }
-    
-  }, []);
 
-  console.log(colHeader);
+    setState((pre) => {
+      return {
+        dynColHeader: newCol ? newCol : pre.dynColHeader,
+        dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+      };
+    });
+    
+  }, [setState]);
 
   return (
     <div
@@ -95,9 +118,10 @@ export default function(props) {
           }}        
         >
         {
-          colHeader.map(({top, left, width, height, label}) => (
+          dynColHeader.map(({top, left, width, height, label, prop}) => (
             <div
               className="header"
+              key={prop}
               style={{
                 position: 'absolute',
                 top: top,
@@ -129,9 +153,10 @@ export default function(props) {
           }}
         >
           {
-            rowHeader.map( ({top, left, width, height, label}) => (
+            dynRowHeader.map( ({top, left, width, height, label, prop}) => (
               <div
                 className="header"
+                key={prop}
                 style={{
                   position: 'absolute',
                   top: top,
@@ -166,8 +191,8 @@ export default function(props) {
           }}
         >
           {
-            colHeaderLeaf.map((col, colIndex) => (
-              rowHeaderLeaf.map((row, rowIndex) => (
+            rowHeaderLeaf.map((row, rowIndex) => (
+              colHeaderLeaf.map((col, colIndex) => (
                 <div
                   className="cell"
                   key={`d-a-${rowIndex}-${colIndex}`}
@@ -179,7 +204,9 @@ export default function(props) {
                     top: row.top,
                   }}
                 >
-                  cell
+                  {
+                    renderCell(data[row.prop][col.prop], row.prop, col.prop, data)
+                  }
                 </div>
               ))
             ))

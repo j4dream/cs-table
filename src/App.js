@@ -33,11 +33,11 @@ export default class App extends React.Component {
         <div style={{margin: 15}}>
           <Sheet />
         </div>
-        <Table
+        {/* <Table
           columnHeader={columnHeader}
           rowHeader={rowHeader}
           data={data}
-        />
+        /> */}
       </div>
     );
   }

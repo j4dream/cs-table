@@ -13,8 +13,6 @@ function falttenTree(tree) {
 }
 
 export function precessTree(columns = [], spanSeq, opts) {
-
-  console.log('process tree');
   let maxLevel = 1;
 
   const [firstSpan, secondSpan] = spanSeq;
@@ -82,7 +80,6 @@ export function precessTree(columns = [], spanSeq, opts) {
 }
 
 export function getLeafNodes(nodes = []) {
-  console.log('getLeafNodes');
   const result = [];
   nodes.forEach((node) => {
     if (node.children && node.children.length) {
@@ -96,7 +93,6 @@ export function getLeafNodes(nodes = []) {
 
 export function getDeepestNodePath(allNode = []) {
   // deepest node
-  console.log('getDeepestNodePath');
   let dn = allNode[allNode.length-1];
   const deepestPath = [];
   while(dn) {
@@ -115,7 +111,6 @@ export function getDeepestNodePath(allNode = []) {
 
 export function travelToRootFromLeafNodes(leafNodes, prop, defaultValue) {
   // leaf nodes; Complexity: O(leaf.length * deepest);
-  console.log('travelToRootFromLeafNodes');
   leafNodes.forEach((node) => {
     node[prop] = node[prop] || defaultValue
     let accValue = node[prop];
@@ -130,7 +125,6 @@ export function travelToRootFromLeafNodes(leafNodes, prop, defaultValue) {
 }
 
 export function calcNodeOffsetFormFalttenHeader(flattenRow, prop, measure) {
-  console.log('calcNodeOffsetFormFalttenHeader');
   for (let i = 0, iLength = flattenRow.length; i < iLength; i++) {
     let acc = 0;
     for (let j = 0, jLength = flattenRow[i].length; j < jLength; j++) {
@@ -149,7 +143,6 @@ export function calcNodeOffsetFormFalttenHeader(flattenRow, prop, measure) {
 }
 
 export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
-  console.log('calcMeasureFromDeepestPath');
   for (let i = 0, iLength = allNode.length; i < iLength; i++) {
     const { rowSpan, colSpan, level } = allNode[i];
     if (deepestPath.indexOf(allNode[i]) !== -1) continue;
@@ -164,7 +157,8 @@ export function binSearch(scroll, arr, measure) {
   let start = 0,
       mid = Math.floor(arr.length / 2),
       end = arr.length;
-  
+
+  // if not scroll, return start;
   if (arr.length && arr[0][measure] > scroll) {
     return start;
   }
@@ -205,7 +199,5 @@ export function getSubTreeFromStartNode(startIndex, leafNodes, measure, measuerL
     }
   });
 
-  return [
-    [...parentHeaderInView, ...subLeafNode]
-  ];
+  return [...parentHeaderInView, ...subLeafNode];
 }

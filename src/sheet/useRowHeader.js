@@ -8,10 +8,10 @@ import {
   calcMeasureFromDeepestPath,
 } from './util';
 
-export default function useRowHeader(rawHeader) {
+export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeight}) {
 
   const [{flattenRow, allColumns},] = useState(
-    precessTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: 100 })
+    precessTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
   );
 
   const measure = useMemo(() => {
@@ -19,13 +19,13 @@ export default function useRowHeader(rawHeader) {
     const leafNodes = getLeafNodes(rawHeader);
 
     // caculate height;
-    travelToRootFromLeafNodes(leafNodes, 'height', 40);
+    travelToRootFromLeafNodes(leafNodes, 'height', cellHeight);
 
     // caculate top;
     calcNodeOffsetFormFalttenHeader(flattenRow, 'top', 'height');
 
     // use deepestnode store width
-    const deepestNodePath = getDeepestNodePath(allColumns);
+    const deepestNodePath = getDeepestNodePath(allColumns, cellWidth, cellHeight);
     calcMeasureFromDeepestPath(allColumns, deepestNodePath, 'width');
 
     const rowHeaderWidth = deepestNodePath.reduce((acc, curr) => acc + curr.width, 0);

@@ -13,6 +13,8 @@ export default function(props) {
     data,
     height = 400,
     width = 800,
+    cellHeight = 40,
+    cellWidth = 100,
     renderCell  = (record, rowProp, colProp, data) => record,
   } = props;
 
@@ -20,13 +22,13 @@ export default function(props) {
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
-  } = useColHeader(props.colHeader);
+  } = useColHeader({colHeader, cellWidth, cellHeight});
 
   const {
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
-  } = useRowHeader(props.rowHeader);
+  } = useRowHeader({rowHeader, cellWidth, cellHeight});
 
   const dataAreaRef = useRef();
   const rowHeaderRef = useRef();

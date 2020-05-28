@@ -91,16 +91,16 @@ export function getLeafNodes(nodes = []) {
   return result;
 }
 
-export function getDeepestNodePath(allNode = []) {
+export function getDeepestNodePath(allNode = [], cellWidth, cellHeight) {
   // deepest node
   let dn = allNode[allNode.length-1];
   const deepestPath = [];
   while(dn) {
     if (!dn.height) {
-      dn.height = 40;
+      dn.height = cellHeight;
     }
     if (!dn.width) {
-      dn.width = 100;
+      dn.width = cellWidth;
     }
     deepestPath.unshift(dn);
     dn = dn.parent;

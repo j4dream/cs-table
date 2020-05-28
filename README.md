@@ -4,6 +4,8 @@ Supports large amounts of data, built using react hooks.
 
 [Demo](https://j4dream.github.io/cs-table/)
 
+## Table
+
 ```
 import Table from 'virtualized-sc-table';
 
@@ -55,3 +57,12 @@ preventScroll: Boolean | false | toggle scroll, prevent scroll
 enableResize: Boolean | false | resize col width
 renderCell: Function | (record, rowIndex, prop, header) => record | 
 renderHeader: Function | (header, prop) => header.label | 
+
+## Sheet  
+Sheet can support grouping column header and row header.
+props | default | Desc
+---|---|---|
+colHeader: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
+colHeader: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
+data: Array | {} | required *, tabel data [{ name: 'DDR' }]
+renderCell: Function | (record, rowProp, colProp, data) => record | 

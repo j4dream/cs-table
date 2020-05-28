@@ -39,6 +39,11 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -53,7 +58,8 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
-    "@babel/preset-react": "^7.9.4"
+    "@babel/preset-react": "^7.9.4",
+    "cz-conventional-changelog": "^3.2.0"
   },
   "babel": {
     "presets": [

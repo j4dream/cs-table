@@ -25,6 +25,8 @@ export default function() {
           rowHeader={rowHeader}
           colHeader={colHeader}
           data={data}
+          cellWidth={120}
+          cellHeight={44}
           enableResize
           enableSortHeader
         />

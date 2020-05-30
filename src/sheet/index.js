@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
@@ -7,17 +7,22 @@ import { getScrollBarWidth } from '../table/util';
 
 export default function(props) {
 
-  const { height = 400 } = props;
+  const {
+    colHeader,
+    rowHeader,
+    data,
+    height = 400,
+    width = 800,
+    renderCell  = (record, rowProp, colProp, data) => record,
+  } = props;
 
   const {
-    header: colHeader,
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
   } = useColHeader(props.colHeader);
 
   const {
-    header: rowHeader,
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
@@ -27,37 +32,57 @@ export default function(props) {
   const rowHeaderRef = useRef();
   const colHeaderRef = useRef();
 
+  // component state
+  const [{dynColHeader, dynRowHeader}, setState] = useState(() => {
+    return {
+      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf,  'width', width),
+      dynRowHeader: getSubTreeFromStartNode(0, rowHeaderLeaf, 'height', height),
+    };
+  });
+
   const cacheRef = useRef({
     colIndexCache: 0,
     rowIndexCache: 0,
   });
 
+  // cache index, No need 'throttle' for the moment.
   const handleScroll = useCallback((e) => {
     const target = e.currentTarget;
     if (!target) return;
-    const { scrollTop, scrollLeft } = target;
+    const { scrollTop, scrollLeft, clientHeight, clientWidth } = target;
     colHeaderRef.current.scrollLeft = scrollLeft;
     rowHeaderRef.current.scrollTop = scrollTop;
 
     const { colIndexCache, rowIndexCache } = cacheRef.current;
 
     const currColIndex = binSearch(scrollLeft, colHeaderLeaf, 'width');
+    const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
+
+    // if stay on same cell, do not rerender table.
+    if (colIndexCache === currColIndex && rowIndexCache === currRowIndex) return;
+
+    let newCol;
     if (colIndexCache !== currColIndex) {
       // todo get sub tree;
-      // getSubTreeFromStartNode(scrollLeft, colHeaderLeaf, 800, 'left');
+      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf,  'width', clientWidth);
+      cacheRef.current.colIndexCache = currColIndex;
     }
 
-    const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
+    let newRow;
     if (rowIndexCache !== currRowIndex) {
       // todo get sub tree;
-      // getSubTreeFromStartNode(scrollTop, rowHeaderLeaf, 800, 'top');
+      newRow = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
+      cacheRef.current.rowIndexCache = currRowIndex;
     }
 
+    setState((pre) => {
+      return {
+        dynColHeader: newCol ? newCol : pre.dynColHeader,
+        dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+      };
+    });
     
-    
-  }, []);
-
-  console.log(colHeader);
+  }, [setState]);
 
   return (
     <div
@@ -93,21 +118,20 @@ export default function(props) {
           }}        
         >
         {
-          colHeader.map( cls => (
-            cls.map(cl => (
-              <div
-                className="header"
-                style={{
-                  position: 'absolute',
-                  top: cl.top,
-                  left: cl.left,
-                  width: cl.width,
-                  height: cl.height,
-                }}
-              >
-                {cl.label}
-              </div>
-            ))
+          dynColHeader.map(({top, left, width, height, label, prop}) => (
+            <div
+              className="header"
+              key={prop}
+              style={{
+                position: 'absolute',
+                top: top,
+                left: left,
+                width: width,
+                height: height,
+              }}
+            >
+              {label}
+            </div>
           ))
         }
         </div>
@@ -129,21 +153,20 @@ export default function(props) {
           }}
         >
           {
-            rowHeader.map( cls => (
-              cls.map(cl => (
-                <div
-                  className="header"
-                  style={{
-                    position: 'absolute',
-                    top: cl.top,
-                    left: cl.left,
-                    width: cl.width,
-                    height: cl.height,
-                  }}
-                >
-                  {cl.label}
-                </div>
-              ))
+            dynRowHeader.map( ({top, left, width, height, label, prop}) => (
+              <div
+                className="header"
+                key={prop}
+                style={{
+                  position: 'absolute',
+                  top: top,
+                  left: left,
+                  width: width,
+                  height: height,
+                }}
+              >
+                {label}
+              </div>
             ))
           }
         </div>
@@ -168,8 +191,8 @@ export default function(props) {
           }}
         >
           {
-            colHeaderLeaf.map((col, colIndex) => (
-              rowHeaderLeaf.map((row, rowIndex) => (
+            rowHeaderLeaf.map((row, rowIndex) => (
+              colHeaderLeaf.map((col, colIndex) => (
                 <div
                   className="cell"
                   key={`d-a-${rowIndex}-${colIndex}`}
@@ -181,7 +204,9 @@ export default function(props) {
                     top: row.top,
                   }}
                 >
-                  cell
+                  {
+                    renderCell(data[row.prop][col.prop], row.prop, col.prop, data)
+                  }
                 </div>
               ))
             ))

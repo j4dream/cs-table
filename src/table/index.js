@@ -125,6 +125,7 @@ export const Provider = (props) => {
     });
   }, [data, restHeader, fixedLeft, keepScrollStatus]);
 
+  // cache index, No need 'throttle' for the moment.
   const handleScroll = useCallback((e) => {
     const cellTarget = e.currentTarget;
     if (!cellTarget) return;

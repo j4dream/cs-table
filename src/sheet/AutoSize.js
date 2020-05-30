@@ -2,7 +2,7 @@ import React from 'react';
 import Sheet from './index';
 import { useSize } from '../hooks/useSize';
 
-export default function(props) {
+export default function (props) {
   const [state, ref] = useSize();
   const { width, height } = state;
 
@@ -15,7 +15,7 @@ export default function(props) {
       }}
     >
       {
-        !!width && !!height && <Sheet {...props} width={width} height={height}/>
+        !!width && !!height && <Sheet {...props} width={width} height={height} />
       }
     </div>
   );

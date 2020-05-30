@@ -4,8 +4,9 @@ import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 import { getSubTreeFromStartNode, binSearch } from './util';
 import { getScrollBarWidth } from '../table/util';
+import { ColHeader } from './ColHeader';
 
-export default function(props) {
+export default function (props) {
 
   const {
     colHeader,
@@ -15,29 +16,34 @@ export default function(props) {
     width = 800,
     cellHeight = 40,
     cellWidth = 100,
-    renderCell  = (record, rowProp, colProp, data) => record,
+    renderCell = (record, rowProp, colProp, data) => record,
+    enableColResize = false,
+    enableRowResize = false,
   } = props;
 
   const {
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
-  } = useColHeader({colHeader, cellWidth, cellHeight});
+    rebuildHeaderTree,
+  } = useColHeader({ colHeader, cellWidth, cellHeight });
 
   const {
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
-  } = useRowHeader({rowHeader, cellWidth, cellHeight});
+  } = useRowHeader({ rowHeader, cellWidth, cellHeight });
 
+  const sheetRef = useRef();
   const dataAreaRef = useRef();
   const rowHeaderRef = useRef();
   const colHeaderRef = useRef();
+  const colResizeProxyRef = useRef();
 
   // component state
-  const [{dynColHeader, dynRowHeader}, setState] = useState(() => {
+  const [{ dynColHeader, dynRowHeader }, setState] = useState(() => {
     return {
-      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf,  'width', width),
+      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf, 'width', width),
       dynRowHeader: getSubTreeFromStartNode(0, rowHeaderLeaf, 'height', height),
     };
   });
@@ -66,7 +72,7 @@ export default function(props) {
     let newCol;
     if (colIndexCache !== currColIndex) {
       // todo get sub tree;
-      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf,  'width', clientWidth);
+      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf, 'width', clientWidth);
       cacheRef.current.colIndexCache = currColIndex;
     }
 
@@ -83,7 +89,7 @@ export default function(props) {
         dynRowHeader: newRow ? newRow : pre.dynRowHeader,
       };
     });
-    
+
   }, [setState]);
 
   return (
@@ -93,6 +99,7 @@ export default function(props) {
         height,
         position: 'relative',
       }}
+      ref={sheetRef}
     >
 
       <div
@@ -112,31 +119,16 @@ export default function(props) {
         }}
         ref={colHeaderRef}
       >
-        <div
-          style={{
-            position: 'relative',
-            height: colHeaderHeight,
-            width: colHeaderWidth + getScrollBarWidth(),
-          }}        
-        >
-        {
-          dynColHeader.map(({top, left, width, height, label, prop}) => (
-            <div
-              className="header"
-              key={prop}
-              style={{
-                position: 'absolute',
-                top: top,
-                left: left,
-                width: width,
-                height: height,
-              }}
-            >
-              {label}
-            </div>
-          ))
-        }
-        </div>
+        <ColHeader
+          dynColHeader={dynColHeader}
+          colHeaderHeight={colHeaderHeight}
+          colHeaderWidth={colHeaderWidth}
+          containerRef={sheetRef}
+          colResizeProxyRef={colResizeProxyRef}
+          enableColResize={enableColResize}
+          enableRowResize={enableRowResize}
+          onUpdate={rebuildHeaderTree}
+        />
       </div>
 
       <div className="cs-sheet-row-header"
@@ -155,7 +147,7 @@ export default function(props) {
           }}
         >
           {
-            dynRowHeader.map( ({top, left, width, height, label, prop}) => (
+            dynRowHeader.map(({ top, left, width, height, label, prop }) => (
               <div
                 className="header"
                 key={prop}
@@ -215,6 +207,12 @@ export default function(props) {
           }
         </div>
       </div>
+
+      <div
+        className="resize-col-proxy"
+        ref={colResizeProxyRef}
+        style={{ visibility: 'hidden' }}
+      />
 
     </div>
   )

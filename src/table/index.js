@@ -26,6 +26,7 @@ export const Provider = (props) => {
     children,
     preventScroll = false,
     enableResize = false,
+    keepScrollStatus = false
   } = props;
 
   const dataAreaRef = useRef();
@@ -65,6 +66,15 @@ export const Provider = (props) => {
     colStartIndex: 0,
   }));
 
+  // when data update, scroll to other pos, need to cache prev pos;
+  const scrollStatusCacheRef = useRef({
+    colIndex: 0,
+    rowIndex: 0,
+    scrollTop: 0,
+    colCount: initWidthCountRef.current,
+    rowCount: initHeightCountRef.current,
+  })
+
   // props update
   useUpdateEffect(() => {
     setDataAreaState((preState) => {
@@ -74,26 +84,46 @@ export const Provider = (props) => {
         fixedLeftCol: preFixedLeftCol,
       } = preState;
 
+      const {
+        colIndex,
+        rowIndex,
+        colCount,
+        rowCount,
+        scrollTop,
+      } = scrollStatusCacheRef.current;
+
       if (preData !== data) {
-        preState.processedData = getRangeFromArr(data, 0, initHeightCountRef.current);
+        preState.processedData = getRangeFromArr(
+          data,
+          keepScrollStatus ? rowIndex : 0,
+          rowCount || initHeightCountRef.current
+        );
       }
 
       if (preHeader !== header) {
-        preState.processedHeader = getRangeFromArr(restHeader, 0, initWidthCountRef.current);
+        preState.processedHeader = getRangeFromArr(
+          restHeader,
+          keepScrollStatus ? colIndex : 0,
+          colCount || initWidthCountRef.current
+        );
       } 
 
       if (preFixedLeftCol !== fixedLeft) {
         preState.fixedLeftCol = fixedLeft
       }
 
+      if (keepScrollStatus) {
+        fixedColLeftRef.current && fixedColLeftRef.current.scrollTo(0, scrollTop);
+      } else {
+        dataAreaRef.current && dataAreaRef.current.scrollTo(0, 0)
+        fixedColLeftRef.current && fixedColLeftRef.current.scrollTo(0, 0);
+      }
+
       return {
         ...preState,
       };
     });
-  }, [data, restHeader, fixedLeft]);
-
-  const colCacheIndexRef = useRef(0);
-  const rowCacheIndexRef = useRef(0);
+  }, [data, restHeader, fixedLeft, keepScrollStatus]);
 
   // cache index, No need 'throttle' for the moment.
   const handleScroll = useCallback((e) => {
@@ -105,10 +135,6 @@ export const Provider = (props) => {
       offsetWidth: oWidth,
       offsetHeight: oHeight,
     } = cellTarget;
-
-    // disable resize
-    // const colStartIndex = Math.floor(sLeft / cellWidth),
-    //       colRenderCount = Math.ceil(oWidth / cellWidth);
 
     let colStartIndex, colRenderCount;
     if (enableResize) {
@@ -131,11 +157,16 @@ export const Provider = (props) => {
       fixedColLeftRef.current.scrollTop = sTop;
     }
 
+    const scrollStatus = scrollStatusCacheRef.current;
+
     // if stay on same cell, do not rerender table.
-    if (colCacheIndexRef.current === colStartIndex && rowCacheIndexRef.current === rowStartIndex) return;
+    if (scrollStatus.colIndex === colStartIndex && scrollStatus.rowIndex === rowStartIndex) return;
     // assign new pos.
-    colCacheIndexRef.current = colStartIndex;
-    rowCacheIndexRef.current = rowStartIndex;
+    scrollStatus.colIndex = colStartIndex;
+    scrollStatus.rowIndex = rowStartIndex;
+    scrollStatus.colCount = colRenderCount;
+    scrollStatus.rowCount = rowRenderCount;
+    scrollStatus.scrollTop = sTop;
 
     const processedHeader = getRangeFromArr(restHeader, colStartIndex, colRenderCount);
     const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);

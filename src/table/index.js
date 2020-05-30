@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import CSTable from './CSTable';
 import { getScrollBarWidth, processHeaderWidth, getMutableIndexAndCount } from './util';
-import useUpdateEffect from './useUpdateEffect';
+import useUpdateEffect from '../hooks/useUpdateEffect';
 
 const CSTableContext = React.createContext({});
 

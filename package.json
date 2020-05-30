@@ -32,6 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "commit": "git-cz",
     "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"

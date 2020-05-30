@@ -4,9 +4,7 @@ Supports large amounts of data, built using react hooks.
 
 [Demo](https://j4dream.github.io/cs-table/)
 
-## Table
-
-```
+```javascript
 import Table from 'virtualized-sc-table';
 
 const header = [
@@ -54,6 +52,7 @@ props | default | Desc
 header: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
 data: Array | [] | required *, tabel data [{ name: 'DDR' }]
 preventScroll: Boolean | false | toggle scroll, prevent scroll
+keepScrollStatus: Boolean | false | when data or header update, keep scroll status, ortherwise scroll to {0, 0}
 enableResize: Boolean | false | resize col width
 renderCell: Function | (record, rowIndex, prop, header) => record | 
 renderHeader: Function | (header, prop) => header.label | 

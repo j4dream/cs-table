@@ -37,6 +37,7 @@ export default function() {
       draggingCol.current = currHeader.dataset.prop;
     } else {
       bodyStyle.cursor = '';
+      draggingCol.current = null;
     }
   }, []);
 

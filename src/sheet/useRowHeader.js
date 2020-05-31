@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   precessTree,
   getLeafNodes,
@@ -6,15 +6,16 @@ import {
   calcNodeOffsetFormFalttenHeader,
   getDeepestNodePath,
   calcMeasureFromDeepestPath,
+  calcDeepsetNodePathOffset,
 } from './util';
 
 export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeight}) {
 
-  const [{flattenRow, allColumns},] = useState(
-    precessTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
-  );
+  const {flattenRow, allColumns}= useMemo(
+    () => precessTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
+  , []);
 
-  const measure = useMemo(() => {
+  const buildHeaderTree = useCallback(() => {
     // use leaf nodes calc width & prop
     const leafNodes = getLeafNodes(rawHeader);
 
@@ -26,6 +27,7 @@ export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeigh
 
     // use deepestnode store width
     const deepestNodePath = getDeepestNodePath(allColumns, cellWidth, cellHeight);
+    calcDeepsetNodePathOffset(deepestNodePath, 'width');
     calcMeasureFromDeepestPath(allColumns, deepestNodePath, 'width');
 
     const rowHeaderWidth = deepestNodePath.reduce((acc, curr) => acc + curr.width, 0);
@@ -35,11 +37,21 @@ export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeigh
       rowHeaderWidth,
       rowHeaderHeight,
       rowHeaderLeaf: leafNodes,
+      rowDeepestPath: deepestNodePath,
     }
   }, [rawHeader, flattenRow, allColumns]);
 
+  const [measure, setMeasure] = useState(() => buildHeaderTree());
+
+  const rebuildRowHeader = useCallback(() => {
+    setMeasure(buildHeaderTree());
+  }, [buildHeaderTree, setMeasure]);
+
+  console.log(allColumns);
+
   return {
     rowHeader: allColumns,
+    rebuildRowHeader,
     ...measure,
   };
   

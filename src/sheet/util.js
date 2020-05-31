@@ -110,6 +110,14 @@ export function getDeepestNodePath(allNode = [], cellWidth, cellHeight) {
   return deepestPath;
 }
 
+export function calcDeepsetNodePathOffset(deepestPath, measure) {
+  const offsetType = measure === 'width' ? 'left' : 'top';
+  deepestPath.reduce((acc, curr) => {
+    curr[offsetType] = acc;
+    return acc + curr[measure];
+  }, 0);
+}
+
 export function travelToRootFromLeafNodes(leafNodes, prop, defaultValue) {
   // leaf nodes; Complexity: O(leaf.length * deepest);
   const set = new Set();
@@ -152,9 +160,13 @@ export function calcNodeOffsetFormFalttenHeader(flattenRow, prop, measure) {
 }
 
 export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
+  const offsetType = measure === 'width' ? 'left' : 'top';
   for (let i = 0, iLength = allNode.length; i < iLength; i++) {
-    const { rowSpan, colSpan, level } = allNode[i];
+    const node = allNode[i];
+    const { rowSpan, colSpan, level } = node;
     if (deepestPath.indexOf(allNode[i]) !== -1) continue;
+    node[offsetType] = deepestPath[node.level][offsetType];
+    console.log(node);
     allNode[i][measure] = 0;
     for (var j = level, jLength = (measure === 'height' ? rowSpan : colSpan) + level; j < jLength; j++) {
       allNode[i][measure] += deepestPath[j][measure];

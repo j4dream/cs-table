@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useRef, useMemo } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 import { CSTableContext } from './index';
 import useResize from '../hooks/useResize';
 import { processHeaderWidth } from './util';

@@ -3,8 +3,8 @@ import React, { useRef, useCallback, useState } from 'react';
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 import { getSubTreeFromStartNode, binSearch } from './util';
-import { getScrollBarWidth } from '../table/util';
 import { ColHeader } from './ColHeader';
+import { RowHeader } from './RowHeader';
 
 export default function (props) {
 
@@ -25,13 +25,15 @@ export default function (props) {
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
-    rebuildHeaderTree,
+    rebuildColHeader,
   } = useColHeader({ colHeader, cellWidth, cellHeight });
 
   const {
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
+    rebuildRowHeader,
+    rowDeepestPath,
   } = useRowHeader({ rowHeader, cellWidth, cellHeight });
 
   const sheetRef = useRef();
@@ -127,7 +129,7 @@ export default function (props) {
           colResizeProxyRef={colResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
-          onUpdate={rebuildHeaderTree}
+          onUpdate={rebuildColHeader}
         />
       </div>
 
@@ -139,31 +141,17 @@ export default function (props) {
         }}
         ref={rowHeaderRef}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: rowHeaderWidth,
-            height: rowHeaderHeight + getScrollBarWidth(),
-          }}
-        >
-          {
-            dynRowHeader.map(({ top, left, width, height, label, prop }) => (
-              <div
-                className="header"
-                key={prop}
-                style={{
-                  position: 'absolute',
-                  top: top,
-                  left: left,
-                  width: width,
-                  height: height,
-                }}
-              >
-                {label}
-              </div>
-            ))
-          }
-        </div>
+        <RowHeader
+          dynRowHeader={dynRowHeader}
+          rowDeepestPath={rowDeepestPath}
+          rowHeaderHeight={rowHeaderHeight}
+          rowHeaderWidth={rowHeaderWidth}
+          containerRef={sheetRef}
+          colResizeProxyRef={colResizeProxyRef}
+          enableColResize={enableColResize}
+          enableRowResize={enableRowResize}
+          onUpdate={rebuildRowHeader}
+        />
       </div>
 
       <div

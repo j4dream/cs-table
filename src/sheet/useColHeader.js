@@ -10,9 +10,9 @@ import {
 
 export default function useColHeader({colHeader: rawHeader, cellWidth, cellHeight}) {
 
-  const [{flattenRow, allColumns}] = useState(
+  const {flattenRow, allColumns} = useMemo(
     () =>  precessTree(rawHeader, ['colSpan', 'rowSpan'], { calcTop: cellHeight })
-  );
+  , []);
 
   const buildHeaderTree = useCallback(() => {
     // use leaf nodes calc width & prop
@@ -40,13 +40,13 @@ export default function useColHeader({colHeader: rawHeader, cellWidth, cellHeigh
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
 
-  const rebuildHeaderTree = useCallback(() => {
+  const rebuildColHeader = useCallback(() => {
     setMeasure(buildHeaderTree());
   }, [buildHeaderTree, setMeasure]);
  
   return {
     colHeader: allColumns,
-    rebuildHeaderTree,
+    rebuildColHeader,
     ...measure,
   };
   

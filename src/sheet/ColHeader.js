@@ -1,7 +1,10 @@
 import React, { useMemo, useCallback } from 'react';
 import { getScrollBarWidth } from '../table/util';
 import useResize from '../hooks/useResize';
+import useDraggable from '../hooks/useDraggable';
+import { useDrag, useDrop } from '../hooks/useDragAndDrop';
 import { getLastNode } from './util';
+import HeaderCell from './HeaderCell';
 
 export function ColHeader({
   dynColHeader,
@@ -12,6 +15,7 @@ export function ColHeader({
   containerRef,
   colResizeProxyRef,
   onUpdate,
+  enableSorting = true,
 }) {
 
   const onResizeStop = useCallback((offset, prop) => {
@@ -43,6 +47,23 @@ export function ColHeader({
       : {}
   ), [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown]);
 
+  const getDragProps = useDrag();
+  const dropProps = useDrop({
+    onDrop: () => {}
+  });
+
+  const {
+    handleMouseDown: onDrapClick,
+  } = useDraggable();
+
+  const dragProps = useMemo(() => (
+    enableSorting
+      ? {
+        onMouseDown: onDrapClick,
+      }
+      : {}
+  ), []);
+
   return (
     <div
       style={{
@@ -52,22 +73,8 @@ export function ColHeader({
       }}
     >
       {
-        dynColHeader.map(({ top, left, width, height, label, prop }) => (
-          <div
-            className="header"
-            key={prop}
-            style={{
-              position: 'absolute',
-              top: top,
-              left: left,
-              width: width,
-              height: height,
-            }}
-            data-prop={prop}
-            {...resizeProps}
-          >
-            {label}
-          </div>
+        dynColHeader.map((header) => (
+          <HeaderCell key={header.prop} header={header} resizeProps={resizeProps}/>
         ))
       }
     </div>

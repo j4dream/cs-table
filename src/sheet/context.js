@@ -4,13 +4,9 @@ const CSSheetContext = React.createContext({});
 
 export const CSSheetProvider = (props) => {
 
-  const { children } = props;
-
-  const [state, setState] = useState({
-
-  });
+  const { children, ctx } = props;
 
   return (
-    <CSSheetContext.Provider>{children}</CSSheetContext.Provider>
+    <CSSheetContext.Provider ctx={ctx}>{children}</CSSheetContext.Provider>
   );
 }

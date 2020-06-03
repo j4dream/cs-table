@@ -13,6 +13,7 @@ export function RowHeader({
   containerRef,
   colResizeProxyRef,
   onUpdate,
+  enableSorting = true,
 }) {
 
   const onResizeStop = useCallback((offset, prop) => {

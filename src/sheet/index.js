@@ -201,7 +201,6 @@ export default function (props) {
         ref={colResizeProxyRef}
         style={{ visibility: 'hidden' }}
       />
-
     </div>
   )
 }

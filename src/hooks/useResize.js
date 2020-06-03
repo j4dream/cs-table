@@ -6,7 +6,6 @@ export default function useResize ({
   container,
   colResizeProxy,
   onResizeStop,
-  direction = 'hori',
 }) {
 
   const isDraggingRef = useRef(false);
@@ -14,7 +13,7 @@ export default function useResize ({
   const startPosRef = useRef();
 
   const handleResizeStart = useCallback((e) => {
-    const movedDistance = e.clientX - container.current.getBoundingClientRect().left
+    const movedDistance = e.clientX - container.current.getBoundingClientRect().left;
     colResizeProxy.current.style.left = movedDistance + 'px';
     document.body.style.cursor = 'col-resize';
   }, [colResizeProxy, container.current]);
@@ -67,7 +66,6 @@ export default function useResize ({
 
       document.addEventListener('mousemove', handleResizeStart);
       document.addEventListener('mouseup', handleResizeStop);
-
     }
   }, [colResizeProxy, handleResizeStart, handleResizeStop, container]);
 

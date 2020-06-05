@@ -1,8 +1,6 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import { getScrollBarWidth } from '../table/util';
 import useResize from '../hooks/useResize';
-import useDraggable from '../hooks/useDraggable';
-import { useDrag, useDrop } from '../hooks/useDragAndDrop';
 import { getLastNode } from './util';
 import HeaderCell from './HeaderCell';
 
@@ -47,22 +45,7 @@ export function ColHeader({
       : {}
   ), [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown]);
 
-  const getDragProps = useDrag();
-  const dropProps = useDrop({
-    onDrop: () => {}
-  });
-
-  const {
-    handleMouseDown: onDrapClick,
-  } = useDraggable();
-
-  const dragProps = useMemo(() => (
-    enableSorting
-      ? {
-        onMouseDown: onDrapClick,
-      }
-      : {}
-  ), []);
+  const dragRef = useRef('UNDEFINED_SHEET');
 
   return (
     <div
@@ -74,7 +57,7 @@ export function ColHeader({
     >
       {
         dynColHeader.map((header) => (
-          <HeaderCell key={header.prop} header={header} resizeProps={resizeProps}/>
+          <HeaderCell key={header.prop} header={header} resizeProps={resizeProps} dragRef={dragRef}/>
         ))
       }
     </div>

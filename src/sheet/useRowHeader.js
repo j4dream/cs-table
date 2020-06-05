@@ -47,8 +47,6 @@ export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeigh
     setMeasure(buildHeaderTree());
   }, [buildHeaderTree, setMeasure]);
 
-  console.log(allColumns);
-
   return {
     rowHeader: allColumns,
     rebuildRowHeader,

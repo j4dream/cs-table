@@ -15,11 +15,13 @@ interface Header {
 interface HeaderProps {
   header: Header;
   resizeProps: object;
+  dragRef: React.MutableRefObject<string>;
 }
 
 export default ({
   header,
   resizeProps,
+  dragRef,
 }: HeaderProps) => {
 
   const {
@@ -31,12 +33,16 @@ export default ({
     label
   }= header;
 
-  const getDragProps = useDrag();
-  const {dropProps, hoverProp} = useDrop({
-    onDrop: () => {}
+  const getDragProps = useDrag(() => {
+    dragRef.current = header.parent?.prop;
   });
 
-  console.log( hoverProp === header.parent?.prop);
+  const {dropProps, hoverProp} = useDrop({
+    handleDrop: (p) => {
+      // TODO: do switch position here
+      console.log('ondrop: ', dragRef.current);
+    }
+  });
 
   return (
     <div
@@ -47,7 +53,9 @@ export default ({
         left: left,
         width: width,
         height: height,
-        outline: hoverProp === header.parent?.prop ? '1px dashed blue' : 'none',
+        outline: hoverProp === dragRef.current
+                  ? '2px dashed green'
+                  : 'none',
         outlineOffset: -2
       }}
       data-prop={prop}

@@ -166,7 +166,6 @@ export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
     const { rowSpan, colSpan, level } = node;
     if (deepestPath.indexOf(allNode[i]) !== -1) continue;
     node[offsetType] = deepestPath[node.level][offsetType];
-    console.log(node);
     allNode[i][measure] = 0;
     for (var j = level, jLength = (measure === 'height' ? rowSpan : colSpan) + level; j < jLength; j++) {
       allNode[i][measure] += deepestPath[j][measure];

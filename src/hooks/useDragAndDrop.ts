@@ -20,6 +20,7 @@ export const useDrop = (opts: DropOpts) => {
     },
     onDragEnter: (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault();
+      console.log('onender dataset: ', e.currentTarget.dataset);
       setHoverProp(e.currentTarget.dataset.parentProp as string);
     },
     onDragLeave: () => {

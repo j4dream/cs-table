@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import {
-  precessTree,
+  processTree,
   calcNodeOffsetFormFalttenHeader,
   getLeafNodes,
   travelToRootFromLeafNodes,
@@ -11,7 +11,7 @@ import {
 export default function useColHeader({colHeader: rawHeader, cellWidth, cellHeight}) {
 
   const {flattenRow, allColumns} = useMemo(
-    () =>  precessTree(rawHeader, ['colSpan', 'rowSpan'], { calcTop: cellHeight })
+    () =>  processTree(rawHeader, ['colSpan', 'rowSpan'], { calcTop: cellHeight })
   , []);
 
   const buildHeaderTree = useCallback(() => {

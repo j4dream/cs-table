@@ -12,7 +12,7 @@ function falttenTree(tree) {
   return allNodes;
 }
 
-export function precessTree(columns = [], spanSeq, opts) {
+export function processTree(columns = [], spanSeq, opts) {
   let maxLevel = 1;
 
   const [firstSpan, secondSpan] = spanSeq;
@@ -230,4 +230,56 @@ export function getLastNode(node) {
     tn = tn.children[l-1];
   }
   return tn;
+}
+
+export function getNodeByProp(rawHeader, prop) {
+  let foundNode = null;
+  const recursion = (node) => {
+    if (node.prop === prop) {
+      foundNode = node;
+      return true;
+    }
+    node.children && node.children.forEach((cn) => {
+      recursion(cn);
+    });
+  }
+
+  for(let i = 0, l = rawHeader.length; i < l; i++) {
+    if (recursion(rawHeader[i])) break;
+  }
+
+  return foundNode;
+}
+
+function switchNode(nodes, fIndex, sIndex) {
+  const t = nodes[fIndex];
+  nodes[fIndex] = nodes[sIndex];
+  nodes[sIndex] = t;
+}
+
+export function switchPosByProps(rawHeader, firstProp, secondProp) {
+  const firstNode = getNodeByProp(rawHeader, firstProp),
+        secondNode = getNodeByProp(rawHeader, secondProp);
+
+  if (!firstNode || !secondNode) {
+    console.warn('Can not find node.');
+    return false;
+  }
+
+  if (firstNode.parent !== secondNode.parent) {
+    console.warn('Can not switch nodes, because it has diff parent.');
+    return false;
+  }
+
+  if (!firstNode.parent) {
+    const fIndex = rawHeader.indexOf(firstNode);
+    const sIndex = rawHeader.indexOf(secondNode);
+    switchNode(rawHeader, fIndex, sIndex);
+  } else {
+    const nodes = firstNode.parent.children;
+    const fIndex = nodes.indexOf(firstNode);
+    const sIndex = nodes.indexOf(secondNode);
+    switchNode(nodes, fIndex, sIndex);
+  }
+  return true;
 }

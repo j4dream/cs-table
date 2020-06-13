@@ -45,7 +45,7 @@ export function ColHeader({
       : {}
   ), [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown]);
 
-  const dragRef = useRef('UNDEFINED_SHEET');
+  const dragParentRef = useRef('UNDEFINED_SHEET');
 
   return (
     <div
@@ -57,7 +57,7 @@ export function ColHeader({
     >
       {
         dynColHeader.map((header) => (
-          <HeaderCell key={header.prop} header={header} resizeProps={resizeProps} dragRef={dragRef}/>
+          <HeaderCell key={header.prop} header={header} resizeProps={resizeProps} dragParentRef={dragParentRef}/>
         ))
       }
     </div>

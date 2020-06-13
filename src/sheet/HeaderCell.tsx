@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-
+import React from 'react';
 import { useDrag, useDrop } from '../hooks/useDragAndDrop';
 
 interface Header {
@@ -15,13 +14,13 @@ interface Header {
 interface HeaderProps {
   header: Header;
   resizeProps: object;
-  dragRef: React.MutableRefObject<string>;
+  dragParentRef: React.MutableRefObject<string>;
 }
 
 export default ({
   header,
   resizeProps,
-  dragRef,
+  dragParentRef,
 }: HeaderProps) => {
 
   const {
@@ -33,14 +32,16 @@ export default ({
     label
   }= header;
 
-  const getDragProps = useDrag(() => {
-    dragRef.current = header.parent?.prop;
+  const getDragProps = useDrag({
+    handleDrag: () => {
+      dragParentRef.current = header.parent?.prop;
+    }
   });
 
   const {dropProps, hoverProp} = useDrop({
-    handleDrop: (p) => {
+    handleDrop: (dragProp, dropProp) => {
       // TODO: do switch position here
-      console.log('ondrop: ', dragRef.current);
+      console.log('ondrop: ', dragProp, dropProp);
     }
   });
 
@@ -53,7 +54,7 @@ export default ({
         left: left,
         width: width,
         height: height,
-        outline: hoverProp === dragRef.current
+        outline: hoverProp === dragParentRef.current
                   ? '2px dashed green'
                   : 'none',
         outlineOffset: -2

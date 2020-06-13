@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react"
 
 interface DropOpts {
-  handleDrop: (s: string) => void;
+  handleDrop: (dragProp: string, dropProp: string) => void;
 }
 
 export const useDrop = (opts: DropOpts) => {
@@ -11,11 +11,11 @@ export const useDrop = (opts: DropOpts) => {
   const [hoverProp, setHoverProp] = useState('');
   
   const dropProps = useMemo(() => ({
-    onDrop: (e: React.DragEvent) => {
+    onDrop: (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault();
       // e.persist();
       if (optsRef.current.handleDrop) {
-        optsRef.current.handleDrop(e.dataTransfer.getData('custom'));
+        optsRef.current.handleDrop(e.dataTransfer.getData('dragProp'), e.currentTarget.dataset.prop || '');
       }
     },
     onDragEnter: (e: React.DragEvent<HTMLElement>) => {
@@ -29,26 +29,30 @@ export const useDrop = (opts: DropOpts) => {
     onDragOver: (e: React.DragEvent) => {
       e.preventDefault();
     }
-  }), [setHoverProp]);
+  }), [optsRef, setHoverProp]);
 
   return {dropProps, hoverProp};
 }
 
-export const useDrag = (cb: Function) => {
+interface DragOpts {
+  handleDrag: (dragProp: string) => void;
+}
 
-  const cbRef = useRef(cb);
+export const useDrag = (opts: DragOpts) => {
 
-  const getDragProps = useCallback((data) => {
+  const optsRef = useRef(opts);
+  optsRef.current = opts;
+
+  const getDragProps = useCallback((prop) => {
     return {
-      key: JSON.stringify(data),
+      key: JSON.stringify(prop),
       draggable: 'true' as const,
       onDragStart: (e: React.DragEvent) => {
-        console.log('drag start: ', JSON.stringify(data));
-        cbRef.current && cbRef.current();
-        e.dataTransfer.setData('custom', JSON.stringify(data));
+        optsRef.current.handleDrag && optsRef.current.handleDrag(prop);
+        e.dataTransfer.setData('dragProp', prop);
       }
     }
-  }, []);
+  }, [optsRef]);
 
   return getDragProps;
 }

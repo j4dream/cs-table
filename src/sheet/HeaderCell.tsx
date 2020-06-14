@@ -15,12 +15,14 @@ interface HeaderProps {
   header: Header;
   resizeProps: object;
   dragParentRef: React.MutableRefObject<string>;
+  handleColSort: Function;
 }
 
 export default ({
   header,
   resizeProps,
   dragParentRef,
+  handleColSort,
 }: HeaderProps) => {
 
   const {
@@ -40,8 +42,8 @@ export default ({
 
   const {dropProps, hoverProp} = useDrop({
     handleDrop: (dragProp, dropProp) => {
-      // TODO: do switch position here
-      console.log('ondrop: ', dragProp, dropProp);
+      handleColSort(dragProp, dropProp);
+      dragParentRef.current = 'UNDEFINED';
     }
   });
 

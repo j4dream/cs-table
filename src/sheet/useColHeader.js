@@ -1,22 +1,28 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {
   processTree,
   calcNodeOffsetFormFalttenHeader,
   getLeafNodes,
   travelToRootFromLeafNodes,
   calcMeasureFromDeepestPath,
-  getDeepestNodePath
+  getDeepestNodePath,
+  switchPosByProps,
 } from './util';
+import useForceUpdate from "../hooks/useForceUpdate";
+import useUpdateEffect from "../hooks/useUpdateEffect";
 
 export default function useColHeader({colHeader: rawHeader, cellWidth, cellHeight}) {
 
+  const rawHeaderRef = useRef(rawHeader);
+  const {forceUpdate, updateCount} = useForceUpdate();
+
   const {flattenRow, allColumns} = useMemo(
-    () =>  processTree(rawHeader, ['colSpan', 'rowSpan'], { calcTop: cellHeight })
-  , []);
+    () =>  processTree(rawHeaderRef.current, ['colSpan', 'rowSpan'], { calcTop: cellHeight })
+  , [rawHeaderRef.current, updateCount]);
 
   const buildHeaderTree = useCallback(() => {
     // use leaf nodes calc width & prop
-    const leafNodes = getLeafNodes(rawHeader);
+    const leafNodes = getLeafNodes(rawHeaderRef.current);
 
     // calculate width;
     travelToRootFromLeafNodes(leafNodes, 'width', cellWidth);
@@ -36,18 +42,32 @@ export default function useColHeader({colHeader: rawHeader, cellWidth, cellHeigh
       colHeaderWidth,
       colHeaderLeaf: leafNodes,
     }
-  }, rawHeader, flattenRow, allColumns);
+  }, [rawHeaderRef.current, flattenRow, allColumns]);
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
+
+  const handleColSort = useCallback((p1, p2) => {
+    const switchSuccess = switchPosByProps(rawHeaderRef.current, p1, p2);
+    if (switchSuccess) {
+      forceUpdate();
+    }
+  }, [rawHeaderRef.current, forceUpdate]);
 
   const rebuildColHeader = useCallback(() => {
     setMeasure(buildHeaderTree());
   }, [buildHeaderTree, setMeasure]);
+
+  useUpdateEffect(() => {
+    if (updateCount!==0) {
+      rebuildColHeader();
+    }
+  }, [updateCount, rebuildColHeader]);
  
   return {
     colHeader: allColumns,
     rebuildColHeader,
     ...measure,
+    handleColSort,
   };
   
 }

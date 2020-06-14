@@ -1,10 +1,11 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 import { getSubTreeFromStartNode, binSearch } from './util';
 import { ColHeader } from './ColHeader';
 import { RowHeader } from './RowHeader';
+import useUpdateEffect from '../hooks/useUpdateEffect';
 
 export default function (props) {
 
@@ -26,6 +27,7 @@ export default function (props) {
     colHeaderHeight,
     colHeaderLeaf,
     rebuildColHeader,
+    handleColSort,
   } = useColHeader({ colHeader, cellWidth, cellHeight });
 
   const {
@@ -92,7 +94,20 @@ export default function (props) {
       };
     });
 
-  }, [setState]);
+  }, [setState, colHeaderLeaf]);
+
+  // sorting effect.
+  useUpdateEffect(() => {
+    const { colIndexCache, rowIndexCache } = cacheRef.current;
+    const newCol = getSubTreeFromStartNode(colIndexCache, colHeaderLeaf, 'width', width);
+    const newRow = getSubTreeFromStartNode(rowIndexCache, rowHeaderLeaf, 'height', height);
+    setState((pre) => {
+      return {
+        dynColHeader: newCol ? newCol : pre.dynColHeader,
+        dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+      };
+    });
+  }, [colHeaderLeaf, rowHeaderLeaf, width, height]);
 
   return (
     <div
@@ -130,6 +145,7 @@ export default function (props) {
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
           onUpdate={rebuildColHeader}
+          handleColSort={handleColSort}
         />
       </div>
 

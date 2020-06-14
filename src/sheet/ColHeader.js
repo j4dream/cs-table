@@ -13,6 +13,7 @@ export function ColHeader({
   containerRef,
   colResizeProxyRef,
   onUpdate,
+  handleColSort,
   enableSorting = true,
 }) {
 
@@ -57,7 +58,13 @@ export function ColHeader({
     >
       {
         dynColHeader.map((header) => (
-          <HeaderCell key={header.prop} header={header} resizeProps={resizeProps} dragParentRef={dragParentRef}/>
+          <HeaderCell
+            key={header.prop}
+            header={header}
+            resizeProps={resizeProps}
+            dragParentRef={dragParentRef}
+            handleColSort={handleColSort}
+          />
         ))
       }
     </div>

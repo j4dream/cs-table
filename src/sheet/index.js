@@ -1,11 +1,13 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 import { getSubTreeFromStartNode, binSearch } from './util';
-import { getScrollBarWidth } from '../table/util';
+import { ColHeader } from './ColHeader';
+import { RowHeader } from './RowHeader';
+import useUpdateEffect from '../hooks/useUpdateEffect';
 
-export default function(props) {
+export default function (props) {
 
   const {
     colHeader,
@@ -13,29 +15,41 @@ export default function(props) {
     data,
     height = 400,
     width = 800,
-    renderCell  = (record, rowProp, colProp, data) => record,
+    cellHeight = 40,
+    cellWidth = 100,
+    renderCell = (record, rowProp, colProp, data) => record,
+    enableColResize = false,
+    enableRowResize = false,
+    enableColSorting = false,
+    enableRowSorting = false,
   } = props;
 
   const {
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
-  } = useColHeader(props.colHeader);
+    rebuildColHeader,
+    handleColSort,
+  } = useColHeader({ colHeader, cellWidth, cellHeight });
 
   const {
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
-  } = useRowHeader(props.rowHeader);
+    rebuildRowHeader,
+    rowDeepestPath,
+  } = useRowHeader({ rowHeader, cellWidth, cellHeight });
 
+  const sheetRef = useRef();
   const dataAreaRef = useRef();
   const rowHeaderRef = useRef();
   const colHeaderRef = useRef();
+  const colResizeProxyRef = useRef();
 
   // component state
-  const [{dynColHeader, dynRowHeader}, setState] = useState(() => {
+  const [{ dynColHeader, dynRowHeader }, setState] = useState(() => {
     return {
-      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf,  'width', width),
+      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf, 'width', width),
       dynRowHeader: getSubTreeFromStartNode(0, rowHeaderLeaf, 'height', height),
     };
   });
@@ -64,7 +78,7 @@ export default function(props) {
     let newCol;
     if (colIndexCache !== currColIndex) {
       // todo get sub tree;
-      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf,  'width', clientWidth);
+      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf, 'width', clientWidth);
       cacheRef.current.colIndexCache = currColIndex;
     }
 
@@ -81,8 +95,21 @@ export default function(props) {
         dynRowHeader: newRow ? newRow : pre.dynRowHeader,
       };
     });
-    
-  }, [setState]);
+
+  }, [setState, colHeaderLeaf]);
+
+  // sorting effect.
+  useUpdateEffect(() => {
+    const { colIndexCache, rowIndexCache } = cacheRef.current;
+    const newCol = getSubTreeFromStartNode(colIndexCache, colHeaderLeaf, 'width', width);
+    const newRow = getSubTreeFromStartNode(rowIndexCache, rowHeaderLeaf, 'height', height);
+    setState((pre) => {
+      return {
+        dynColHeader: newCol ? newCol : pre.dynColHeader,
+        dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+      };
+    });
+  }, [colHeaderLeaf, rowHeaderLeaf, width, height]);
 
   return (
     <div
@@ -91,6 +118,7 @@ export default function(props) {
         height,
         position: 'relative',
       }}
+      ref={sheetRef}
     >
 
       <div
@@ -110,31 +138,18 @@ export default function(props) {
         }}
         ref={colHeaderRef}
       >
-        <div
-          style={{
-            position: 'relative',
-            height: colHeaderHeight,
-            width: colHeaderWidth + getScrollBarWidth(),
-          }}        
-        >
-        {
-          dynColHeader.map(({top, left, width, height, label, prop}) => (
-            <div
-              className="header"
-              key={prop}
-              style={{
-                position: 'absolute',
-                top: top,
-                left: left,
-                width: width,
-                height: height,
-              }}
-            >
-              {label}
-            </div>
-          ))
-        }
-        </div>
+        <ColHeader
+          dynColHeader={dynColHeader}
+          colHeaderHeight={colHeaderHeight}
+          colHeaderWidth={colHeaderWidth}
+          containerRef={sheetRef}
+          colResizeProxyRef={colResizeProxyRef}
+          enableColResize={enableColResize}
+          enableRowResize={enableRowResize}
+          enableColSorting={enableColSorting}
+          onUpdate={rebuildColHeader}
+          handleColSort={handleColSort}
+        />
       </div>
 
       <div className="cs-sheet-row-header"
@@ -145,31 +160,18 @@ export default function(props) {
         }}
         ref={rowHeaderRef}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: rowHeaderWidth,
-            height: rowHeaderHeight + getScrollBarWidth(),
-          }}
-        >
-          {
-            dynRowHeader.map( ({top, left, width, height, label, prop}) => (
-              <div
-                className="header"
-                key={prop}
-                style={{
-                  position: 'absolute',
-                  top: top,
-                  left: left,
-                  width: width,
-                  height: height,
-                }}
-              >
-                {label}
-              </div>
-            ))
-          }
-        </div>
+        <RowHeader
+          dynRowHeader={dynRowHeader}
+          rowDeepestPath={rowDeepestPath}
+          rowHeaderHeight={rowHeaderHeight}
+          rowHeaderWidth={rowHeaderWidth}
+          containerRef={sheetRef}
+          colResizeProxyRef={colResizeProxyRef}
+          enableColResize={enableColResize}
+          enableRowResize={enableRowResize}
+          enableRowSorting={enableRowSorting}
+          onUpdate={rebuildRowHeader}
+        />
       </div>
 
       <div
@@ -214,6 +216,11 @@ export default function(props) {
         </div>
       </div>
 
+      <div
+        className="resize-col-proxy"
+        ref={colResizeProxyRef}
+        style={{ visibility: 'hidden' }}
+      />
     </div>
   )
 }

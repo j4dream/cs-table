@@ -25,8 +25,10 @@ export default function() {
           rowHeader={rowHeader}
           colHeader={colHeader}
           data={data}
-          enableResize
-          enableSortHeader
+          cellWidth={120}
+          cellHeight={44}
+          enableColResize
+          enableColSorting
         />
       </div>
     </div>

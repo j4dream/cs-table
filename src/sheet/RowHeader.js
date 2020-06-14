@@ -1,34 +1,31 @@
-import React, { useMemo, useCallback, useRef } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { getScrollBarWidth } from '../table/util';
 import useResize from '../hooks/useResize';
-import { getLastNode } from './util';
-import HeaderCell from './HeaderCell';
 
-export function ColHeader({
-  dynColHeader,
-  colHeaderWidth,
-  colHeaderHeight,
+export function RowHeader({
+  dynRowHeader,
+  rowHeaderWidth,
+  rowHeaderHeight,
+  rowDeepestPath,
   enableColResize,
   enableRowResize,
   containerRef,
   colResizeProxyRef,
   onUpdate,
-  handleColSort,
-  enableColSorting,
+  enableSorting = true,
 }) {
 
   const onResizeStop = useCallback((offset, prop) => {
-    let h = dynColHeader.find(h => h.prop === prop);
-    if (!h.isLeaf) {
-      h = getLastNode(h);
-    }
+    let h = dynRowHeader.find(h => h.prop === prop);
+
+    h = rowDeepestPath[h.level];
 
     if (h && offset) {
       h.width = Math.max(h.width + offset, 30);
     }
 
     onUpdate && onUpdate();
-  }, [dynColHeader]);
+  }, [dynRowHeader, rowDeepestPath]);
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({
     container: containerRef,
@@ -46,26 +43,31 @@ export function ColHeader({
       : {}
   ), [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown]);
 
-  const dragParentRef = useRef('UNDEFINED_SHEET');
-
   return (
     <div
       style={{
         position: 'relative',
-        height: colHeaderHeight,
-        width: colHeaderWidth + getScrollBarWidth(),
+        height: rowHeaderHeight + + getScrollBarWidth(),
+        width: rowHeaderWidth,
       }}
     >
       {
-        dynColHeader.map((header) => (
-          <HeaderCell
-            key={header.prop}
-            header={header}
-            resizeProps={resizeProps}
-            dragParentRef={dragParentRef}
-            handleColSort={handleColSort}
-            enableSorting={enableColSorting}
-          />
+        dynRowHeader.map(({ top, left, width, height, label, prop }) => (
+          <div
+            className="header"
+            key={prop}
+            style={{
+              position: 'absolute',
+              top: top,
+              left: left,
+              width: width,
+              height: height,
+            }}
+            data-prop={prop}
+            {...resizeProps}
+          >
+            {label}
+          </div>
         ))
       }
     </div>

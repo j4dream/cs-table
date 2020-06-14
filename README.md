@@ -56,3 +56,14 @@ keepScrollStatus: Boolean | false | when data or header update, keep scroll stat
 enableResize: Boolean | false | resize col width
 renderCell: Function | (record, rowIndex, prop, header) => record | 
 renderHeader: Function | (header, prop) => header.label | 
+
+## Sheet  
+Sheet can support grouping column header and row header.
+props | default | Desc
+---|---|---|
+colHeader: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
+colHeader: Array | [] | required *, table header [{ label: 'Name', prop: 'name' }]
+data: Array | [] | required *, tabel data [{ name: 'DDR' }]
+renderCell: Function | (record, rowProp, colProp, data) => record |
+cellWidth: number | 100 | config cell Width
+cellHeight: number | 40 | config cell Height 

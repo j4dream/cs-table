@@ -16,6 +16,10 @@
     "resize"
   ],
   "dependencies": {
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.9",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "classnames": "^2.2.6",
     "gh-pages": "^2.2.0",
     "lodash.clonedeep": "^4.5.0",
@@ -25,19 +29,26 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.4.1",
-    "throttle-debounce": "^1.0.1"
+    "throttle-debounce": "^1.0.1",
+    "typescript": "^3.9.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "commit": "git-cz",
     "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "browserslist": {
     "production": [
@@ -53,7 +64,8 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
-    "@babel/preset-react": "^7.9.4"
+    "@babel/preset-react": "^7.9.4",
+    "cz-conventional-changelog": "^3.2.0"
   },
   "babel": {
     "presets": [

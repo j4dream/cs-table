@@ -28,7 +28,7 @@ export default function() {
           cellWidth={120}
           cellHeight={44}
           enableColResize
-          enableSortHeader
+          enableColSorting
         />
       </div>
     </div>

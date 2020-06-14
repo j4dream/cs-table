@@ -14,7 +14,7 @@ export function ColHeader({
   colResizeProxyRef,
   onUpdate,
   handleColSort,
-  enableSorting = true,
+  enableColSorting,
 }) {
 
   const onResizeStop = useCallback((offset, prop) => {
@@ -64,6 +64,7 @@ export function ColHeader({
             resizeProps={resizeProps}
             dragParentRef={dragParentRef}
             handleColSort={handleColSort}
+            enableSorting={enableColSorting}
           />
         ))
       }

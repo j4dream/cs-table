@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { getScrollBarWidth } from '../table/util';
 import useResize from '../hooks/useResize';
-import { getLastNode } from './util';
 
 export function RowHeader({
   dynRowHeader,
@@ -17,7 +16,6 @@ export function RowHeader({
 }) {
 
   const onResizeStop = useCallback((offset, prop) => {
-    debugger;
     let h = dynRowHeader.find(h => h.prop === prop);
 
     h = rowDeepestPath[h.level];

@@ -20,6 +20,8 @@ export default function (props) {
     renderCell = (record, rowProp, colProp, data) => record,
     enableColResize = false,
     enableRowResize = false,
+    enableColSorting = false,
+    enableRowSorting = false,
   } = props;
 
   const {
@@ -144,6 +146,7 @@ export default function (props) {
           colResizeProxyRef={colResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
+          enableColSorting={enableColSorting}
           onUpdate={rebuildColHeader}
           handleColSort={handleColSort}
         />
@@ -166,6 +169,7 @@ export default function (props) {
           colResizeProxyRef={colResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
+          enableRowSorting={enableRowSorting}
           onUpdate={rebuildRowHeader}
         />
       </div>

@@ -4,6 +4,19 @@ interface DropOpts {
   handleDrop: (dragProp: string, dropProp: string) => void;
 }
 
+interface DropProps {
+  onDrop: React.DragEventHandler;
+  onDragEnter: React.DragEventHandler;
+  onDragLeave: React.DragEventHandler;
+  onDragOver: React.DragEventHandler;
+}
+
+interface DropRes  {
+  dropProps: DropProps;
+  hoverProp: string;
+  setHoverProp: (prop: string) => void
+}
+
 export const useDrop = (opts: DropOpts) => {
   const optsRef = useRef(opts);
   optsRef.current = opts;
@@ -13,17 +26,18 @@ export const useDrop = (opts: DropOpts) => {
   const dropProps = useMemo(() => ({
     onDrop: (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault();
-      // e.persist();
+      e.persist();
       if (optsRef.current.handleDrop) {
         optsRef.current.handleDrop(e.dataTransfer.getData('dragProp'), e.currentTarget.dataset.prop || '');
       }
     },
     onDragEnter: (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault();
-      console.log('onender dataset: ', e.currentTarget.dataset);
+      console.log('on drag enter：', e.currentTarget.dataset.parentProp);
       setHoverProp(e.currentTarget.dataset.parentProp as string);
     },
-    onDragLeave: () => {
+    onDragLeave: (e: any) => {
+      console.log('on drag leave',e.currentTarget.dataset.prop);
       setHoverProp('');
     },
     onDragOver: (e: React.DragEvent) => {
@@ -31,7 +45,7 @@ export const useDrop = (opts: DropOpts) => {
     }
   }), [optsRef, setHoverProp]);
 
-  return {dropProps, hoverProp};
+  return {dropProps, hoverProp, setHoverProp};
 }
 
 interface DragOpts {

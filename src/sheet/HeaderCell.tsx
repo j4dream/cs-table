@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDrag, useDrop } from '../hooks/useDragAndDrop';
 
 interface Header {
@@ -16,6 +16,7 @@ interface HeaderProps {
   resizeProps: object;
   dragParentRef: React.MutableRefObject<string>;
   handleColSort: Function;
+  enableSorting: boolean;
 }
 
 export default ({
@@ -23,6 +24,7 @@ export default ({
   resizeProps,
   dragParentRef,
   handleColSort,
+  enableSorting,
 }: HeaderProps) => {
 
   const {
@@ -40,12 +42,29 @@ export default ({
     }
   });
 
-  const {dropProps, hoverProp} = useDrop({
+  const { dropProps, hoverProp, setHoverProp } = useDrop({
     handleDrop: (dragProp, dropProp) => {
-      handleColSort(dragProp, dropProp);
-      dragParentRef.current = 'UNDEFINED';
+      if (dragProp !== dropProp) {
+        handleColSort(dragProp, dropProp);
+      }
+      dragParentRef.current = 'UNDEFINED_SHEET';
+      setHoverProp('');
     }
   });
+
+  // dyn add props
+  const sortingProps = useMemo(() => (
+    enableSorting
+      ? {
+          ...getDragProps(prop),
+          ...dropProps,
+        }
+      : {}
+  ), [prop]);
+
+  if (hoverProp !== dragParentRef.current) {
+    console.log(hoverProp, dragParentRef.current);
+  }
 
   return (
     <div
@@ -63,8 +82,7 @@ export default ({
       }}
       data-prop={prop}
       data-parent-prop={header.parent?.prop}
-      {...getDragProps(prop)}
-      {...dropProps}
+      {...sortingProps}
       {...resizeProps}
     >
       {label}

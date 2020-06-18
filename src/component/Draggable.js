@@ -4,17 +4,16 @@ import { matchsSlelector } from './util';
 const DRAG_THRESHOLD = 2;
 
 export default class Draggable extends React.Component {
-
   static defaultProps = {
     axis: 'none',
     handle: null,
-  }
+  };
 
   constructor(props) {
     super(props);
     this.state = {
       mouseDown: false,
-      dragging: false
+      dragging: false,
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -23,7 +22,7 @@ export default class Draggable extends React.Component {
 
   onMouseDown(e) {
     // left button
-    if(e.button === 0) {
+    if (e.button === 0) {
       //e.stopPropagation();
       const domNode = findDOMNode(this);
       const { handle } = this.props;
@@ -40,7 +39,7 @@ export default class Draggable extends React.Component {
         elementX: left,
         elementY: top,
         width,
-        height
+        height,
       });
     }
   }
@@ -55,18 +54,18 @@ export default class Draggable extends React.Component {
       }
       this.state.dragging = true;
     }
-    if(this.state.dragging) {
+    if (this.state.dragging) {
       this.setState((prestate) => {
         const pos = {};
         const computedLeft = prestate.elementX + deltaX + document.body.scrollLeft;
-        const computedTop  = prestate.elementY + deltaY + document.body.scrollTop;
+        const computedTop = prestate.elementY + deltaY + document.body.scrollTop;
         if (this.props.axis === 'none') {
           pos.left = computedLeft;
           pos.top = computedTop;
         }
         if (this.props.axis === 'x') {
           pos.left = computedLeft;
-          pos.top =prestate.elementY;
+          pos.top = prestate.elementY;
         }
         if (this.props.axis === 'y') {
           pos.left = prestate.elementX;
@@ -105,8 +104,8 @@ export default class Draggable extends React.Component {
 
   componentWillUnmount() {
     this.setState = (state, callback) => {
-      return
-    }
+      return;
+    };
   }
 
   style() {
@@ -114,23 +113,20 @@ export default class Draggable extends React.Component {
     if (dragging) {
       return {
         position: 'fixed',
-        opacity: .6,
+        opacity: 0.6,
         left,
         top,
         width,
         height,
         zIndex: 12,
-      }
+      };
     }
     return {};
   }
 
   render() {
     return (
-      <div
-        style={this.style()}
-        className={this.props.className}
-        onMouseDown={this.onMouseDown}>
+      <div style={this.style()} className={this.props.className} onMouseDown={this.onMouseDown}>
         {this.props.children}
       </div>
     );

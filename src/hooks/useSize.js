@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useRef } from "react";
+import { useState, useLayoutEffect, useRef } from 'react';
 
 export function useSize() {
   const [state, setState] = useState({

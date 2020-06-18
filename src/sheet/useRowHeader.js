@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from 'react';
 import {
   processTree,
   getLeafNodes,
@@ -9,11 +9,11 @@ import {
   calcDeepsetNodePathOffset,
 } from './util';
 
-export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeight}) {
-
-  const {flattenRow, allColumns}= useMemo(
-    () => processTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
-  , []);
+export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeight }) {
+  const { flattenRow, allColumns } = useMemo(
+    () => processTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: cellWidth }),
+    [],
+  );
 
   const buildHeaderTree = useCallback(() => {
     // use leaf nodes calc width & prop
@@ -38,7 +38,7 @@ export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeigh
       rowHeaderHeight,
       rowHeaderLeaf: leafNodes,
       rowDeepestPath: deepestNodePath,
-    }
+    };
   }, [rawHeader, flattenRow, allColumns]);
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
@@ -52,5 +52,4 @@ export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeigh
     rebuildRowHeader,
     ...measure,
   };
-  
 }

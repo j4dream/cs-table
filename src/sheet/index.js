@@ -8,7 +8,6 @@ import { RowHeader } from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
 export default function (props) {
-
   const {
     colHeader,
     rowHeader,
@@ -60,43 +59,45 @@ export default function (props) {
   });
 
   // cache index, No need 'throttle' for the moment.
-  const handleScroll = useCallback((e) => {
-    const target = e.currentTarget;
-    if (!target) return;
-    const { scrollTop, scrollLeft, clientHeight, clientWidth } = target;
-    colHeaderRef.current.scrollLeft = scrollLeft;
-    rowHeaderRef.current.scrollTop = scrollTop;
+  const handleScroll = useCallback(
+    (e) => {
+      const target = e.currentTarget;
+      if (!target) return;
+      const { scrollTop, scrollLeft, clientHeight, clientWidth } = target;
+      colHeaderRef.current.scrollLeft = scrollLeft;
+      rowHeaderRef.current.scrollTop = scrollTop;
 
-    const { colIndexCache, rowIndexCache } = cacheRef.current;
+      const { colIndexCache, rowIndexCache } = cacheRef.current;
 
-    const currColIndex = binSearch(scrollLeft, colHeaderLeaf, 'width');
-    const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
+      const currColIndex = binSearch(scrollLeft, colHeaderLeaf, 'width');
+      const currRowIndex = binSearch(scrollTop, rowHeaderLeaf, 'height');
 
-    // if stay on same cell, do not rerender table.
-    if (colIndexCache === currColIndex && rowIndexCache === currRowIndex) return;
+      // if stay on same cell, do not rerender table.
+      if (colIndexCache === currColIndex && rowIndexCache === currRowIndex) return;
 
-    let newCol;
-    if (colIndexCache !== currColIndex) {
-      // todo get sub tree;
-      newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf, 'width', clientWidth);
-      cacheRef.current.colIndexCache = currColIndex;
-    }
+      let newCol;
+      if (colIndexCache !== currColIndex) {
+        // todo get sub tree;
+        newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf, 'width', clientWidth);
+        cacheRef.current.colIndexCache = currColIndex;
+      }
 
-    let newRow;
-    if (rowIndexCache !== currRowIndex) {
-      // todo get sub tree;
-      newRow = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
-      cacheRef.current.rowIndexCache = currRowIndex;
-    }
+      let newRow;
+      if (rowIndexCache !== currRowIndex) {
+        // todo get sub tree;
+        newRow = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
+        cacheRef.current.rowIndexCache = currRowIndex;
+      }
 
-    setState((pre) => {
-      return {
-        dynColHeader: newCol ? newCol : pre.dynColHeader,
-        dynRowHeader: newRow ? newRow : pre.dynRowHeader,
-      };
-    });
-
-  }, [setState, colHeaderLeaf]);
+      setState((pre) => {
+        return {
+          dynColHeader: newCol ? newCol : pre.dynColHeader,
+          dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+        };
+      });
+    },
+    [setState, colHeaderLeaf],
+  );
 
   // sorting effect.
   useUpdateEffect(() => {
@@ -120,7 +121,6 @@ export default function (props) {
       }}
       ref={sheetRef}
     >
-
       <div
         className="corner"
         style={{
@@ -152,7 +152,8 @@ export default function (props) {
         />
       </div>
 
-      <div className="cs-sheet-row-header"
+      <div
+        className="cs-sheet-row-header"
         style={{
           overflow: 'hidden',
           height: height - colHeaderHeight,
@@ -192,35 +193,27 @@ export default function (props) {
             height: rowHeaderHeight,
           }}
         >
-          {
-            rowHeaderLeaf.map((row, rowIndex) => (
-              colHeaderLeaf.map((col, colIndex) => (
-                <div
-                  className="cell"
-                  key={`d-a-${rowIndex}-${colIndex}`}
-                  style={{
-                    position: 'absolute',
-                    width: col.width,
-                    height: row.height,
-                    left: col.left,
-                    top: row.top,
-                  }}
-                >
-                  {
-                    renderCell(data[row.prop][col.prop], row.prop, col.prop, data)
-                  }
-                </div>
-              ))
-            ))
-          }
+          {rowHeaderLeaf.map((row, rowIndex) =>
+            colHeaderLeaf.map((col, colIndex) => (
+              <div
+                className="cell"
+                key={`d-a-${rowIndex}-${colIndex}`}
+                style={{
+                  position: 'absolute',
+                  width: col.width,
+                  height: row.height,
+                  left: col.left,
+                  top: row.top,
+                }}
+              >
+                {renderCell(data[row.prop][col.prop], row.prop, col.prop, data)}
+              </div>
+            )),
+          )}
         </div>
       </div>
 
-      <div
-        className="resize-col-proxy"
-        ref={colResizeProxyRef}
-        style={{ visibility: 'hidden' }}
-      />
+      <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
-  )
+  );
 }

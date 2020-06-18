@@ -1,4 +1,3 @@
-
 * {
   margin: 0;
   padding: 0;
@@ -15,8 +14,8 @@
 }
 
 .dc-table table {
-  table-layout:fixed;
-  border-collapse: separate!important;
+  table-layout: fixed;
+  border-collapse: separate !important;
 }
 
 .dc-table th {
@@ -99,7 +98,8 @@
   top: 0;
 }
 
-.dc-table th, .dc-table td {
+.dc-table th,
+.dc-table td {
   text-align: center;
   box-sizing: border-box;
   border-bottom: 1px;
@@ -124,14 +124,16 @@
   height: 100%;
 }
 
-.dc-table::before, .dc-table::after {
+.dc-table::before,
+.dc-table::after {
   content: '';
   position: absolute;
   background-color: #e7eaec;
   z-index: 1;
 }
 
-.dc-table td, .dc-table th {
+.dc-table td,
+.dc-table th {
   padding: 0;
 }
 
@@ -152,7 +154,7 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
 
 .dc-table .gutter-col {

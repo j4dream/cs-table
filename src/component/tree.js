@@ -36,11 +36,11 @@ export default class Tree {
       currentNode.parent = parent;
       parent.addChild(currentNode);
     }
-    
+
     if (node.children) {
-      node.children.forEach(item => {
+      node.children.forEach((item) => {
         this._traverse(item, currentNode);
-      })
+      });
     }
   }
 
@@ -51,19 +51,18 @@ export default class Tree {
       const mockCloneData = { children: cloneDeep(data), prop: 'root' };
       const mockData = { children: data, prop: 'root' };
       const mockSorted = { children: this.sorting, prop: 'root' };
-      this.traverseDF(node => {
+      this.traverseDF((node) => {
         const prop = node.prop;
         const dataNode = this.getNodeByProp(prop, mockData);
         const sortedNode = this.getNodeByProp(prop, mockSorted);
         if (sortedNode) {
           this.soredNodesWidthSeq(dataNode.children, sortedNode.children);
         }
-        
       }, mockCloneData);
     }
     const end = new Date().getTime();
     console.log('used time: ', end - start);
-    data.forEach(item => {
+    data.forEach((item) => {
       this._traverse(item, this.root);
     });
   }
@@ -71,7 +70,7 @@ export default class Tree {
   // source 原地算法排序
   soredNodesWidthSeq(source, dest) {
     dest.forEach((item) => {
-      const tempEl = remove(source, function(i) {
+      const tempEl = remove(source, function (i) {
         return i.prop === item.prop;
       });
       if (tempEl.length) {
@@ -79,13 +78,13 @@ export default class Tree {
       }
     });
   }
-  
+
   _findDeepestNodePath() {
     const allNodes = this.getBFSNodes();
     // deepest node
-    let dn = allNodes[allNodes.length-1];
+    let dn = allNodes[allNodes.length - 1];
     const deepestPath = [];
-    while(dn && dn.parent) {
+    while (dn && dn.parent) {
       deepestPath.unshift(dn);
       dn = dn.parent;
     }
@@ -108,8 +107,8 @@ export default class Tree {
 
   getNodeByProp(prop, root) {
     let node = null;
-    this.traverseDF((n)=> {
-      if(n.prop === prop) {
+    this.traverseDF((n) => {
+      if (n.prop === prop) {
         node = n;
         return true;
       }
@@ -126,16 +125,16 @@ export default class Tree {
   }
 
   traverseDF(cb, parent) {
-    let pNode = parent || this.root
+    let pNode = parent || this.root;
     if (!pNode) return;
     const recurse = (node) => {
-      if(cb(node)) return;
+      if (cb(node)) return;
       if (node.children) {
-        for(let i = 0; i < node.children.length; i++) {
+        for (let i = 0; i < node.children.length; i++) {
           recurse(node.children[i]);
         }
       }
-    }
+    };
     recurse(pNode);
   }
 
@@ -153,9 +152,9 @@ export default class Tree {
 
   getLastNode(node = this.root, cb) {
     let tn = node;
-    while(tn && tn.children.length) {
+    while (tn && tn.children.length) {
       const l = tn.children.length;
-      tn = tn.children[l-1];
+      tn = tn.children[l - 1];
       cb && cb(tn);
     }
     return tn;
@@ -166,7 +165,7 @@ export default class Tree {
   }
 
   sortSameLevelPos(rep) {
-    if (this.sortingColumn && (this.sortingColumn.level !== rep.level)) {
+    if (this.sortingColumn && this.sortingColumn.level !== rep.level) {
       return false;
     }
 
@@ -213,5 +212,4 @@ export default class Tree {
 
   //   return validTree;
   // }
-
 }

@@ -14,18 +14,20 @@ export function RowHeader({
   onUpdate,
   enableSorting = true,
 }) {
+  const onResizeStop = useCallback(
+    (offset, prop) => {
+      let h = dynRowHeader.find((h) => h.prop === prop);
 
-  const onResizeStop = useCallback((offset, prop) => {
-    let h = dynRowHeader.find(h => h.prop === prop);
+      h = rowDeepestPath[h.level];
 
-    h = rowDeepestPath[h.level];
+      if (h && offset) {
+        h.width = Math.max(h.width + offset, 30);
+      }
 
-    if (h && offset) {
-      h.width = Math.max(h.width + offset, 30);
-    }
-
-    onUpdate && onUpdate();
-  }, [dynRowHeader, rowDeepestPath]);
+      onUpdate && onUpdate();
+    },
+    [dynRowHeader, rowDeepestPath],
+  );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({
     container: containerRef,
@@ -33,43 +35,43 @@ export function RowHeader({
     onResizeStop,
   });
 
-  const resizeProps = useMemo(() => (
-    enableColResize || enableRowResize
-      ? {
-        onMouseMove: handleMouseMove,
-        onMouseOut: handleMouseOut,
-        onMouseDown: handleMouseDown,
-      }
-      : {}
-  ), [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown]);
+  const resizeProps = useMemo(
+    () =>
+      enableColResize || enableRowResize
+        ? {
+            onMouseMove: handleMouseMove,
+            onMouseOut: handleMouseOut,
+            onMouseDown: handleMouseDown,
+          }
+        : {},
+    [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
+  );
 
   return (
     <div
       style={{
         position: 'relative',
-        height: rowHeaderHeight + + getScrollBarWidth(),
+        height: rowHeaderHeight + +getScrollBarWidth(),
         width: rowHeaderWidth,
       }}
     >
-      {
-        dynRowHeader.map(({ top, left, width, height, label, prop }) => (
-          <div
-            className="header"
-            key={prop}
-            style={{
-              position: 'absolute',
-              top: top,
-              left: left,
-              width: width,
-              height: height,
-            }}
-            data-prop={prop}
-            {...resizeProps}
-          >
-            {label}
-          </div>
-        ))
-      }
+      {dynRowHeader.map(({ top, left, width, height, label, prop }) => (
+        <div
+          className="header"
+          key={prop}
+          style={{
+            position: 'absolute',
+            top: top,
+            left: left,
+            width: width,
+            height: height,
+          }}
+          data-prop={prop}
+          {...resizeProps}
+        >
+          {label}
+        </div>
+      ))}
     </div>
   );
 }

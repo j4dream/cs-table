@@ -1,5 +1,5 @@
 export function getColHeaderHeightIndex(node) {
-  return node.level + node.rowSpan - 2
+  return node.level + node.rowSpan - 2;
 }
 
 let scrollBarWidth;
@@ -74,7 +74,6 @@ export function convertToColumnHeader(columns = []) {
     rows[column.level - 1].push(column);
   });
   return rows;
-  
 }
 
 export function convertToRowHeader(columns = []) {
@@ -109,14 +108,14 @@ export function convertToRowHeader(columns = []) {
     traverse(column);
   });
 
-  let rows = []
-  for(let i = 0; i < rowsLength; i++) {
+  let rows = [];
+  for (let i = 0; i < rowsLength; i++) {
     rows.push([]);
-  };
+  }
 
   // 记录位置 index
   const posCount = {};
-  for(let i = 1; i <= maxLevel; i++) {
+  for (let i = 1; i <= maxLevel; i++) {
     posCount[i] = 0;
   }
 
@@ -127,7 +126,7 @@ export function convertToRowHeader(columns = []) {
     if (queue[i].children) queue.push(...queue[i].children);
   }
 
-  // 计算 col span, 
+  // 计算 col span,
   allColumns.forEach((column) => {
     if (column.children.length === 0) {
       column.colSpan = maxLevel - column.level + 1;
@@ -136,11 +135,10 @@ export function convertToRowHeader(columns = []) {
     }
   });
 
-
-  allColumns.forEach(column => {
+  allColumns.forEach((column) => {
     const { rowSpan, level } = column;
     // 如果占用了位置 则添加 offset
-    let offset = 0; 
+    let offset = 0;
     column.start = posCount[level];
     if (column.parent && column.parent.start > column.start) {
       offset += column.parent.start - column.start;
@@ -166,7 +164,7 @@ export function getLeafColumns(columns) {
 }
 
 let ascId = 0;
-export function getAscId(){
+export function getAscId() {
   return ascId++;
 }
 
@@ -179,7 +177,7 @@ function isMatchSelector(el, selector) {
       'mozMatchesSelector',
       'msMatchesSelector',
       'oMatchesSelector',
-    ].forEach(f => {
+    ].forEach((f) => {
       if (typeof el[f] === 'function') {
         matchesFun = f;
       }
@@ -190,7 +188,7 @@ function isMatchSelector(el, selector) {
 
 export function matchsSlelector(el, selector, rootDom) {
   let node = el;
-  while(node) {
+  while (node) {
     if (isMatchSelector(el, selector)) return true;
     if (node === rootDom) return false;
     node = node.parentNode;
@@ -198,4 +196,4 @@ export function matchsSlelector(el, selector, rootDom) {
   return false;
 }
 
-export const isNumber = val => typeof val === 'number';
+export const isNumber = (val) => typeof val === 'number';

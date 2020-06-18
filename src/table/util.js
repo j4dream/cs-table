@@ -20,10 +20,10 @@ export function getScrollBarWidth() {
   return totalWidth - widthWithoutScroll;
 }
 
-export function processHeaderWidth (header, defaultCellWidth, returnTotalWidth = false)  {
+export function processHeaderWidth(header, defaultCellWidth, returnTotalWidth = false) {
   const totalWidth = header.reduce((acc, curr) => {
     curr.left = acc;
-    const accWidth = (curr.width || defaultCellWidth) + acc
+    const accWidth = (curr.width || defaultCellWidth) + acc;
     return accWidth;
   }, 0);
   if (returnTotalWidth) {
@@ -34,11 +34,11 @@ export function processHeaderWidth (header, defaultCellWidth, returnTotalWidth =
 
 export function getMutableIndexAndCount(header, scrollWidth, dataAreaWidth, defaultCellWidth) {
   let accWidth = 0,
-      startIndex = 0,
-      endIndex = header.length - 1;
-  const totalWidth = scrollWidth + dataAreaWidth
-  for(let i = 0; i < header.length; i++) {
-    accWidth += (header[i].width) || defaultCellWidth;
+    startIndex = 0,
+    endIndex = header.length - 1;
+  const totalWidth = scrollWidth + dataAreaWidth;
+  for (let i = 0; i < header.length; i++) {
+    accWidth += header[i].width || defaultCellWidth;
     if (accWidth < scrollWidth) {
       startIndex = i;
     }
@@ -49,6 +49,6 @@ export function getMutableIndexAndCount(header, scrollWidth, dataAreaWidth, defa
   }
   return {
     startIndex,
-    count: (endIndex - startIndex) + 1
+    count: endIndex - startIndex + 1,
   };
 }

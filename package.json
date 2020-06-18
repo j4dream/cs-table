@@ -38,6 +38,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "commit": "git-cz",
+    "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
+    "prettier": "prettier -c --write \"**/*\"",
     "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -65,7 +67,8 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/preset-react": "^7.9.4",
-    "cz-conventional-changelog": "^3.2.0"
+    "cz-conventional-changelog": "^3.2.0",
+    "prettier": "^2.0.5"
   },
   "babel": {
     "presets": [

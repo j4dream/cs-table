@@ -5,13 +5,12 @@ import PropTypes from 'prop-types';
 import Draggable from './Draggable';
 
 export default class Th extends React.Component {
-
   static contextTypes = {
     table: PropTypes.any,
   };
 
   state = {
-    style: {}
+    style: {},
   };
 
   handleMouseDown = (e) => {
@@ -21,13 +20,12 @@ export default class Th extends React.Component {
       const { table } = this.context;
       const { tableEl, colResizeProxy, rowResizeProxy } = table;
       const tableRect = tableEl.getBoundingClientRect();
-      const { left:tableLeft, top:tableTop } = tableRect;
+      const { left: tableLeft, top: tableTop } = tableRect;
       let thEl = e.target;
       while (thEl && thEl.tagName !== 'TH') {
         thEl = thEl.parentNode;
       }
-      
-      
+
       const thRect = thEl.getBoundingClientRect();
       const minLeft = thRect.left - tableLeft + 30;
       const minTop = thRect.top - tableTop + 30;
@@ -35,18 +33,18 @@ export default class Th extends React.Component {
       const startMouseLeft = e.clientX;
       const startMouseTop = e.clientY;
       const startLeft = thRect.right - tableLeft;
-      
+
       if (this.direction === 'hori') {
         colResizeProxy.style.visibility = 'visible';
         colResizeProxy.style.left = startLeft + 'px';
       }
 
-      const startTop =  thRect.bottom - tableTop;
+      const startTop = thRect.bottom - tableTop;
       if (this.direction === 'vert') {
         rowResizeProxy.style.visibility = 'visible';
         rowResizeProxy.style.top = startTop + 'px';
       }
- 
+
       document.onselectstart = () => false;
       document.ondragstart = () => false;
 
@@ -77,7 +75,8 @@ export default class Th extends React.Component {
               const { rowHeaderTree } = this.context.table;
               targetNode = rowHeaderTree.getDeepestNodeByIndex();
             }
-            const calWidth = (targetNode.width || targetNode.realWidth || targetNode.minWidth) + offsetWidth;
+            const calWidth =
+              (targetNode.width || targetNode.realWidth || targetNode.minWidth) + offsetWidth;
             targetNode.width = calWidth < 80 ? 80 : calWidth;
             targetNode.realWidth = targetNode.width;
           }
@@ -91,7 +90,7 @@ export default class Th extends React.Component {
               targetNode = this.headerTree.getDeepestNodeByIndex(index);
             }
             if (type === 'row') {
-              targetNode = this.headerTree.getLastNode(column);          
+              targetNode = this.headerTree.getLastNode(column);
             }
             if (type === 'corner') {
               const { colHeaderTree } = this.context.table;
@@ -116,13 +115,12 @@ export default class Th extends React.Component {
 
           this.context.table.scheduleLayout();
         }
-      }
+      };
 
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
-  }
-
+  };
 
   get headerTree() {
     const { type } = this.props;
@@ -173,7 +171,7 @@ export default class Th extends React.Component {
         bodyStyle.cursor = 'col-resize';
         this.draggingColumn = column;
         this.direction = 'hori';
-      } else if ( rect.height > 12 && rect.bottom - e.clientY < 5) {
+      } else if (rect.height > 12 && rect.bottom - e.clientY < 5) {
         if (this.disableResizeRow) return;
         bodyStyle.cursor = 'row-resize';
         this.direction = 'vert';
@@ -184,11 +182,11 @@ export default class Th extends React.Component {
         this.direction = null;
       }
     }
-  }
+  };
 
   handleMouseOut = () => {
     document.body.style.cursor = '';
-  }
+  };
 
   onMouseEnter = () => {
     const { column, type } = this.props;
@@ -197,41 +195,38 @@ export default class Th extends React.Component {
       if (colHeaderTree.sortingColumn) {
         if (colHeaderTree.sortSameLevelPos(column)) {
           this.context.table.refreshColumn();
-        };
+        }
       }
       colHeaderTree.sortingColumn = null;
     } else {
       if (rowHeaderTree.sortingColumn) {
         if (rowHeaderTree.sortSameLevelPos(column)) {
           this.context.table.refreshColumn();
-        };
+        }
       }
       rowHeaderTree.sortingColumn = null;
     }
-      
-  }
+  };
 
   handleSortStart = () => {
     const { column, type } = this.props;
-    const { colHeaderTree, rowHeaderTree } = this.context.table; 
+    const { colHeaderTree, rowHeaderTree } = this.context.table;
     if (type === 'col') {
       colHeaderTree.sortingColumn = column;
     } else {
       rowHeaderTree.sortingColumn = column;
     }
-  }
+  };
 
   handleSortStop = () => {
-   setTimeout(() => {
-    const { colHeaderTree, rowHeaderTree } = this.context.table; 
-    colHeaderTree.sortingColumn = null;
-    rowHeaderTree.sortingColumn = null;
-   }, 200);
-  }
+    setTimeout(() => {
+      const { colHeaderTree, rowHeaderTree } = this.context.table;
+      colHeaderTree.sortingColumn = null;
+      rowHeaderTree.sortingColumn = null;
+    }, 200);
+  };
 
-  getEextraProps() {
-
-  }
+  getEextraProps() {}
 
   render() {
     const { column, type } = this.props;
@@ -246,31 +241,25 @@ export default class Th extends React.Component {
         onMouseOut={this.handleMouseOut}
         onMouseDown={this.handleMouseDown}
         onMouseEnter={this.onMouseEnter}
-        className={classnames({leaf: !children})}
+        className={classnames({ leaf: !children })}
         height={column.computedHeight()}
         style={style}
       >
-        {
-          sortSameLevelColumn
-            ? (
-                <Draggable
-                  handle=".icon"
-                  axis={type==="col" ? "x": "y"}
-                  onDragStart={this.handleSortStart}
-                  onDragStop={this.handleSortStop}
-                >
-                  <div className="cell exchange">
-                    <div className={`icon ${type==="col" ? "x": "y"}`}>
-
-                    </div>
-                    {name}
-                  </div>
-                </Draggable>
-              )
-            : (
-              <div className="cell">{name}</div>
-            )
-        }
+        {sortSameLevelColumn ? (
+          <Draggable
+            handle=".icon"
+            axis={type === 'col' ? 'x' : 'y'}
+            onDragStart={this.handleSortStart}
+            onDragStop={this.handleSortStop}
+          >
+            <div className="cell exchange">
+              <div className={`icon ${type === 'col' ? 'x' : 'y'}`}></div>
+              {name}
+            </div>
+          </Draggable>
+        ) : (
+          <div className="cell">{name}</div>
+        )}
       </th>
     );
   }

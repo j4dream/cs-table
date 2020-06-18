@@ -1,4 +1,4 @@
-import { getAscId } from "./util";
+import { getAscId } from './util';
 
 export default class Node {
   parent = null;
@@ -17,7 +17,7 @@ export default class Node {
   field = null;
   name = '';
 
-  constructor({children, name, prop, field, width, height = 40} = {}) {
+  constructor({ children, name, prop, field, width, height = 40 } = {}) {
     this.name = name;
     this.prop = prop || field;
     this.width = width;

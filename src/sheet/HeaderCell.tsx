@@ -26,20 +26,12 @@ export default ({
   handleColSort,
   enableSorting,
 }: HeaderProps) => {
-
-  const {
-    top,
-    left,
-    width,
-    height,
-    prop,
-    label
-  }= header;
+  const { top, left, width, height, prop, label } = header;
 
   const getDragProps = useDrag({
     handleDrag: () => {
       dragParentRef.current = header.parent?.prop;
-    }
+    },
   });
 
   const { dropProps, hoverProp, setHoverProp } = useDrop({
@@ -49,18 +41,20 @@ export default ({
       }
       dragParentRef.current = 'UNDEFINED_SHEET';
       setHoverProp('');
-    }
+    },
   });
 
   // dyn add props
-  const sortingProps = useMemo(() => (
-    enableSorting
-      ? {
-          ...getDragProps(prop),
-          ...dropProps,
-        }
-      : {}
-  ), [prop]);
+  const sortingProps = useMemo(
+    () =>
+      enableSorting
+        ? {
+            ...getDragProps(prop),
+            ...dropProps,
+          }
+        : {},
+    [prop],
+  );
 
   if (hoverProp !== dragParentRef.current) {
     console.log(hoverProp, dragParentRef.current);
@@ -75,10 +69,8 @@ export default ({
         left: left,
         width: width,
         height: height,
-        outline: hoverProp === dragParentRef.current
-                  ? '2px dashed green'
-                  : 'none',
-        outlineOffset: -2
+        outline: hoverProp === dragParentRef.current ? '2px dashed green' : 'none',
+        outlineOffset: -2,
       }}
       data-prop={prop}
       data-parent-prop={header.parent?.prop}
@@ -88,4 +80,4 @@ export default ({
       {label}
     </div>
   );
-}
+};

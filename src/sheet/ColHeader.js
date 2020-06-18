@@ -16,19 +16,21 @@ export function ColHeader({
   handleColSort,
   enableColSorting,
 }) {
+  const onResizeStop = useCallback(
+    (offset, prop) => {
+      let h = dynColHeader.find((h) => h.prop === prop);
+      if (!h.isLeaf) {
+        h = getLastNode(h);
+      }
 
-  const onResizeStop = useCallback((offset, prop) => {
-    let h = dynColHeader.find(h => h.prop === prop);
-    if (!h.isLeaf) {
-      h = getLastNode(h);
-    }
+      if (h && offset) {
+        h.width = Math.max(h.width + offset, 30);
+      }
 
-    if (h && offset) {
-      h.width = Math.max(h.width + offset, 30);
-    }
-
-    onUpdate && onUpdate();
-  }, [dynColHeader]);
+      onUpdate && onUpdate();
+    },
+    [dynColHeader],
+  );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({
     container: containerRef,
@@ -36,15 +38,17 @@ export function ColHeader({
     onResizeStop,
   });
 
-  const resizeProps = useMemo(() => (
-    enableColResize || enableRowResize
-      ? {
-        onMouseMove: handleMouseMove,
-        onMouseOut: handleMouseOut,
-        onMouseDown: handleMouseDown,
-      }
-      : {}
-  ), [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown]);
+  const resizeProps = useMemo(
+    () =>
+      enableColResize || enableRowResize
+        ? {
+            onMouseMove: handleMouseMove,
+            onMouseOut: handleMouseOut,
+            onMouseDown: handleMouseDown,
+          }
+        : {},
+    [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
+  );
 
   const dragParentRef = useRef('UNDEFINED_SHEET');
 
@@ -56,18 +60,16 @@ export function ColHeader({
         width: colHeaderWidth + getScrollBarWidth(),
       }}
     >
-      {
-        dynColHeader.map((header) => (
-          <HeaderCell
-            key={header.prop}
-            header={header}
-            resizeProps={resizeProps}
-            dragParentRef={dragParentRef}
-            handleColSort={handleColSort}
-            enableSorting={enableColSorting}
-          />
-        ))
-      }
+      {dynColHeader.map((header) => (
+        <HeaderCell
+          key={header.prop}
+          header={header}
+          resizeProps={resizeProps}
+          dragParentRef={dragParentRef}
+          handleColSort={handleColSort}
+          enableSorting={enableColSorting}
+        />
+      ))}
     </div>
   );
 }

@@ -1,6 +1,7 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import { getScrollBarWidth } from '../table/util';
 import useResize from '../hooks/useResize';
+import HeaderCell from './HeaderCell';
 
 export function RowHeader({
   dynRowHeader,
@@ -12,7 +13,8 @@ export function RowHeader({
   containerRef,
   colResizeProxyRef,
   onUpdate,
-  enableSorting = true,
+  handleRowSort,
+  enableRowSorting = true,
 }) {
   const onResizeStop = useCallback(
     (offset, prop) => {
@@ -47,30 +49,25 @@ export function RowHeader({
     [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
 
+  const dragParentRef = useRef('UNDEFINED_SHEET');
+
   return (
     <div
       style={{
         position: 'relative',
-        height: rowHeaderHeight + +getScrollBarWidth(),
+        height: rowHeaderHeight + getScrollBarWidth(),
         width: rowHeaderWidth,
       }}
     >
-      {dynRowHeader.map(({ top, left, width, height, label, prop }) => (
-        <div
-          className="header"
-          key={prop}
-          style={{
-            position: 'absolute',
-            top: top,
-            left: left,
-            width: width,
-            height: height,
-          }}
-          data-prop={prop}
-          {...resizeProps}
-        >
-          {label}
-        </div>
+      {dynRowHeader.map((header) => (
+        <HeaderCell
+          key={header.prop}
+          header={header}
+          resizeProps={resizeProps}
+          dragParentRef={dragParentRef}
+          handleSort={handleRowSort}
+          enableSorting={enableRowSorting}
+        />
       ))}
     </div>
   );

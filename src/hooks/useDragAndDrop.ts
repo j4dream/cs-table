@@ -37,11 +37,9 @@ export const useDrop = (opts: DropOpts) => {
       },
       onDragEnter: (e: React.DragEvent<HTMLElement>) => {
         e.preventDefault();
-        console.log('on drag enter：', e.currentTarget.dataset.parentProp);
         setHoverProp(e.currentTarget.dataset.parentProp as string);
       },
       onDragLeave: (e: any) => {
-        console.log('on drag leave', e.currentTarget.dataset.prop);
         setHoverProp('');
       },
       onDragOver: (e: React.DragEvent) => {

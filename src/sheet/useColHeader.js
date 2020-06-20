@@ -67,9 +67,9 @@ export default function useColHeader({ colHeader: rawHeader, cellWidth, cellHeig
   }, [updateCount, rebuildColHeader]);
 
   return {
+    ...measure,
     colHeader: allColumns,
     rebuildColHeader,
-    ...measure,
     handleColSort,
   };
 }

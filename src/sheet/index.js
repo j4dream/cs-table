@@ -35,8 +35,9 @@ export default function (props) {
     rowHeaderWidth,
     rowHeaderHeight,
     rowHeaderLeaf,
-    rebuildRowHeader,
     rowDeepestPath,
+    rebuildRowHeader,
+    handleRowSort,
   } = useRowHeader({ rowHeader, cellWidth, cellHeight });
 
   const sheetRef = useRef();
@@ -96,7 +97,7 @@ export default function (props) {
         };
       });
     },
-    [setState, colHeaderLeaf],
+    [setState, colHeaderLeaf, rowHeaderLeaf],
   );
 
   // sorting effect.
@@ -172,6 +173,7 @@ export default function (props) {
           enableRowResize={enableRowResize}
           enableRowSorting={enableRowSorting}
           onUpdate={rebuildRowHeader}
+          handleRowSort={handleRowSort}
         />
       </div>
 

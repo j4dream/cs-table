@@ -29,6 +29,7 @@ export default function () {
           cellHeight={44}
           enableColResize
           enableColSorting
+          enableRowSorting
         />
       </div>
     </div>

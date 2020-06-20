@@ -15,7 +15,7 @@ interface HeaderProps {
   header: Header;
   resizeProps: object;
   dragParentRef: React.MutableRefObject<string>;
-  handleColSort: Function;
+  handleSort: Function;
   enableSorting: boolean;
 }
 
@@ -23,7 +23,7 @@ export default ({
   header,
   resizeProps,
   dragParentRef,
-  handleColSort,
+  handleSort,
   enableSorting,
 }: HeaderProps) => {
   const { top, left, width, height, prop, label } = header;
@@ -37,7 +37,7 @@ export default ({
   const { dropProps, hoverProp, setHoverProp } = useDrop({
     handleDrop: (dragProp, dropProp) => {
       if (dragProp !== dropProp) {
-        handleColSort(dragProp, dropProp);
+        handleSort && handleSort(dragProp, dropProp);
       }
       dragParentRef.current = 'UNDEFINED_SHEET';
       setHoverProp('');
@@ -55,10 +55,6 @@ export default ({
         : {},
     [prop],
   );
-
-  if (hoverProp !== dragParentRef.current) {
-    console.log(hoverProp, dragParentRef.current);
-  }
 
   return (
     <div

@@ -66,7 +66,7 @@ export function ColHeader({
           header={header}
           resizeProps={resizeProps}
           dragParentRef={dragParentRef}
-          handleColSort={handleColSort}
+          handleSort={handleColSort}
           enableSorting={enableColSorting}
         />
       ))}

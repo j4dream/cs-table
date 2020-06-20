@@ -19,13 +19,7 @@ interface HeaderProps {
   enableSorting: boolean;
 }
 
-export default ({
-  header,
-  resizeProps,
-  dragParentRef,
-  handleSort,
-  enableSorting,
-}: HeaderProps) => {
+export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
   const { top, left, width, height, prop, label } = header;
 
   const getDragProps = useDrag({

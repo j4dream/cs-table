@@ -56,7 +56,8 @@ export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeig
         forceUpdate();
       }
     },
-  [rawHeaderRef.current, forceUpdate]);
+    [rawHeaderRef.current, forceUpdate],
+  );
 
   const rebuildRowHeader = useCallback(() => {
     setMeasure(buildHeaderTree());

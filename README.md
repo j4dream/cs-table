@@ -2,6 +2,12 @@
 
 Supports large amounts of data, built using react hooks.
 
+Install
+
+```
+npm i virtualized-sc-table
+```
+
 [Demo](https://j4dream.github.io/cs-table/)
 
 ```javascript
@@ -47,6 +53,8 @@ for (let r = 0; r < 10000; r++) {
 />;
 ```
 
+## Table
+
 | props | default | Desc |
 | --- | --- | --- |
 | header: Array | [] | required \*, table header [{ label: 'Name', prop: 'name' }] |
@@ -59,4 +67,16 @@ for (let r = 0; r < 10000; r++) {
 
 ## Sheet
 
-Sheet can support grouping column header and row header. props | default | Desc ---|---|---| colHeader: Array | [] | required _, table header [{ label: 'Name', prop: 'name' }] colHeader: Array | [] | required _, table header [{ label: 'Name', prop: 'name' }] data: Array | [] | required \*, tabel data [{ name: 'DDR' }] renderCell: Function | (record, rowProp, colProp, data) => record | cellWidth: number | 100 | config cell Width cellHeight: number | 40 | config cell Height
+Sheet can support grouping column header and row header.
+
+| props | default | Desc |
+| --- | --- | --- |
+| colHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
+| colHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
+| data: Array | [] | required \_, tabel data [{ name: 'DDR' }] |
+| renderCell: Function | (record, rowProp, colProp, data) => record |
+| cellWidth: number | 100 | config cell Width |
+| cellHeight: number | 40 | config cell Height |
+| enableColResize: boolean | false | support resize resize |
+| enableColSorting: boolean | false | support drag & drog to sort col header |
+| enableRowSorting: boolean | false | support drag & drog to sort row headr |

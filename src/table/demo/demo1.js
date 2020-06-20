@@ -8,13 +8,13 @@ const header = [
     prop: 'op',
     width: 90,
     renderHeader: (h, p) => <a href="#">Operation</a>,
-    renderCell: () => <a href="#">OP</a>
+    renderCell: () => <a href="#">OP</a>,
   },
   {
     label: 'Email (Fixed)',
     fixed: true,
     prop: 'email',
-  }
+  },
 ];
 for (let i = 0; i < 10; i++) {
   header.push({
@@ -24,17 +24,16 @@ for (let i = 0; i < 10; i++) {
 }
 
 const data = [];
-for(let r = 0; r < 100000; r++) {
+for (let r = 0; r < 100000; r++) {
   const row = {};
-  for(let c = 0; c < 10; c++) {
+  for (let c = 0; c < 10; c++) {
     row[c] = `data ${r}:${c}`;
   }
   row['email'] = `test_${r}@email.com`;
   data.push(row);
 }
 
-export default memo(function() {
-
+export default memo(function () {
   const [count, setCount] = useState(0);
 
   const [h, setH] = useState(header);
@@ -50,7 +49,7 @@ export default memo(function() {
       <button onClick={() => setPreventScroll(!preventScroll)}>Toggle fix scroll</button>
       <p>{count}</p> */}
 
-      <p style={{margin: 23}}> 10 * 100000 (col * row)</p>
+      <p style={{ margin: 23 }}> 10 * 100000 (col * row)</p>
 
       <Table
         header={h}

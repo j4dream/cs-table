@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from 'react';
 import {
   processTree,
   getLeafNodes,
@@ -7,17 +7,23 @@ import {
   getDeepestNodePath,
   calcMeasureFromDeepestPath,
   calcDeepsetNodePathOffset,
+  switchPosByProps,
 } from './util';
+import useUpdateEffect from '../hooks/useUpdateEffect';
+import useForceUpdate from '../hooks/useForceUpdate';
 
-export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeight}) {
+export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeight }) {
+  const rawHeaderRef = useRef(rawHeader);
+  const { forceUpdate, updateCount } = useForceUpdate();
 
-  const {flattenRow, allColumns}= useMemo(
-    () => processTree(rawHeader, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
-  , []);
+  const { flattenRow, allColumns } = useMemo(
+    () => processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth }),
+    [rawHeaderRef.current, updateCount],
+  );
 
   const buildHeaderTree = useCallback(() => {
     // use leaf nodes calc width & prop
-    const leafNodes = getLeafNodes(rawHeader);
+    const leafNodes = getLeafNodes(rawHeaderRef.current);
 
     // caculate height;
     travelToRootFromLeafNodes(leafNodes, 'height', cellHeight);
@@ -38,19 +44,35 @@ export default function useRowHeader({rowHeader: rawHeader, cellWidth, cellHeigh
       rowHeaderHeight,
       rowHeaderLeaf: leafNodes,
       rowDeepestPath: deepestNodePath,
-    }
-  }, [rawHeader, flattenRow, allColumns]);
+    };
+  }, [rawHeaderRef.current, flattenRow, allColumns]);
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
+
+  const handleRowSort = useCallback(
+    (p1, p2) => {
+      const switchSuccess = switchPosByProps(rawHeaderRef.current, p1, p2);
+      if (switchSuccess) {
+        forceUpdate();
+      }
+    },
+    [rawHeaderRef.current, forceUpdate],
+  );
 
   const rebuildRowHeader = useCallback(() => {
     setMeasure(buildHeaderTree());
   }, [buildHeaderTree, setMeasure]);
 
+  useUpdateEffect(() => {
+    if (updateCount !== 0) {
+      rebuildRowHeader();
+    }
+  }, [updateCount, rebuildRowHeader]);
+
   return {
+    ...measure,
     rowHeader: allColumns,
     rebuildRowHeader,
-    ...measure,
+    handleRowSort,
   };
-  
 }

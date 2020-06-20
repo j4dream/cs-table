@@ -15,56 +15,40 @@ interface HeaderProps {
   header: Header;
   resizeProps: object;
   dragParentRef: React.MutableRefObject<string>;
-  handleColSort: Function;
+  handleSort: Function;
   enableSorting: boolean;
 }
 
-export default ({
-  header,
-  resizeProps,
-  dragParentRef,
-  handleColSort,
-  enableSorting,
-}: HeaderProps) => {
-
-  const {
-    top,
-    left,
-    width,
-    height,
-    prop,
-    label
-  }= header;
+export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
+  const { top, left, width, height, prop, label } = header;
 
   const getDragProps = useDrag({
     handleDrag: () => {
       dragParentRef.current = header.parent?.prop;
-    }
+    },
   });
 
   const { dropProps, hoverProp, setHoverProp } = useDrop({
     handleDrop: (dragProp, dropProp) => {
       if (dragProp !== dropProp) {
-        handleColSort(dragProp, dropProp);
+        handleSort && handleSort(dragProp, dropProp);
       }
       dragParentRef.current = 'UNDEFINED_SHEET';
       setHoverProp('');
-    }
+    },
   });
 
   // dyn add props
-  const sortingProps = useMemo(() => (
-    enableSorting
-      ? {
-          ...getDragProps(prop),
-          ...dropProps,
-        }
-      : {}
-  ), [prop]);
-
-  if (hoverProp !== dragParentRef.current) {
-    console.log(hoverProp, dragParentRef.current);
-  }
+  const sortingProps = useMemo(
+    () =>
+      enableSorting
+        ? {
+            ...getDragProps(prop),
+            ...dropProps,
+          }
+        : {},
+    [prop],
+  );
 
   return (
     <div
@@ -75,10 +59,8 @@ export default ({
         left: left,
         width: width,
         height: height,
-        outline: hoverProp === dragParentRef.current
-                  ? '2px dashed green'
-                  : 'none',
-        outlineOffset: -2
+        outline: hoverProp === dragParentRef.current ? '2px dashed green' : 'none',
+        outlineOffset: -2,
       }}
       data-prop={prop}
       data-parent-prop={header.parent?.prop}
@@ -88,4 +70,4 @@ export default ({
       {label}
     </div>
   );
-}
+};

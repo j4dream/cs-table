@@ -14,9 +14,7 @@ export default function (props) {
         width: '100%',
       }}
     >
-      {
-        !!width && !!height && <Sheet {...props} width={width} height={height} />
-      }
+      {!!width && !!height && <Sheet {...props} width={width} height={height} />}
     </div>
   );
 }

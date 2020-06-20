@@ -4,7 +4,7 @@ import AutoSizeSheet from '../AutoSize';
 
 import simpleData from './data';
 
-export default function() {
+export default function () {
   const { rowHeader, colHeader, data } = simpleData;
   return (
     <div>
@@ -29,8 +29,9 @@ export default function() {
           cellHeight={44}
           enableColResize
           enableColSorting
+          enableRowSorting
         />
       </div>
     </div>
-  )
+  );
 }

@@ -9,6 +9,5 @@ export default (fnc, deps) => {
     } else {
       return fnc();
     }
-
   }, deps);
-}
+};

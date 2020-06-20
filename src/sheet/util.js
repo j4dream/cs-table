@@ -122,7 +122,7 @@ export function travelToRootFromLeafNodes(leafNodes, prop, defaultValue) {
   // leaf nodes; Complexity: O(leaf.length * deepest);
   const set = new Set();
   leafNodes.forEach((node) => {
-    node[prop] = node[prop] || defaultValue
+    node[prop] = node[prop] || defaultValue;
     let accValue = node[prop];
     let parent = node.parent;
 
@@ -130,7 +130,7 @@ export function travelToRootFromLeafNodes(leafNodes, prop, defaultValue) {
     if (parent && !set.has(parent)) {
       parent[prop] = 0;
       set.add(parent);
-    };
+    }
 
     while (parent) {
       let parentProp = parent[prop] || 0;
@@ -147,11 +147,7 @@ export function calcNodeOffsetFormFalttenHeader(flattenRow, prop, measure) {
     for (let j = 0, jLength = flattenRow[i].length; j < jLength; j++) {
       const curr = flattenRow[i][j];
 
-      acc = acc === 0
-        ? curr.parent
-          ? curr.parent[prop]
-          : 0
-        : acc;
+      acc = acc === 0 ? (curr.parent ? curr.parent[prop] : 0) : acc;
 
       curr[prop] = acc;
       acc += curr[measure];
@@ -167,9 +163,13 @@ export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
     if (deepestPath.indexOf(allNode[i]) !== -1) continue;
     node[offsetType] = deepestPath[node.level][offsetType];
     allNode[i][measure] = 0;
-    for (var j = level, jLength = (measure === 'height' ? rowSpan : colSpan) + level; j < jLength; j++) {
+    for (
+      var j = level, jLength = (measure === 'height' ? rowSpan : colSpan) + level;
+      j < jLength;
+      j++
+    ) {
       allNode[i][measure] += deepestPath[j][measure];
-    };
+    }
   }
 }
 
@@ -184,7 +184,7 @@ export function binSearch(scroll, arr, measure) {
   }
 
   const offset = measure === 'width' ? 'left' : 'top';
-  while ((end - start) > 1) {
+  while (end - start > 1) {
     if (arr[mid][offset] < scroll) {
       start = mid;
     }
@@ -225,9 +225,9 @@ export function getSubTreeFromStartNode(startIndex, leafNodes, measure, measuerL
 // get the last child
 export function getLastNode(node) {
   let tn = node;
-  while(tn && tn.children.length) {
+  while (tn && tn.children.length) {
     const l = tn.children.length;
-    tn = tn.children[l-1];
+    tn = tn.children[l - 1];
   }
   return tn;
 }
@@ -239,12 +239,13 @@ export function getNodeByProp(rawHeader, prop) {
       foundNode = node;
       return true;
     }
-    node.children && node.children.forEach((cn) => {
-      recursion(cn);
-    });
-  }
+    node.children &&
+      node.children.forEach((cn) => {
+        recursion(cn);
+      });
+  };
 
-  for(let i = 0, l = rawHeader.length; i < l; i++) {
+  for (let i = 0, l = rawHeader.length; i < l; i++) {
     if (recursion(rawHeader[i])) break;
   }
 
@@ -259,7 +260,7 @@ function switchNode(nodes, fIndex, sIndex) {
 
 export function switchPosByProps(rawHeader, firstProp, secondProp) {
   const firstNode = getNodeByProp(rawHeader, firstProp),
-        secondNode = getNodeByProp(rawHeader, secondProp);
+    secondNode = getNodeByProp(rawHeader, secondProp);
 
   if (!firstNode || !secondNode) {
     console.warn('Can not find node.');

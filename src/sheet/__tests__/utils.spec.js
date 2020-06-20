@@ -1,6 +1,6 @@
 import { getNodeByProp, switchPosByProps, processTree } from '../util';
 
-import sampleData from '../demo/data'
+import sampleData from '../demo/data';
 
 test('test getNodeByProp', () => {
   expect(getNodeByProp(sampleData.rowHeader, 'gd').label).toBe('广东');

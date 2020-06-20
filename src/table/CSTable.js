@@ -7,7 +7,6 @@ import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
 
 export default function CSTable() {
-
   const {
     header,
     data,
@@ -25,11 +24,11 @@ export default function CSTable() {
     fixedLeftColWidth,
     preventScroll,
     enableResize = true,
-    dataAreaState: { dataAreaWidth: areaWidthAfterResize}
+    dataAreaState: { dataAreaWidth: areaWidthAfterResize },
   } = useContext(CSTableContext);
 
   const rowCount = data.length,
-        colCount = header.length;
+    colCount = header.length;
 
   const areaWidth = useMemo(() => {
     if (enableResize) {
@@ -39,47 +38,50 @@ export default function CSTable() {
   }, [enableResize, header, colCount, cellWidth]);
 
   const areaHeight = useMemo(() => {
-    return rowCount * cellHeight
+    return rowCount * cellHeight;
   }, [rowCount, cellHeight]);
 
   return (
-    <div ref={tableRef} className="cs-table" style={{position: 'relative', height: height}}>
-      
-      {
-        preventScroll && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2}}/>
-      }
+    <div ref={tableRef} className="cs-table" style={{ position: 'relative', height: height }}>
+      {preventScroll && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2 }} />
+      )}
 
-      <div ref={headerRef} style={{overflow: 'hidden', marginLeft: fixedLeftColWidth}}>
-        <div style={{width: (areaWidthAfterResize || areaWidth) + scrollBarWidth, position: 'relative', height: cellHeight}}>
+      <div ref={headerRef} style={{ overflow: 'hidden', marginLeft: fixedLeftColWidth }}>
+        <div
+          style={{
+            width: (areaWidthAfterResize || areaWidth) + scrollBarWidth,
+            position: 'relative',
+            height: cellHeight,
+          }}
+        >
           <Header />
         </div>
       </div>
 
-      {
-        !!fixedLeftColWidth && (
-          <>
-            <div style={{position:'absolute', width: fixedLeftColWidth, top: 0}}>
-              <FixedLeftHeader />
-            </div>
+      {!!fixedLeftColWidth && (
+        <>
+          <div style={{ position: 'absolute', width: fixedLeftColWidth, top: 0 }}>
+            <FixedLeftHeader />
+          </div>
 
-            <div
-              ref={fixedColLeftRef}
-              style={{
-                overflow: 'hidden',
-                height: height - cellHeight,
-                width: fixedLeftColWidth,
-                position: 'absolute',
-                left: 0
-              }}
-            >
-              <div style={{height: areaHeight + scrollBarWidth}}>
-                <FixedLeftColumn />
-              </div>
+          <div
+            ref={fixedColLeftRef}
+            style={{
+              overflow: 'hidden',
+              height: height - cellHeight,
+              width: fixedLeftColWidth,
+              position: 'absolute',
+              left: 0,
+            }}
+          >
+            <div style={{ height: areaHeight + scrollBarWidth }}>
+              <FixedLeftColumn />
             </div>
-          </>
-        )
-      }
-    
+          </div>
+        </>
+      )}
+
       <div
         ref={dataAreaRef}
         style={{
@@ -96,15 +98,11 @@ export default function CSTable() {
             width: areaWidthAfterResize || areaWidth,
           }}
         >
-          <DataArea /> 
+          <DataArea />
         </div>
       </div>
 
-      <div
-        className="resize-col-proxy"
-        ref={colResizeProxyRef}
-        style={{ visibility: 'hidden' }}
-      />
+      <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
   );
 }

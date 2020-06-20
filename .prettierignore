@@ -1,0 +1,15 @@
+**/*.svg
+**/*.ico
+*.png
+package.json
+package-lock.json
+.env
+.dockerignore
+.DS_Store
+.eslintignore
+.editorconfig
+.vscode
+.gitignore
+.prettierignore
+/build
+/dist

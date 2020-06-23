@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
+import t from 'prop-types';
 import CSTable from './CSTable';
 import { getScrollBarWidth, processHeaderWidth, getMutableIndexAndCount } from './util';
 import useUpdateEffect from '../hooks/useUpdateEffect';
@@ -14,7 +15,7 @@ const getRangeFromArr = (arr, start, count) => {
   return res;
 };
 
-export const Provider = (props) => {
+const Provider = (props) => {
   const {
     header,
     data,
@@ -218,14 +219,23 @@ export const Provider = (props) => {
   };
 
   return <CSTableContext.Provider value={editorContext}>{children}</CSTableContext.Provider>;
-};
+}
 
-export { CSTableContext };
-
-export default React.memo(function CSTableProvider(props) {
+function CSTableProvider(props) {
   return (
     <Provider {...props}>
       <CSTable />
     </Provider>
   );
-});
+};
+
+CSTableProvider.propTypes = {
+  /**
+   * This is a pretty good description for this prop.
+   */
+  data: t.array,
+}
+
+export default CSTableProvider;
+export { CSTableContext };
+

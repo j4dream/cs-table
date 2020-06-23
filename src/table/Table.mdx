@@ -1,0 +1,53 @@
+---
+name: Table
+route: /table
+---
+
+import { Playground, Props } from 'docz'
+import Table from './index'
+import '../App.css';
+
+# Table
+### Table Props
+<Props of={Table} />
+
+## Basic usage
+
+<Playground>
+  {
+    () => {
+      const header = [
+        {
+          label: 'Email (Fixed)',
+          fixed: true,
+          prop: 'email',
+        },
+      ];
+      console.log('redo');
+      for (let i = 0; i < 10; i++) {
+        header.push({
+          label: `H ${i}`,
+          prop: `${i}`,
+        });
+      }
+      const data = [];
+      for (let r = 0; r < 100000; r++) {
+        const row = {};
+        for (let c = 0; c < 10; c++) {
+          row[c] = `data ${r}:${c}`;
+        }
+        row['email'] = `test_${r}@email.com`;
+        data.push(row);
+      }
+      console.log(Table);
+      return (
+        <Table
+          header={header}
+          data={data}
+          cellWidth={200}
+          enableResize={true}
+        />
+      );
+    }
+  }
+</Playground>

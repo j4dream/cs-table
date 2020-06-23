@@ -1,0 +1,63 @@
+---
+name: Sheet
+route: /sheet
+---
+
+import { Playground, Props } from 'docz'
+import Sheet from './index'
+import sampleData from './demo/data'
+
+# Sheet
+### Sheet Props
+<Props of={Sheet} />
+
+### 何时使用
+* 数据量大，普通 table 遇到性能时候。
+* 数据聚合；
+* 多级表头，支持行列分组；
+
+## 代码演示
+
+<Playground>
+  {
+    () => {
+      const { rowHeader, colHeader, data } = sampleData;
+      console.log(rowHeader, colHeader, data);
+      return (
+        <>
+          <h3 className="text-center">XX 公司季度销售量统计表</h3>
+          <Sheet
+            rowHeader={rowHeader}
+            colHeader={colHeader}
+            data={data}
+            cellWidth={120}
+            cellHeight={50}
+          />
+        </>
+      );
+    }
+  }
+</Playground>
+
+## 自定义表格宽度高度
+
+<Playground>
+  {
+    () => {
+      const { rowHeader, colHeader, data } = sampleData;
+      console.log(rowHeader, colHeader, data);
+      return (
+        <>
+          <h3 className="text-center">XX 公司季度销售量统计表</h3>
+          <Sheet
+            rowHeader={rowHeader}
+            colHeader={colHeader}
+            data={data}
+            cellWidth={120}
+            cellHeight={44}
+          />
+        </>
+      );
+    }
+  }
+</Playground>

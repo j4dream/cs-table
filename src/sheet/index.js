@@ -7,7 +7,7 @@ import { ColHeader } from './ColHeader';
 import { RowHeader } from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-export default function (props) {
+function Sheet(props) {
   const {
     colHeader,
     rowHeader,
@@ -219,3 +219,7 @@ export default function (props) {
     </div>
   );
 }
+
+Sheet.displayName = 'Sheet';
+
+export default Sheet;

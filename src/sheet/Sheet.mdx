@@ -1,14 +1,15 @@
 ---
-name: Sheet
+name: 聚合表格
 route: /sheet
 ---
 
 import { Playground, Props } from 'docz'
 import Sheet from './index'
 import sampleData from './demo/data'
+import clonedeep from 'lodash.clonedeep'
 
-# Sheet
-### Sheet Props
+# 聚合表格
+### Props
 <Props of={Sheet} />
 
 ### 何时使用
@@ -16,13 +17,12 @@ import sampleData from './demo/data'
 * 数据聚合；
 * 多级表头，支持行列分组；
 
-## 代码演示
+## 基础使用
 
 <Playground>
   {
     () => {
-      const { rowHeader, colHeader, data } = sampleData;
-      console.log(rowHeader, colHeader, data);
+      const { rowHeader, colHeader, data } = clonedeep(sampleData);
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
@@ -30,8 +30,6 @@ import sampleData from './demo/data'
             rowHeader={rowHeader}
             colHeader={colHeader}
             data={data}
-            cellWidth={120}
-            cellHeight={50}
           />
         </>
       );
@@ -44,8 +42,7 @@ import sampleData from './demo/data'
 <Playground>
   {
     () => {
-      const { rowHeader, colHeader, data } = sampleData;
-      console.log(rowHeader, colHeader, data);
+      const { rowHeader, colHeader, data } = clonedeep(sampleData);
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
@@ -53,8 +50,84 @@ import sampleData from './demo/data'
             rowHeader={rowHeader}
             colHeader={colHeader}
             data={data}
-            cellWidth={120}
-            cellHeight={44}
+            cellWidth={150}
+            cellHeight={60}
+          />
+        </>
+      );
+    }
+  }
+</Playground>
+
+
+## 可伸缩列
+拖动列伸缩的时候，会延迟渲染，对于视窗内 DOM 元素比较多的时候，拖动不会造成卡顿。  
+例如 antd 的实现 
+[Ant Resize](https://codesandbox.io/s/antd-resize-5u469?file=/index.js)
+<Playground>
+  {
+    () => {
+      const { rowHeader, colHeader, data } = clonedeep(sampleData);
+      return (
+        <>
+          <h3 className="text-center">XX 公司季度销售量统计表</h3>
+          <Sheet
+            enableColResize
+            rowHeader={rowHeader}
+            colHeader={colHeader}
+            data={data}
+          />
+        </>
+      );
+    }
+  }
+</Playground>
+
+## 拖拽表头排序
+支持拖拽排序表头，部分重要数据需要排序到前面，可直接拖动表头排序，同时支持行列排序。
+注意：你只能排序相同子节点。
+
+<Playground>
+  {
+    () => {
+      const { rowHeader, colHeader, data } = clonedeep(sampleData);
+      return (
+        <>
+          <h3 className="text-center">XX 公司季度销售量统计表</h3>
+          <Sheet
+            enableColSorting
+            enableRowSorting
+            rowHeader={rowHeader}
+            colHeader={colHeader}
+            data={data}
+          />
+        </>
+      );
+    }
+  }
+</Playground>
+
+## 自定义渲染表格
+通过指定 renderCell 方法可以渲染表格，你可以渲染成一个可编辑状态的表格，或者自定义组件。
+
+<Playground>
+  {
+    () => {
+      const { rowHeader, colHeader, data } = clonedeep(sampleData);
+      return (
+        <>
+          <h3 className="text-center">XX 公司季度销售量统计表</h3>
+          <Sheet
+            enableColSorting
+            enableRowSorting
+            renderCell={(record, rowProp, colProp, data) => {
+              if (!record) return '---';
+              if (rowProp.indexOf('gd-') !== -1) return <span>{record} ✍</span>;
+              return record;
+            }}
+            rowHeader={rowHeader}
+            colHeader={colHeader}
+            data={data}
           />
         </>
       );

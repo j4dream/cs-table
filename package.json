@@ -33,8 +33,8 @@
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "prettier": "prettier -c --write \"**/*\"",
     "publish:npm": "babel ./src -d dist --extensions \".ts,.js\" --copy-files --no-copy-ignored",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "predeploy": "npm run docz:build",
+    "deploy": "gh-pages -d .docz/dist"
   },
   "eslintConfig": {
     "extends": "react-app"

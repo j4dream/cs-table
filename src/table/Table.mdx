@@ -1,0 +1,57 @@
+---
+name: 简单表格
+route: /table
+---
+
+import { Playground, Props } from 'docz'
+import Table from './index'
+
+# 简单表格 Concise Table
+
+## Props
+<Props of={Table} />
+
+## 何时使用
+* 列 (column) 比较多时；
+* 数据量多，需要重复渲染时；
+* 数据量大，某些场景不适合分页展示；
+
+## 基本用法
+
+<Playground>
+  {
+    () => {
+      const header = [
+        {
+          label: '#',
+          fixed: true,
+          prop: 'rowIndex',
+          width: 50,
+        },
+      ];
+      for (let i = 0; i < 10; i++) {
+        header.push({
+          label: `H ${i}`,
+          prop: `${i}`,
+        });
+      }
+      const data = [];
+      for (let r = 0; r < 100000; r++) {
+        const row = {};
+        for (let c = 0; c < 10; c++) {
+          row[c] = `data ${r}:${c}`;
+        }
+        row['rowIndex'] = r;
+        data.push(row);
+      }
+      return (
+        <Table
+          header={header}
+          data={data}
+          cellWidth={200}
+          enableResize={true}
+        />
+      );
+    }
+  }
+</Playground>

@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import t from 'prop-types';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';
@@ -6,7 +7,7 @@ import { CSTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
 
-export default function CSTable() {
+function CSTable() {
   const {
     header,
     data,
@@ -105,4 +106,10 @@ export default function CSTable() {
       <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
   );
-}
+};
+
+CSTable.propTypes = {
+  kind: t.oneOf(['primary', 'secondary', 'cancel', 'dark', 'gray']),
+};
+
+export default CSTable;

@@ -1,0 +1,17 @@
+{
+  "presets": [
+    "@babel/preset-react",
+    "@babel/preset-typescript"
+  ],
+  "ignore": [
+    "src/**/*.mdx",
+    "src/**/*.spec.js",
+    "src/**/*.test.js",
+    "src/App.js",
+    "src/App.css",
+    "src/index.js",
+    "src/logo.svg",
+    "src/react-app-env.d.ts",
+    "src/serviceWorker.js"
+  ]
+}

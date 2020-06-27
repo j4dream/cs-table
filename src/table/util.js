@@ -1,5 +1,6 @@
 let scrollBarWidth;
 export function getScrollBarWidth() {
+  if (typeof document === 'undefined') return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
   const dom = document.createElement('div');
   const body = document.body || dom;

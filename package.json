@@ -1,8 +1,8 @@
 {
   "name": "virtualized-sc-table",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "private": false,
-  "main": "./dist/index",
+  "main": "./dist/main",
   "files": [
     "dist"
   ],
@@ -16,33 +16,25 @@
     "resize"
   ],
   "dependencies": {
-    "@types/jest": "^25.2.3",
-    "@types/node": "^14.0.9",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
-    "classnames": "^2.2.6",
-    "gh-pages": "^2.2.0",
-    "lodash.clonedeep": "^4.5.0",
-    "lodash.differenceby": "^4.8.0",
-    "lodash.remove": "^4.7.0",
-    "md5": "^2.2.1",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "^3.4.1",
-    "throttle-debounce": "^1.0.1",
-    "typescript": "^3.9.3"
+    "react-dom": "^16.8.6"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
+    "docz:serve": "docz build && docz serve",
     "commit": "git-cz",
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "prettier": "prettier -c --write \"**/*\"",
-    "publish:npm": "rm -rf dist && mkdir dist &&  babel ./src/table -d dist --copy-files",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "publish:npm": "babel ./src -d dist --extensions \".ts,.js\" --copy-files --no-copy-ignored",
+    "predeploy": "npm run docz:build",
+    "deploy": "gh-pages -d .docz/dist"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -67,12 +59,17 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.10.1",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.9",
     "cz-conventional-changelog": "^3.2.0",
-    "prettier": "^2.0.5"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-react"
-    ]
+    "docz": "^2.3.1",
+    "gh-pages": "^2.2.0",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.differenceby": "^4.8.0",
+    "lodash.remove": "^4.7.0",
+    "prettier": "^2.0.5",
+    "react-scripts": "^3.4.1",
+    "typescript": "^3.9.3"
   }
 }

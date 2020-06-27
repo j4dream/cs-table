@@ -29,7 +29,7 @@ export default function () {
         setDataAreaState((prev) => ({ ...prev, dataAreaWidth }));
       }
     },
-    [header, setDataAreaState],
+    [header, allHeader, setDataAreaState, cellWidth],
   );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({

@@ -65,7 +65,7 @@ const Provider = (props) => {
   }, [fixedLeft, cellWidth]);
 
   const initWidthCountRef = useRef(
-    Math.ceil((document.body.offsetWidth - fixedLeftColWidth) / cellWidth),
+    Math.ceil((typeof document === 'undefined' ? 0 : document.body.offsetWidth - fixedLeftColWidth) / cellWidth),
   );
   const initHeightCountRef = useRef(Math.ceil(height / cellHeight));
 

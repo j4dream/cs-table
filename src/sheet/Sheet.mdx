@@ -8,16 +8,16 @@ import Sheet from './index'
 import sampleData from './demo/data'
 import clonedeep from 'lodash.clonedeep'
 
-# 聚合表格
-### Props
+# 统计聚合表格 Statistical Table
+## Props
 <Props of={Sheet} />
 
-### 何时使用
-* 数据量大，普通 table 遇到性能时候。
+## 何时使用
 * 数据聚合；
 * 多级表头，支持行列分组；
+* 数据量大，某些场景不适合分页展示。
 
-## 基础使用
+## 基本用法
 
 <Playground>
   {

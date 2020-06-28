@@ -28,7 +28,7 @@ export function RowHeader({
 
       onUpdate && onUpdate();
     },
-    [dynRowHeader, rowDeepestPath],
+    [dynRowHeader, rowDeepestPath, onUpdate],
   );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({

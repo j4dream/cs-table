@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import {
   processTree,
   calcNodeOffsetFormFalttenHeader,
@@ -16,8 +16,13 @@ export default function useColHeader({ colHeader: rawHeader, cellWidth, cellHeig
   const { forceUpdate, updateCount } = useForceUpdate();
 
   const { flattenRow, allColumns } = useMemo(
-    () => processTree(rawHeaderRef.current, ['colSpan', 'rowSpan'], { calcTop: cellHeight }),
-    [rawHeaderRef.current, updateCount],
+    () => {
+      if (updateCount) {
+        console.warn('forceupdate');
+      }
+      return processTree(rawHeaderRef.current, ['colSpan', 'rowSpan'], { calcTop: cellHeight })
+    },
+    [updateCount, cellHeight],
   );
 
   const buildHeaderTree = useCallback(() => {
@@ -42,7 +47,7 @@ export default function useColHeader({ colHeader: rawHeader, cellWidth, cellHeig
       colHeaderWidth,
       colHeaderLeaf: leafNodes,
     };
-  }, [rawHeaderRef.current, flattenRow, allColumns]);
+  }, [flattenRow, allColumns, cellHeight, cellWidth]);
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
 
@@ -53,7 +58,7 @@ export default function useColHeader({ colHeader: rawHeader, cellWidth, cellHeig
         forceUpdate();
       }
     },
-    [rawHeaderRef.current, forceUpdate],
+    [forceUpdate],
   );
 
   const rebuildColHeader = useCallback(() => {

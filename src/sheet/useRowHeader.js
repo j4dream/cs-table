@@ -17,8 +17,13 @@ export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeig
   const { forceUpdate, updateCount } = useForceUpdate();
 
   const { flattenRow, allColumns } = useMemo(
-    () => processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth }),
-    [rawHeaderRef.current, updateCount],
+    () => {
+      if (updateCount) {
+        console.warn('forceupdate');
+      }
+      return processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
+    },
+    [updateCount, cellWidth],
   );
 
   const buildHeaderTree = useCallback(() => {
@@ -45,7 +50,7 @@ export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeig
       rowHeaderLeaf: leafNodes,
       rowDeepestPath: deepestNodePath,
     };
-  }, [rawHeaderRef.current, flattenRow, allColumns]);
+  }, [flattenRow, allColumns, cellHeight, cellWidth]);
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
 
@@ -56,7 +61,7 @@ export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeig
         forceUpdate();
       }
     },
-    [rawHeaderRef.current, forceUpdate],
+    [forceUpdate],
   );
 
   const rebuildRowHeader = useCallback(() => {

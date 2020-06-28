@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';

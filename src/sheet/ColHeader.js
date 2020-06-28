@@ -29,7 +29,7 @@ export function ColHeader({
 
       onUpdate && onUpdate();
     },
-    [dynColHeader],
+    [dynColHeader, onUpdate],
   );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({

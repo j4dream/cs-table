@@ -106,10 +106,8 @@ function CSTable() {
       <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
   );
-};
+}
 
-CSTable.propTypes = {
-  kind: t.oneOf(['primary', 'secondary', 'cancel', 'dark', 'gray']),
-};
+CSTable.displayName = 'CTable';
 
 export default CSTable;

@@ -72,7 +72,7 @@ Sheet can support grouping column header and row header.
 | props | default | Desc |
 | --- | --- | --- |
 | colHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
-| colHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
+| rowHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
 | data: Array | [] | required \_, tabel data [{ name: 'DDR' }] |
 | renderCell: Function | (record, rowProp, colProp, data) => record |
 | cellWidth: number | 100 | config cell Width |

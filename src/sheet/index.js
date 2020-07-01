@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useState } from 'react';
-
+import t from 'prop-types';
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 import { getSubTreeFromStartNode, binSearch } from './util';
@@ -13,7 +13,7 @@ function Sheet(props) {
     rowHeader,
     data,
     height = 400,
-    width = 800,
+    width = 1000,
     cellHeight = 40,
     cellWidth = 100,
     renderCell = (record, rowProp, colProp, data) => record,
@@ -220,6 +220,75 @@ function Sheet(props) {
   );
 }
 
-Sheet.displayName = 'Sheet';
+Sheet.displayName = 'STable';
+
+Sheet.propTypes = {
+  /**
+   * 列表头，树结构  
+   * [{ label: '2018', prop: '2018', children: []}, ...]
+   */
+  colHeader: t.array.isRequired,
+   /**
+   * 行表头，树结构  
+   * [{ label: '广东', prop: 'gd', children: []}, ...]
+   */
+  rowHeader: t.array.isRequired,
+  /**
+   * 对象，key 分别对应 行列表头  
+   * {
+   *    "gd": {
+   *      "2018": value,
+   *    }
+   * }
+   */
+  data: t.object.isRequired,
+  /**
+   * 表格高度
+   */
+  height: t.number,
+  /**
+   * 表格宽度
+   */
+  width: t.number,
+  /**
+   * 单元格宽度
+   */
+  cellWidth: t.number,
+  /**
+   * 单元格高度
+   */
+  cellHeight: t.number,
+  /**
+   * 自定义渲染单元格  
+   * (record, rowProp, colProp, data) => record
+   */
+  renderCell: t.func,
+  /**
+   * 开启调整列宽度
+   */
+  enableColResize: t.bool,
+  // enableRowResize: t.bool,
+
+  /**
+   * 开启调整列顺序
+   */
+  enableColSorting: t.bool,
+  /**
+   * 开启调整行顺序
+   */
+  enableRowSorting: t.bool,
+};
+
+Sheet.defaultProps = {
+  height: 400,
+  width: 800,
+  cellHeight: 40,
+  cellWidth: 100,
+  renderCell: (record, rowProp, colProp, data) => record,
+  enableColResize: false,
+  enableRowResize: false,
+  enableColSorting: false,
+  enableRowSorting: false,
+};
 
 export default Sheet;

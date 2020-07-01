@@ -231,9 +231,60 @@ function CSTableProvider(props) {
 
 CSTableProvider.propTypes = {
   /**
-   * This is a pretty good description for this prop.
+   *  数组 [], 元素应包含 label，prop  
+   *  例如： { prop: 'name', label: 'Name' }
    */
-  data: t.array,
+  header: t.array.isRequired,
+  /**
+   *  数组 [], 元素 key 应该对应 header 中的 prop; 
+   *  例如： { name: 'DC' }
+   */
+  data: t.array.isRequired,
+  /**
+   *  Table 高度
+   */
+  height: t.number,
+  /**
+   *  Cell 单元格宽度
+   */
+  cellWidth: t.number,
+  /**
+   *  Cell 单元格高度
+   */
+  cellHeight: t.number,
+  /**
+   *  防止表格滚动，当你在做一个编辑表格的时候，这可以避免定位错误问题。
+   */
+  preventScroll: t.bool,
+  /**
+   *  调整宽度
+   */ 
+  enableResize: t.bool,
+  /**
+   *  数据更新时候，是否保留滚动状态。如果 header 同时更新，建议关闭。
+   */ 
+  keepScrollStatus: t.bool,
+  /**
+   *  自定义渲染单元格  
+   *  (record, rowIndex, prop) => record
+   */ 
+  renderCell: t.func,
+  /**
+   *  自定义渲染表头单元格  
+   *  (header, prop) => header.label
+   */  
+  renderHeader: t.func,
+}
+
+CSTableProvider.defaultProps = {
+  height: 440,
+  cellWidth: 120,
+  cellHeight: 40,
+  preventScroll: false,
+  enableResize: false,
+  keepScrollStatus: false,
+  renderCell: (record, rowIndex, prop) => record,
+  renderHeader: (header, prop) => header.label
 }
 
 export default CSTableProvider;

@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useRef } from 'react';
 import { getScrollBarWidth } from '../table/util';
 import useResize from '../hooks/useResize';
 import { getLastNode } from './util';
-import HeaderCell from './HeaderCell';
+import HeaderCell from '../HeaderCell';
 
 export function ColHeader({
   dynColHeader,

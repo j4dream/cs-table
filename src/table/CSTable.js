@@ -1,5 +1,4 @@
 import React, { useContext, useMemo } from 'react';
-import t from 'prop-types';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';

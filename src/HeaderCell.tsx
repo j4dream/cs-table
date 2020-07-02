@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDrag, useDrop } from '../hooks/useDragAndDrop';
+import { useDrag, useDrop } from './hooks/useDragAndDrop';
 
 interface Header {
   top: number;
@@ -8,6 +8,7 @@ interface Header {
   height: number;
   prop: string;
   label: string;
+  renderHeader?: Function;
   parent: Header;
 }
 
@@ -20,7 +21,7 @@ interface HeaderProps {
 }
 
 export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
-  const { top, left, width, height, prop, label } = header;
+  const { top, left, width, height, prop, label, renderHeader } = header;
 
   const getDragProps = useDrag({
     handleDrag: () => {
@@ -67,7 +68,7 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
       {...sortingProps}
       {...resizeProps}
     >
-      {label}
+      {renderHeader ? renderHeader(header, prop) : label}
     </div>
   );
 };

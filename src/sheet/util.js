@@ -252,7 +252,7 @@ export function getNodeByProp(rawHeader, prop) {
   return foundNode;
 }
 
-function switchNode(nodes, fIndex, sIndex) {
+export function switchNode(nodes, fIndex, sIndex) {
   const t = nodes[fIndex];
   nodes[fIndex] = nodes[sIndex];
   nodes[sIndex] = t;

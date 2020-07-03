@@ -1,6 +1,5 @@
 import React from 'react';
-import Sheet from '../index';
-import AutoSizeSheet from '../AutoSize';
+import AutoSizeSheet from '../AutoSizeSTable';
 
 import simpleData from './data';
 

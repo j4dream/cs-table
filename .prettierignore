@@ -1,5 +1,7 @@
 **/*.svg
 **/*.ico
+**/*.md
+**/*.mdx
 *.png
 package.json
 package-lock.json

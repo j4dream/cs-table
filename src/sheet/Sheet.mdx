@@ -5,6 +5,7 @@ route: /sheet
 
 import { Playground, Props } from 'docz'
 import Sheet from './index'
+import AutoSizeSTable from './AutoSizeSTable'
 import sampleData from './demo/data'
 import clonedeep from 'lodash.clonedeep'
 
@@ -125,6 +126,33 @@ import clonedeep from 'lodash.clonedeep'
             colHeader={colHeader}
             data={data}
           />
+        </>
+      );
+    }
+  }
+</Playground>
+
+## 自适应父元素宽高
+```javascript
+import { AutoSizeSTable } from 'virtualized-sc-table'
+```
+
+<Playground>
+  {
+    () => {
+      const { rowHeader, colHeader, data } = clonedeep(sampleData);
+      return (
+        <>
+          <h3 className="text-center">XX 公司季度销售量统计表</h3>
+          <div style={{width: 800, height: 400}}>
+            <AutoSizeSTable
+              rowHeader={rowHeader}
+              colHeader={colHeader}
+              data={data}
+              cellHeight={22}
+              cellWidth={80}
+            />
+          </div>
         </>
       );
     }

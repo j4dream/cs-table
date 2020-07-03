@@ -3,8 +3,8 @@ import t from 'prop-types';
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
 import { getSubTreeFromStartNode, binSearch } from './util';
-import { ColHeader } from './ColHeader';
-import { RowHeader } from './RowHeader';
+import ColHeader from './ColHeader';
+import RowHeader from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
 function Sheet(props) {
@@ -228,10 +228,10 @@ Sheet.propTypes = {
    * [{ label: '2018', prop: '2018', children: []}, ...]
    */
   colHeader: t.array.isRequired,
-   /**
-   * 行表头，树结构  
-   * [{ label: '广东', prop: 'gd', children: []}, ...]
-   */
+  /**
+  * 行表头，树结构  
+  * [{ label: '广东', prop: 'gd', children: []}, ...]
+  */
   rowHeader: t.array.isRequired,
   /**
    * 对象，key 分别对应 行列表头  

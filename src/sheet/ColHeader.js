@@ -4,7 +4,7 @@ import useResize from '../hooks/useResize';
 import { getLastNode } from './util';
 import HeaderCell from '../HeaderCell';
 
-export function ColHeader({
+const ColHeader = ({
   dynColHeader,
   colHeaderWidth,
   colHeaderHeight,
@@ -15,7 +15,7 @@ export function ColHeader({
   onUpdate,
   handleColSort,
   enableColSorting,
-}) {
+}) => {
   const onResizeStop = useCallback(
     (offset, prop) => {
       let h = dynColHeader.find((h) => h.prop === prop);
@@ -42,10 +42,10 @@ export function ColHeader({
     () =>
       enableColResize || enableRowResize
         ? {
-            onMouseMove: handleMouseMove,
-            onMouseOut: handleMouseOut,
-            onMouseDown: handleMouseDown,
-          }
+          onMouseMove: handleMouseMove,
+          onMouseOut: handleMouseOut,
+          onMouseDown: handleMouseDown,
+        }
         : {},
     [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
@@ -73,3 +73,5 @@ export function ColHeader({
     </div>
   );
 }
+
+export default React.memo(ColHeader);

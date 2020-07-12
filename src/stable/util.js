@@ -1,3 +1,5 @@
+import { switchNode } from '../util';
+
 // note: for loop faster than forEach;
 // https://www.incredible-web.com/blog/performance-of-for-loops-with-javascript/
 
@@ -250,12 +252,6 @@ export function getNodeByProp(rawHeader, prop) {
   }
 
   return foundNode;
-}
-
-export function switchNode(nodes, fIndex, sIndex) {
-  const t = nodes[fIndex];
-  nodes[fIndex] = nodes[sIndex];
-  nodes[sIndex] = t;
 }
 
 export function switchPosByProps(rawHeader, firstProp, secondProp) {

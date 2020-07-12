@@ -2,11 +2,11 @@ import React, { useContext, useMemo } from 'react';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';
-import { CSTableContext } from './index';
+import { CTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
 
-function CSTable() {
+function CTable() {
   const {
     header,
     data,
@@ -25,7 +25,7 @@ function CSTable() {
     preventScroll,
     enableResize = true,
     dataAreaState: { dataAreaWidth: areaWidthAfterResize },
-  } = useContext(CSTableContext);
+  } = useContext(CTableContext);
 
   const rowCount = data.length,
     colCount = header.length;
@@ -107,6 +107,6 @@ function CSTable() {
   );
 }
 
-CSTable.displayName = 'CTable';
+CTable.displayName = 'CTable';
 
-export default CSTable;
+export default CTable;

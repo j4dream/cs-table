@@ -1,2 +1,2 @@
-export { default as STable } from './table';
-export { default as CTable } from './sheet';
+export { default as STable } from './ctable';
+export { default as CTable } from './stable';

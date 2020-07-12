@@ -8,10 +8,12 @@ Install
 npm i virtualized-sc-table
 ```
 
-[Demo](https://j4dream.github.io/cs-table/)
+[文档 Docs](https://j4dream.github.io/cs-table/)  
+[CTable Online Demo](https://codesandbox.io/s/ctable-2l6l9)  
+[STable Online Demo](https://codesandbox.io/s/stable-cfehb)
 
 ```javascript
-import Table from 'virtualized-sc-table';
+import { CTable, STable } from 'virtualized-sc-table';
 
 const header = [
   {
@@ -45,7 +47,7 @@ for (let r = 0; r < 10000; r++) {
   data.push(row);
 }
 
-<Table
+<CTable
   header={header}
   data={data}
   // renderCell={(record, prop) => record[prop]}
@@ -53,7 +55,7 @@ for (let r = 0; r < 10000; r++) {
 />;
 ```
 
-## Table
+## CTable
 
 | props | default | Desc |
 | --- | --- | --- |
@@ -65,7 +67,7 @@ for (let r = 0; r < 10000; r++) {
 | renderCell: Function | (record, rowIndex, prop, header) => record |
 | renderHeader: Function | (header, prop) => header.label |
 
-## Sheet
+## STable
 
 Sheet can support grouping column header and row header.
 

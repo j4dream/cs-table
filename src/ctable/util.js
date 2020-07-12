@@ -1,26 +1,3 @@
-let scrollBarWidth;
-export function getScrollBarWidth() {
-  if (typeof document === 'undefined') return 0;
-  if (scrollBarWidth !== undefined) return scrollBarWidth;
-  const dom = document.createElement('div');
-  const body = document.body || dom;
-
-  dom.style.visibility = 'hidden';
-  dom.style.width = '100px';
-  dom.style.position = 'absolute';
-  dom.style.top = '-9999px';
-  dom.style.overflow = 'scroll';
-
-  body.appendChild(dom);
-
-  const totalWidth = dom.offsetWidth;
-  const widthWithoutScroll = dom.clientWidth;
-
-  body.removeChild(dom);
-
-  return totalWidth - widthWithoutScroll;
-}
-
 export function processHeaderWidth(header, defaultCellWidth, returnTotalWidth = false) {
   const totalWidth = header.reduce((acc, curr) => {
     curr.left = acc;

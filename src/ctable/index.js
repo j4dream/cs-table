@@ -1,11 +1,12 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import t from 'prop-types';
-import CSTable from './CSTable';
-import { getScrollBarWidth, processHeaderWidth, getMutableIndexAndCount } from './util';
-import { switchNode } from '../sheet/util';
+import CTable from './CTable';
+import { getScrollBarWidth } from '../util';
+import { processHeaderWidth, getMutableIndexAndCount } from './util';
+import { switchNode } from '../util';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-const CSTableContext = React.createContext({});
+const CTableContext = React.createContext({});
 
 const getRangeFromArr = (arr, start, count) => {
   const res = [];
@@ -242,18 +243,18 @@ const Provider = (props) => {
     handleSorting,
   };
 
-  return <CSTableContext.Provider value={editorContext}>{children}</CSTableContext.Provider>;
+  return <CTableContext.Provider value={editorContext}>{children}</CTableContext.Provider>;
 };
 
-function CSTableProvider(props) {
+function CTableProvider(props) {
   return (
     <Provider {...props}>
-      <CSTable />
+      <CTable />
     </Provider>
   );
 }
 
-CSTableProvider.propTypes = {
+CTableProvider.propTypes = {
   /**
    *  数组 [], 元素应包含 label，prop
    *  例如： { prop: 'name', label: 'Name' }
@@ -304,7 +305,7 @@ CSTableProvider.propTypes = {
   renderHeader: t.func,
 };
 
-CSTableProvider.defaultProps = {
+CTableProvider.defaultProps = {
   height: 440,
   cellWidth: 120,
   cellHeight: 40,
@@ -316,5 +317,5 @@ CSTableProvider.defaultProps = {
   renderHeader: (header, prop) => header.label,
 };
 
-export default CSTableProvider;
-export { CSTableContext };
+export default CTableProvider;
+export { CTableContext };

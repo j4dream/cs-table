@@ -1,26 +1,27 @@
 import React, { useMemo, useCallback, useRef } from 'react';
-import { getScrollBarWidth } from '../table/util';
+import { getScrollBarWidth } from '../util';
 import useResize from '../hooks/useResize';
+import { getLastNode } from './util';
 import HeaderCell from '../HeaderCell';
 
-export function RowHeader({
-  dynRowHeader,
-  rowHeaderWidth,
-  rowHeaderHeight,
-  rowDeepestPath,
+export function ColHeader({
+  dynColHeader,
+  colHeaderWidth,
+  colHeaderHeight,
   enableColResize,
   enableRowResize,
   containerRef,
   colResizeProxyRef,
   onUpdate,
-  handleRowSort,
-  enableRowSorting = true,
+  handleColSort,
+  enableColSorting,
 }) {
   const onResizeStop = useCallback(
     (offset, prop) => {
-      let h = dynRowHeader.find((h) => h.prop === prop);
-
-      h = rowDeepestPath[h.level];
+      let h = dynColHeader.find((h) => h.prop === prop);
+      if (!h.isLeaf) {
+        h = getLastNode(h);
+      }
 
       if (h && offset) {
         h.width = Math.max(h.width + offset, 30);
@@ -28,7 +29,7 @@ export function RowHeader({
 
       onUpdate && onUpdate();
     },
-    [dynRowHeader, rowDeepestPath, onUpdate],
+    [dynColHeader, onUpdate],
   );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({
@@ -55,18 +56,18 @@ export function RowHeader({
     <div
       style={{
         position: 'relative',
-        height: rowHeaderHeight + getScrollBarWidth(),
-        width: rowHeaderWidth,
+        height: colHeaderHeight,
+        width: colHeaderWidth + getScrollBarWidth(),
       }}
     >
-      {dynRowHeader.map((header) => (
+      {dynColHeader.map((header) => (
         <HeaderCell
           key={header.prop}
           header={header}
           resizeProps={resizeProps}
           dragParentRef={dragParentRef}
-          handleSort={handleRowSort}
-          enableSorting={enableRowSorting}
+          handleSort={handleColSort}
+          enableSorting={enableColSorting}
         />
       ))}
     </div>

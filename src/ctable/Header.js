@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useMemo, useRef } from 'react';
-import { CSTableContext } from './index';
+import { CTableContext } from './index';
 import HeaderCell from '../HeaderCell';
 import useResize from '../hooks/useResize';
 import { processHeaderWidth } from './util';
@@ -17,7 +17,7 @@ export default function () {
     colResizeProxyRef,
     header: allHeader,
     enableResize,
-  } = useContext(CSTableContext);
+  } = useContext(CTableContext);
 
   const { processedHeader: header } = dataAreaState;
 
@@ -52,8 +52,6 @@ export default function () {
         : {},
     [enableResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
-
-  console.log('rerender');
 
   const dragParentRef = useRef('UNDEFINED_SHEET');
 

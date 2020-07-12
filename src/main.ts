@@ -1,2 +1,2 @@
-export { default as STable } from './ctable';
-export { default as CTable } from './stable';
+export { default as CTable } from './ctable';
+export { default as STable } from './stable';

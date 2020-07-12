@@ -7,7 +7,7 @@ import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-function Sheet(props) {
+function STable(props) {
   const {
     colHeader,
     rowHeader,
@@ -40,7 +40,7 @@ function Sheet(props) {
     handleRowSort,
   } = useRowHeader({ rowHeader, cellWidth, cellHeight });
 
-  const sheetRef = useRef();
+  const sTableRef = useRef();
   const dataAreaRef = useRef();
   const rowHeaderRef = useRef();
   const colHeaderRef = useRef();
@@ -115,12 +115,12 @@ function Sheet(props) {
 
   return (
     <div
-      className="cs-sheet"
+      className="s-table"
       style={{
         height,
         position: 'relative',
       }}
-      ref={sheetRef}
+      ref={sTableRef}
     >
       <div
         className="corner"
@@ -132,7 +132,7 @@ function Sheet(props) {
       />
 
       <div
-        className="cs-sheet-col-header"
+        className="s-table-col-header"
         style={{
           marginLeft: rowHeaderWidth,
           overflow: 'hidden',
@@ -143,7 +143,7 @@ function Sheet(props) {
           dynColHeader={dynColHeader}
           colHeaderHeight={colHeaderHeight}
           colHeaderWidth={colHeaderWidth}
-          containerRef={sheetRef}
+          containerRef={sTableRef}
           colResizeProxyRef={colResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
@@ -154,7 +154,7 @@ function Sheet(props) {
       </div>
 
       <div
-        className="cs-sheet-row-header"
+        className="s-table-row-header"
         style={{
           overflow: 'hidden',
           height: height - colHeaderHeight,
@@ -167,7 +167,7 @@ function Sheet(props) {
           rowDeepestPath={rowDeepestPath}
           rowHeaderHeight={rowHeaderHeight}
           rowHeaderWidth={rowHeaderWidth}
-          containerRef={sheetRef}
+          containerRef={sTableRef}
           colResizeProxyRef={colResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
@@ -220,9 +220,9 @@ function Sheet(props) {
   );
 }
 
-Sheet.displayName = 'STable';
+STable.displayName = 'STable';
 
-Sheet.propTypes = {
+STable.propTypes = {
   /**
    * 列表头，树结构  
    * [{ label: '2018', prop: '2018', children: []}, ...]
@@ -279,7 +279,7 @@ Sheet.propTypes = {
   enableRowSorting: t.bool,
 };
 
-Sheet.defaultProps = {
+STable.defaultProps = {
   height: 400,
   width: 800,
   cellHeight: 40,
@@ -291,4 +291,4 @@ Sheet.defaultProps = {
   enableRowSorting: false,
 };
 
-export default Sheet;
+export default STable;

@@ -4,14 +4,14 @@ route: /s-table
 ---
 
 import { Playground, Props } from 'docz'
-import Sheet from './index'
+import STable from './index'
 import AutoSizeSTable from './AutoSizeSTable'
 import sampleData from './demo/data'
 import clonedeep from 'lodash.clonedeep'
 
 # 聚合统计表格 Statistical Table
 ## Props
-<Props of={Sheet} />
+<Props of={STable} />
 
 ## 何时使用
 * 数据聚合；
@@ -27,7 +27,7 @@ import clonedeep from 'lodash.clonedeep'
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
-          <Sheet
+          <STable
             rowHeader={rowHeader}
             colHeader={colHeader}
             data={data}
@@ -47,7 +47,7 @@ import clonedeep from 'lodash.clonedeep'
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
-          <Sheet
+          <STable
             rowHeader={rowHeader}
             colHeader={colHeader}
             data={data}
@@ -70,7 +70,7 @@ import clonedeep from 'lodash.clonedeep'
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
-          <Sheet
+          <STable
             enableColResize
             rowHeader={rowHeader}
             colHeader={colHeader}
@@ -93,7 +93,7 @@ import clonedeep from 'lodash.clonedeep'
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
-          <Sheet
+          <STable
             enableColSorting
             enableRowSorting
             rowHeader={rowHeader}
@@ -116,7 +116,7 @@ import clonedeep from 'lodash.clonedeep'
       return (
         <>
           <h3 className="text-center">XX 公司季度销售量统计表</h3>
-          <Sheet
+          <STable
             renderCell={(record, rowProp, colProp, data) => {
               if (!record) return '---';
               if (rowProp.indexOf('gd-') !== -1) return <span>{record} ❤️</span>;

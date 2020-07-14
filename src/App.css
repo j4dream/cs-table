@@ -1,7 +1,7 @@
-.cs-table .cell,
-.cs-table .header,
-.cs-sheet .header,
-.cs-sheet .cell {
+.c-table .cell,
+.c-table .header,
+.s-table .header,
+.s-table .cell {
   display: flex;
   justify-content: center;
   align-items: center;

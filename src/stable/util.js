@@ -203,17 +203,18 @@ export function getSubTreeFromStartNode(startIndex, leafNodes, measure, measuerL
   const parentHeaderInView = [];
   const subLeafNode = [];
 
-  // prevent blank;
-  const safeLength = measuerLength + 30;
   for (let i = startIndex, l = leafNodes.length; i < l; i++) {
     acc += leafNodes[i][measure];
     subLeafNode.push(leafNodes[i]);
-    if (acc > safeLength) {
+    if (acc > measuerLength) {
+      // add 1 more node to prevent empty;
+      const nextIndex = i + 1;
+      leafNodes[nextIndex] && subLeafNode.push(leafNodes[nextIndex]);
       break;
     }
   }
 
-  const ws = new Set();
+  const ws = new WeakSet();
   subLeafNode.forEach((n) => {
     while (n.parent && !ws.has(n.parent)) {
       parentHeaderInView.push(n.parent);

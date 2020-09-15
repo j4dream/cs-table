@@ -53,7 +53,7 @@ export default memo(function () {
 
       <Table
         header={h}
-        data={d}
+        data={[]}
         cellWidth={200}
         preventScroll={preventScroll}
         enableResize={true}

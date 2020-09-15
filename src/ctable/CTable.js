@@ -5,6 +5,7 @@ import './style.css';
 import { CTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
+import NoData from '../share/NoData';
 
 function CTable() {
   const {
@@ -23,7 +24,9 @@ function CTable() {
     tableRef,
     fixedLeftColWidth,
     preventScroll,
+    notFoundData,
     enableResize = true,
+    emptyText,
     dataAreaState: { dataAreaWidth: areaWidthAfterResize },
   } = useContext(CTableContext);
 
@@ -41,8 +44,10 @@ function CTable() {
     return rowCount * cellHeight;
   }, [rowCount, cellHeight]);
 
+  const nodata = useMemo(() => !!(data && !data.length), [data]);
+
   return (
-    <div ref={tableRef} className="c-table" style={{ position: 'relative', height: height }}>
+    <div ref={tableRef} className="c-table" style={{ position: 'relative', height: nodata ?  300 : height }}>
       {preventScroll && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2 }} />
       )}
@@ -101,6 +106,23 @@ function CTable() {
           <DataArea />
         </div>
       </div>
+
+      {nodata && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {notFoundData ? notFoundData : React.createElement(NoData, { emptyText })}
+        </div>
+      )}
 
       <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>

@@ -31,6 +31,7 @@ const Provider = (props) => {
     enableResize = false,
     enableSorting = false,
     keepScrollStatus = false,
+    ...restProps
   } = props;
 
   const dataAreaRef = useRef();
@@ -241,6 +242,7 @@ const Provider = (props) => {
     enableResize,
     enableSorting,
     handleSorting,
+    ...restProps,
   };
 
   return <CTableContext.Provider value={editorContext}>{children}</CTableContext.Provider>;

@@ -1,6 +1,6 @@
 {
   "name": "virtualized-sc-table",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": false,
   "main": "./dist/main",
   "files": [

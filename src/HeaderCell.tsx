@@ -25,7 +25,10 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
 
   const getDragProps = useDrag({
     handleDrag: () => {
-      dragParentRef.current = header.parent?.prop;
+      if (header.parent) {
+        dragParentRef.current = header.parent.prop;
+      }
+      
     },
   });
 
@@ -64,7 +67,7 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
         outlineOffset: -2,
       }}
       data-prop={prop}
-      data-parent-prop={header.parent?.prop}
+      data-parent-prop={header.parent ? header.parent.prop : ""}
       {...sortingProps}
       {...resizeProps}
     >

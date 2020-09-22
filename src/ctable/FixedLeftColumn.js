@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { CSTableContext } from './index';
+import { CTableContext } from './index';
 
 export default function () {
-  const { cellWidth, cellHeight, dataAreaState, renderCell } = useContext(CSTableContext);
+  const { cellWidth, cellHeight, dataAreaState, renderCell } = useContext(CTableContext);
 
   const { processedData: data, rowStartIndex, fixedLeftCol } = dataAreaState;
   return data.map((_, rowIndex) =>

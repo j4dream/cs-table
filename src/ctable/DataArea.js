@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { CSTableContext } from './index';
+import { CTableContext } from './index';
 
 export default function () {
   const { renderCell, cellWidth = 120, cellHeight = 40, dataAreaState } = useContext(
-    CSTableContext,
+    CTableContext,
   );
 
   const { processedHeader: header, processedData: data, rowStartIndex } = dataAreaState;

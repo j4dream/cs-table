@@ -1,5 +1,6 @@
-import React, { useContext, useCallback, useMemo } from 'react';
-import { CSTableContext } from './index';
+import React, { useContext, useCallback, useMemo, useRef } from 'react';
+import { CTableContext } from './index';
+import HeaderCell from '../HeaderCell';
 import useResize from '../hooks/useResize';
 import { processHeaderWidth } from './util';
 
@@ -11,10 +12,12 @@ export default function () {
     dataAreaState,
     setDataAreaState,
     tableRef,
+    enableSorting,
+    handleSorting,
     colResizeProxyRef,
     header: allHeader,
     enableResize,
-  } = useContext(CSTableContext);
+  } = useContext(CTableContext);
 
   const { processedHeader: header } = dataAreaState;
 
@@ -50,20 +53,23 @@ export default function () {
     [enableResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
 
-  return header.map((h, i) => (
-    <div
-      key={`h-${i}`}
-      className="header"
-      style={{
-        position: 'absolute',
-        width: h.width || cellWidth,
-        height: cellHeight,
-        left: h.left,
-      }}
-      data-prop={h.prop}
-      {...resizeProps}
-    >
-      {h.renderHeader ? h.renderHeader(h, h.prop) : renderHeader(h, h.prop)}
-    </div>
-  ));
+  const dragParentRef = useRef('UNDEFINED_SHEET');
+
+  return header.map((h) => {
+    h.width = h.width || cellWidth;
+    h.height = h.height || cellHeight;
+    h.top = 0;
+    return (
+      <HeaderCell
+        key={h.prop}
+        header={h}
+        resizeProps={resizeProps}
+        dragParentRef={dragParentRef}
+        handleSort={handleSorting}
+        enableSorting={enableSorting}
+        // 兼容旧 API
+        renderHeader={h.renderHeader || renderHeader}
+      />
+    );
+  });
 }

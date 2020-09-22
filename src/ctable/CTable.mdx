@@ -1,0 +1,30 @@
+---
+name: 简单表格
+route: /c-table
+---
+
+import { Playground, Props } from 'docz'
+import CTable from './index'
+import { header, data } from './demo/data'
+
+# 简单表格 Concise Table
+
+## Props
+<Props of={CTable} />
+
+## 何时使用
+* 列 (column) 比较多时；
+* 数据量多，需要重复渲染时；
+* 数据量大，某些场景不适合分页展示；当然你也可以配合分页展示使用。
+
+## 基本用法 
+渲染 100000 * 10 个 cell；
+<Playground>
+  <CTable
+    header={header}
+    data={data}
+    cellWidth={200}
+    enableResize
+    enableSorting
+  />
+</Playground>

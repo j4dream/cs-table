@@ -1,6 +1,6 @@
 {
   "name": "virtualized-sc-table",
-  "version": "0.3.0",
+  "version": "0.5.5",
   "private": false,
   "main": "./dist/main",
   "files": [
@@ -32,7 +32,7 @@
     "commit": "git-cz",
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "prettier": "prettier -c --write \"**/*\"",
-    "publish:npm": "babel ./src -d dist --extensions \".ts,.js\" --copy-files --no-copy-ignored",
+    "publish:npm": "babel ./src -d dist --extensions \".ts,.js,.tsx\" --copy-files --no-copy-ignored",
     "predeploy": "npm run docz:build",
     "deploy": "gh-pages -d .docz/dist"
   },

@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback, useRef } from 'react';
-import { getScrollBarWidth } from '../table/util';
+import { getScrollBarWidth } from '../util';
 import useResize from '../hooks/useResize';
-import HeaderCell from './HeaderCell';
+import HeaderCell from '../HeaderCell';
 
-export function RowHeader({
+const RowHeader = ({
   dynRowHeader,
   rowHeaderWidth,
   rowHeaderHeight,
@@ -15,7 +15,7 @@ export function RowHeader({
   onUpdate,
   handleRowSort,
   enableRowSorting = true,
-}) {
+}) => {
   const onResizeStop = useCallback(
     (offset, prop) => {
       let h = dynRowHeader.find((h) => h.prop === prop);
@@ -28,7 +28,7 @@ export function RowHeader({
 
       onUpdate && onUpdate();
     },
-    [dynRowHeader, rowDeepestPath],
+    [dynRowHeader, rowDeepestPath, onUpdate],
   );
 
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({
@@ -41,10 +41,10 @@ export function RowHeader({
     () =>
       enableColResize || enableRowResize
         ? {
-            onMouseMove: handleMouseMove,
-            onMouseOut: handleMouseOut,
-            onMouseDown: handleMouseDown,
-          }
+          onMouseMove: handleMouseMove,
+          onMouseOut: handleMouseOut,
+          onMouseDown: handleMouseDown,
+        }
         : {},
     [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
@@ -72,3 +72,5 @@ export function RowHeader({
     </div>
   );
 }
+
+export default React.memo(RowHeader);

@@ -1,6 +1,7 @@
+/* eslint-disable */
 import { useEffect, useRef } from 'react';
 
-export default (fnc, deps) => {
+const updateEffect: typeof useEffect = (fnc, deps) => {
   const isMountRef = useRef(false);
 
   useEffect(() => {
@@ -11,3 +12,5 @@ export default (fnc, deps) => {
     }
   }, deps);
 };
+
+export default updateEffect;

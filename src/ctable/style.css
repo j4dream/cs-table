@@ -1,10 +1,10 @@
-.cs-table,
-.cs-sheet {
+.c-table,
+.s-table {
   border: 1px solid #ccc;
   overflow: hidden;
 }
 
-.cs-sheet .corner {
+.s-table .corner {
   border-color: #ccc;
   border-style: solid;
   border-width: 0;
@@ -13,10 +13,10 @@
   box-sizing: border-box;
 }
 
-.cs-table .cell,
-.cs-table .header,
-.cs-sheet .header,
-.cs-sheet .cell {
+.c-table .cell,
+.c-table .header,
+.s-table .header,
+.s-table .cell {
   border-style: solid;
   border-color: #ccc;
   border-width: 0;
@@ -25,19 +25,19 @@
   box-sizing: border-box;
 }
 
-.cs-table .header,
-.cs-sheet .header,
-.cs-sheet .corner {
+.c-table .header,
+.s-table .header,
+.s-table .corner {
   background-color: #fafafa;
   font-weight: bold;
 }
 
-.cs-table .data-area {
+.c-table .data-area {
   overflow: auto;
 }
 
-.cs-table .resize-col-proxy,
-.cs-sheet .resize-col-proxy {
+.c-table .resize-col-proxy,
+.s-table .resize-col-proxy {
   position: absolute;
   left: 200px;
   top: 0;
@@ -47,8 +47,8 @@
   z-index: 10;
 }
 
-.cs-table .header .draggable,
-.cs-sheet .header .draggable {
+.c-table .header .draggable,
+.s-table .header .draggable {
   width: 20px;
   height: 20px;
   float: left;
@@ -60,7 +60,7 @@
   background-size: contain;
 }
 
-.cs-table .header:hover .draggable,
-.cs-sheet .header:hover .draggable {
+.c-table .header:hover .draggable,
+.s-table .header:hover .draggable {
   visibility: visible;
 }

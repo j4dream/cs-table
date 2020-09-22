@@ -1,10 +1,12 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import t from 'prop-types';
-import CSTable from './CSTable';
-import { getScrollBarWidth, processHeaderWidth, getMutableIndexAndCount } from './util';
+import CTable from './CTable';
+import { getScrollBarWidth } from '../util';
+import { processHeaderWidth, getMutableIndexAndCount } from './util';
+import { switchNode } from '../util';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-const CSTableContext = React.createContext({});
+const CTableContext = React.createContext({});
 
 const getRangeFromArr = (arr, start, count) => {
   const res = [];
@@ -27,7 +29,9 @@ const Provider = (props) => {
     children,
     preventScroll = false,
     enableResize = false,
+    enableSorting = false,
     keepScrollStatus = false,
+    ...restProps
   } = props;
 
   const dataAreaRef = useRef();
@@ -65,7 +69,10 @@ const Provider = (props) => {
   }, [fixedLeft, cellWidth]);
 
   const initWidthCountRef = useRef(
-    Math.ceil((typeof document === 'undefined' ? 0 : document.body.offsetWidth - fixedLeftColWidth) / cellWidth),
+    Math.ceil(
+      (typeof document === 'undefined' ? 0 : document.body.offsetWidth - fixedLeftColWidth) /
+        cellWidth,
+    ),
   );
   const initHeightCountRef = useRef(Math.ceil(height / cellHeight));
 
@@ -129,6 +136,24 @@ const Provider = (props) => {
       };
     });
   }, [data, restHeader, fixedLeft, keepScrollStatus]);
+
+  const handleSorting = useCallback(
+    (firstProp, secondProp) => {
+      const fHeader = restHeader.find((item) => item.prop === firstProp);
+      const sHeader = restHeader.find((item) => item.prop === secondProp);
+      switchNode(restHeader, restHeader.indexOf(fHeader), restHeader.indexOf(sHeader));
+      processHeaderWidth(restHeader, cellWidth);
+      setDataAreaState((pre) => {
+        const { colIndex, colCount } = scrollStatusCacheRef.current;
+        const processedHeader = getRangeFromArr(restHeader, colIndex, colCount);
+        return {
+          ...pre,
+          processedHeader,
+        };
+      });
+    },
+    [restHeader, cellWidth],
+  );
 
   // cache index, No need 'throttle' for the moment.
   const handleScroll = useCallback(
@@ -197,7 +222,6 @@ const Provider = (props) => {
   const editorContext = {
     header: restHeader,
     data,
-    // renderCell,
     // width,
     height,
     scrollBarWidth: scrollBarRef.current,
@@ -216,26 +240,84 @@ const Provider = (props) => {
     renderCell,
     renderHeader,
     enableResize,
+    enableSorting,
+    handleSorting,
+    ...restProps,
   };
 
-  return <CSTableContext.Provider value={editorContext}>{children}</CSTableContext.Provider>;
-}
-
-function CSTableProvider(props) {
-  return (
-    <Provider {...props}>
-      <CSTable />
-    </Provider>
-  );
+  return <CTableContext.Provider value={editorContext}>{children}</CTableContext.Provider>;
 };
 
-CSTableProvider.propTypes = {
-  /**
-   * This is a pretty good description for this prop.
-   */
-  data: t.array,
+function CTableProvider(props) {
+  return (
+    <Provider {...props}>
+      <CTable />
+    </Provider>
+  );
 }
 
-export default CSTableProvider;
-export { CSTableContext };
+CTableProvider.propTypes = {
+  /**
+   *  数组 [], 元素应包含 label，prop
+   *  例如： { prop: 'name', label: 'Name' }
+   */
+  header: t.array.isRequired,
+  /**
+   *  数组 [], 元素 key 应该对应 header 中的 prop;
+   *  例如： { name: 'DC' }
+   */
+  data: t.array.isRequired,
+  /**
+   *  Table 高度
+   */
+  height: t.number,
+  /**
+   *  Cell 单元格宽度
+   */
+  cellWidth: t.number,
+  /**
+   *  Cell 单元格高度
+   */
+  cellHeight: t.number,
+  /**
+   *  防止表格滚动，当你在做一个编辑表格的时候，这可以避免定位错误问题。
+   */
+  preventScroll: t.bool,
+  /**
+   *  调整宽度
+   */
+  enableResize: t.bool,
+  /**
+   *  调整顺序
+   */
+  enableSorting: t.bool,
+  /**
+   *  数据更新时候，是否保留滚动状态。如果 header 同时更新，建议关闭。
+   */
+  keepScrollStatus: t.bool,
+  /**
+   *  自定义渲染单元格
+   *  (record, rowIndex, prop) => record
+   */
+  renderCell: t.func,
+  /**
+   *  自定义渲染表头单元格
+   *  (header, prop) => header.label
+   */
+  renderHeader: t.func,
+};
 
+CTableProvider.defaultProps = {
+  height: 440,
+  cellWidth: 120,
+  cellHeight: 40,
+  preventScroll: false,
+  enableResize: false,
+  enableSorting: false,
+  keepScrollStatus: false,
+  renderCell: (record, rowIndex, prop) => record,
+  renderHeader: (header, prop) => header.label,
+};
+
+export default CTableProvider;
+export { CTableContext };

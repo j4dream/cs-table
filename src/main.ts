@@ -1,2 +1,3 @@
-export { default as Table } from './table';
-export { default as Sheet } from './sheet';
+export { default as CTable } from './ctable';
+export { default as STable } from './stable';
+export { default as AutoSizeSTable } from './stable/AutoSizeSTable';

@@ -13,7 +13,7 @@ export default function useResize({ container, colResizeProxy, onResizeStop }) {
       colResizeProxy.current.style.left = movedDistance + 'px';
       document.body.style.cursor = 'col-resize';
     },
-    [colResizeProxy, container.current],
+    [colResizeProxy, container],
   );
 
   const handleResizeStop = useCallback(

@@ -1,18 +1,19 @@
 import React, { useContext, useMemo } from 'react';
-import t from 'prop-types';
 import DataArea from './DataArea';
 import Header from './Header';
 import './style.css';
-import { CSTableContext } from './index';
+import { CTableContext } from './index';
 import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
+import NoData from '../share/NoData';
 
-function CSTable() {
+function CTable() {
   const {
     header,
     data,
     scrollBarWidth,
     // width,
+    compactHeight = true,
     height = 440,
     cellWidth = 120,
     cellHeight = 40,
@@ -24,9 +25,11 @@ function CSTable() {
     tableRef,
     fixedLeftColWidth,
     preventScroll,
+    notFoundData,
     enableResize = true,
+    emptyText,
     dataAreaState: { dataAreaWidth: areaWidthAfterResize },
-  } = useContext(CSTableContext);
+  } = useContext(CTableContext);
 
   const rowCount = data.length,
     colCount = header.length;
@@ -42,8 +45,23 @@ function CSTable() {
     return rowCount * cellHeight;
   }, [rowCount, cellHeight]);
 
+  const nodata = useMemo(() => !!(data && !data.length), [data]);
+
+  const computedHeight = useMemo(() => {
+    if (!compactHeight) return height;
+    // dataHeight + headerHeight;
+    const realHeight = areaHeight + cellHeight;
+    // for virtual scroll height;
+    if (realHeight < height) return realHeight + scrollBarWidth;
+    return height;
+  }, [data.length, height]);
+
   return (
-    <div ref={tableRef} className="cs-table" style={{ position: 'relative', height: height }}>
+    <div
+      ref={tableRef}
+      className="c-table"
+      style={{ position: 'relative', height: nodata ? 300 : computedHeight }}
+    >
       {preventScroll && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2 }} />
       )}
@@ -70,7 +88,7 @@ function CSTable() {
             ref={fixedColLeftRef}
             style={{
               overflow: 'hidden',
-              height: height - cellHeight,
+              height: computedHeight - cellHeight,
               width: fixedLeftColWidth,
               position: 'absolute',
               left: 0,
@@ -89,7 +107,7 @@ function CSTable() {
           position: 'relative',
           overflow: 'auto',
           marginLeft: fixedLeftColWidth,
-          height: height - cellHeight,
+          height: computedHeight - cellHeight,
         }}
         onScroll={handleScroll}
       >
@@ -103,13 +121,28 @@ function CSTable() {
         </div>
       </div>
 
+      {nodata && (
+        <div
+          style={{
+            position: 'absolute',
+            top: cellHeight,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {notFoundData ? notFoundData : React.createElement(NoData, { emptyText })}
+        </div>
+      )}
+
       <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
   );
-};
+}
 
-CSTable.propTypes = {
-  kind: t.oneOf(['primary', 'secondary', 'cancel', 'dark', 'gray']),
-};
+CTable.displayName = 'CTable';
 
-export default CSTable;
+export default CTable;

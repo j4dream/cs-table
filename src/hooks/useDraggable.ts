@@ -1,5 +1,3 @@
-// TODO: Support Old browser;
-
 import { useCallback, useRef } from 'react';
 
 const px2num = (px: string): number => +px.replace('px', '');

@@ -15,10 +15,7 @@
     "resizable",
     "resize"
   ],
-  "dependencies": {
-    "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8"
-  },
+
   "peerDependencies": {
     "react": ">=16.8.6",
     "react-dom": ">=16.8.6"
@@ -64,6 +61,8 @@
     "@babel/preset-typescript": "^7.10.1",
     "@types/jest": "^25.2.3",
     "@types/node": "^14.0.9",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "cz-conventional-changelog": "^3.2.0",
     "docz": "^2.3.1",
     "gh-pages": "^2.2.0",
@@ -71,6 +70,8 @@
     "lodash.differenceby": "^4.8.0",
     "lodash.remove": "^4.7.0",
     "prettier": "^2.0.5",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-scripts": "^3.4.1",
     "typescript": "^3.9.3"
   }

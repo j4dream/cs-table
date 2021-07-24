@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, memo } from 'react';
 import Table from '../index';
 

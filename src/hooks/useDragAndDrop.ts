@@ -1,23 +1,23 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
-interface DropOpts {
+type DropOpts = {
   handleDrop: (dragProp: string, dropProp: string) => void;
 }
 
-interface DropProps {
+type DropProps = {
   onDrop: React.DragEventHandler;
   onDragEnter: React.DragEventHandler;
   onDragLeave: React.DragEventHandler;
   onDragOver: React.DragEventHandler;
 }
 
-interface DropRes {
+type DropRes = {
   dropProps: DropProps;
   hoverProp: string;
   setHoverProp: (prop: string) => void;
 }
 
-export const useDrop = (opts: DropOpts) => {
+export const useDrop = (opts: DropOpts): DropRes => {
   const optsRef = useRef(opts);
   optsRef.current = opts;
 
@@ -52,11 +52,18 @@ export const useDrop = (opts: DropOpts) => {
   return { dropProps, hoverProp, setHoverProp };
 };
 
-interface DragOpts {
+type DragOpts = {
   handleDrag: (dragProp: string) => void;
 }
 
-export const useDrag = (opts: DragOpts) => {
+type DragProps = {
+  
+};
+
+type DragRes = (prop: string) => DragProps;
+
+
+export const useDrag = (opts: DragOpts): DragRes => {
   const optsRef = useRef(opts);
   optsRef.current = opts;
 

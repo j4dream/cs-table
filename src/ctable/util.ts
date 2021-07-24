@@ -1,16 +1,36 @@
-export function processHeaderWidth(header, defaultCellWidth, returnTotalWidth = false) {
-  const totalWidth = header.reduce((acc, curr) => {
+type Header = {
+  left: number;
+  width: number;
+};
+
+type MutableIndexAndCount = {
+  startIndex: number;
+  count: number;
+};
+
+export function processHeaderWidth(
+  headers: Header[],
+  defaultCellWidth: number,
+  returnTotalWidth = false,
+): Header[] | number {
+  const totalWidth = headers.reduce((acc: number, curr: Header) => {
     curr.left = acc;
     const accWidth = (curr.width || defaultCellWidth) + acc;
     return accWidth;
   }, 0);
+
   if (returnTotalWidth) {
     return totalWidth;
   }
-  return header;
+  return headers;
 }
 
-export function getMutableIndexAndCount(header, scrollWidth, dataAreaWidth, defaultCellWidth) {
+export function getMutableIndexAndCount(
+  header: Header[],
+  scrollWidth: number,
+  dataAreaWidth: number,
+  defaultCellWidth: number,
+): MutableIndexAndCount {
   let accWidth = 0,
     startIndex = 0,
     endIndex = header.length - 1;

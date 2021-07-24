@@ -1,11 +1,29 @@
 import { useCallback, useRef } from 'react';
 
+import { RefDOM } from '../types';
+
+type ResizeParams = {
+  container: RefDOM;
+  colResizeProxy: RefDOM;
+  onResizeStop: (offset: number, col: string) => void;
+}
+
+type ResizeRes = {
+  handleMouseMove: (e: React.MouseEvent) => void;
+  handleMouseOut: () => void;
+  handleMouseDown: (e: React.MouseEvent) => void;
+}
+
 const returnFalse = () => false;
 
-export default function useResize({ container, colResizeProxy, onResizeStop }) {
-  const isDraggingRef = useRef(false);
-  const draggingCol = useRef();
-  const startPosRef = useRef();
+export default function useResize({
+  container,
+  colResizeProxy,
+  onResizeStop,
+}: ResizeParams): ResizeRes {
+  const isDraggingRef = useRef<boolean>(false);
+  const draggingCol = useRef<string>('');
+  const startPosRef = useRef<number>(0);
 
   const handleResizeStart = useCallback(
     (e) => {
@@ -43,7 +61,7 @@ export default function useResize({ container, colResizeProxy, onResizeStop }) {
       draggingCol.current = currHeader.dataset.prop;
     } else {
       bodyStyle.cursor = '';
-      draggingCol.current = null;
+      draggingCol.current = '';
     }
   }, []);
 

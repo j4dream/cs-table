@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useCallback, useMemo, FC } from 'react';
 import t from 'prop-types';
 import CTable from './CTable';
 import { getScrollBarWidth } from '../util';
@@ -6,9 +6,35 @@ import { processHeaderWidth, getMutableIndexAndCount } from './util';
 import { switchNode } from '../util';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-const CTableContext = React.createContext({});
+type CTableHeader = {
+  label: string;
+  prop: string;
+};
 
-const getRangeFromArr = (arr, start, count) => {
+type CTableDataItem = {
+  [prop: string]: string;
+};
+
+type CTableData = CTableDataItem[];
+type CTableHeaders = CTableHeader[];
+
+interface CTableInterface {
+  header: CTableHeaders;
+  data: CTableData;
+  height: number;
+  cellWidth: number;
+  cellHeight: number;
+  preventScroll: boolean;
+  enableResize: boolean;
+  enableSorting: false;
+  keepScrollStatus?: false;
+  renderCell: (record: CTableDataItem, rowIndex: number, prop: string) => string;
+  renderHeader: (header: CTableHeader, prop: string) => string;
+}
+
+const CTableContext = React.createContext<CTableInterface>({});
+
+const getRangeFromArr = (arr: any[], start: number, count: number): any[] => {
   const res = [];
   for (let i = 0; i <= count; i++) {
     const record = arr[start + i];
@@ -17,7 +43,7 @@ const getRangeFromArr = (arr, start, count) => {
   return res;
 };
 
-const Provider = (props) => {
+const Provider: FC<CTableInterface> = (props) => {
   const {
     header,
     data,
@@ -46,7 +72,7 @@ const Provider = (props) => {
       processHeaderWidth(
         header.filter((h) => !h.fixed),
         cellWidth,
-      ),
+      ).headers,
     [header, cellWidth],
   );
   const fixedLeft = useMemo(
@@ -54,13 +80,13 @@ const Provider = (props) => {
       processHeaderWidth(
         header.filter((h) => h.fixed),
         cellWidth,
-      ),
+      ).headers,
     [header, cellWidth],
   );
 
   // design for some fixed element, when data scroll, it has position offset;
   // eg: datepicker, multi select in cell.
-  const preventScrollRef = useRef();
+  const preventScrollRef = useRef<boolean>(preventScroll);
   preventScrollRef.current = preventScroll;
 
   // caculate fixed col width.
@@ -248,7 +274,7 @@ const Provider = (props) => {
   return <CTableContext.Provider value={editorContext}>{children}</CTableContext.Provider>;
 };
 
-function CTableProvider(props) {
+function CTableProvider(props: any) {
   return (
     <Provider {...props}>
       <CTable />
@@ -315,8 +341,8 @@ CTableProvider.defaultProps = {
   enableResize: false,
   enableSorting: false,
   keepScrollStatus: false,
-  renderCell: (record, rowIndex, prop) => record,
-  renderHeader: (header, prop) => header.label,
+  renderCell: (record: CTableDataItem, rowIndex: number, prop: string) => record,
+  renderHeader: (header: CTableHeader, prop: string) => header.label,
 };
 
 export default CTableProvider;

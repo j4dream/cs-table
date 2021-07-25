@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { CTableContext } from './index';
 
-export default function () {
+export default function (): React.FunctionComponent {
   const { cellWidth, cellHeight, dataAreaState, renderCell } = useContext(CTableContext);
 
   const { processedData: data, rowStartIndex, fixedLeftCol } = dataAreaState;
-  return data.map((_, rowIndex) =>
-    fixedLeftCol.map((h, colIndex) => (
+  return data.map((_, rowIndex: number) =>
+    fixedLeftCol.map((h, colIndex: number) => (
       <div
         className="cell fixed-left"
         key={`f-c-${rowIndex}-${colIndex}`}

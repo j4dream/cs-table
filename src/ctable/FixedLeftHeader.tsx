@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import { CTableContext } from './index';
 
-export default function () {
+export default function (): React.FunctionComponent {
   const { cellWidth, cellHeight, dataAreaState, renderHeader } = useContext(CTableContext);
 
   const { fixedLeftCol } = dataAreaState;

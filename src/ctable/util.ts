@@ -8,21 +8,20 @@ type MutableIndexAndCount = {
   count: number;
 };
 
+type ProcessHeaderWidthRes = {
+  totalWidth: number;
+  headers: Header[];
+};
 export function processHeaderWidth(
   headers: Header[],
   defaultCellWidth: number,
-  returnTotalWidth = false,
-): Header[] | number {
+): ProcessHeaderWidthRes {
   const totalWidth = headers.reduce((acc: number, curr: Header) => {
     curr.left = acc;
     const accWidth = (curr.width || defaultCellWidth) + acc;
     return accWidth;
   }, 0);
-
-  if (returnTotalWidth) {
-    return totalWidth;
-  }
-  return headers;
+  return { headers, totalWidth };
 }
 
 export function getMutableIndexAndCount(

@@ -27,7 +27,7 @@ export default function () {
       if (currH) {
         // min 30
         currH.width = Math.max((currH.width || cellWidth) + offset, 30);
-        const dataAreaWidth = processHeaderWidth(allHeader, cellWidth, true);
+        const { totalWidth: dataAreaWidth } = processHeaderWidth(allHeader, cellWidth);
         // force update
         setDataAreaState((prev) => ({ ...prev, dataAreaWidth }));
       }

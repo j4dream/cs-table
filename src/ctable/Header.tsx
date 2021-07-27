@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useMemo, useRef } from 'react';
-import { CTableContext, CTableHeader } from './index';
+import { CTableContext } from './index';
 import HeaderCell from '../HeaderCell';
 import useResize from '../hooks/useResize';
 import { processHeaderWidth } from './util';

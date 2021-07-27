@@ -46,12 +46,14 @@ export function processTree(
       }
 
       column.level = parent.level + 1;
+      column.levelInfo = `${parent.levelInfo}.${parent.prop}`;
       column.parent = parent;
       if (maxLevel < column.level) {
         maxLevel = column.level;
       }
     } else {
       column.level = 0;
+      column.levelInfo = "0";
       if (opts.calcTop) {
         column.top = 0;
       }

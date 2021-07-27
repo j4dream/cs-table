@@ -14,6 +14,7 @@ export type STableHeader = {
   label: string;
   level: number;
   left: number;
+  levelInfo: string;
   top: number;
   rowSpan: number;
   colSpan: number;

@@ -9,6 +9,7 @@ interface Header {
   height: number;
   prop: string;
   label: string;
+  levelInfo?: string;
   renderHeader?: defalHeaderRenderer;
   parent?: Header;
   top?: number;
@@ -24,13 +25,11 @@ interface HeaderProps {
 }
 
 export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
-  const { top = 0, left, width, height, prop, label, renderHeader } = header;
+  const { top = 0, left, width, height, prop, label, renderHeader, levelInfo } = header;
 
   const getDragProps = useDrag({
     handleDrag: () => {
-      if (header.parent) {
-        dragParentRef.current = header.parent.prop;
-      }
+      dragParentRef.current = levelInfo || "-";
     },
   });
 
@@ -69,7 +68,7 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
         outlineOffset: -2,
       }}
       data-prop={prop}
-      data-parent-prop={header.parent ? header.parent.prop : ''}
+      data-level-info={levelInfo || '-'}
       {...sortingProps}
       {...resizeProps}
     >

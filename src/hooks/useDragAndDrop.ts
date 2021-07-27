@@ -37,9 +37,10 @@ export const useDrop = (opts: DropOpts): DropRes => {
       },
       onDragEnter: (e: React.DragEvent<HTMLElement>) => {
         e.preventDefault();
-        setHoverProp(e.currentTarget.dataset.parentProp as string);
+        const hoverProp = e.currentTarget.dataset.levelInfo;
+        setHoverProp(hoverProp as string);
       },
-      onDragLeave: (e: any) => {
+      onDragLeave: () => {
         setHoverProp('');
       },
       onDragOver: (e: React.DragEvent) => {

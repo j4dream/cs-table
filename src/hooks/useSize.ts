@@ -22,5 +22,5 @@ export function useSize(): [Dimension, RefDOM] {
     });
   }, []);
 
-  return [state, domRef as RefDOM];
+  return [state, domRef];
 }

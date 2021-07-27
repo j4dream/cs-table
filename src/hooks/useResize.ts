@@ -6,13 +6,13 @@ type ResizeParams = {
   container: RefDOM;
   colResizeProxy: RefDOM;
   onResizeStop: (offset: number, col: string) => void;
-}
+};
 
 type ResizeRes = {
   handleMouseMove: (e: React.MouseEvent) => void;
   handleMouseOut: () => void;
   handleMouseDown: (e: React.MouseEvent) => void;
-}
+};
 
 const returnFalse = () => false;
 
@@ -27,6 +27,7 @@ export default function useResize({
 
   const handleResizeStart = useCallback(
     (e) => {
+      if (!container.current || !colResizeProxy.current) return;
       const movedDistance = e.clientX - container.current.getBoundingClientRect().left;
       colResizeProxy.current.style.left = movedDistance + 'px';
       document.body.style.cursor = 'col-resize';
@@ -36,6 +37,7 @@ export default function useResize({
 
   const handleResizeStop = useCallback(
     (e) => {
+      if (!colResizeProxy.current) return;
       colResizeProxy.current.style.visibility = 'hidden';
       document.body.style.cursor = '';
       document.removeEventListener('mousemove', handleResizeStart);
@@ -72,6 +74,7 @@ export default function useResize({
   const handleMouseDown = useCallback(
     (e) => {
       if (draggingCol.current) {
+        if (!container.current || !colResizeProxy.current) return;
         isDraggingRef.current = true;
         const currTarget = e.currentTarget;
         const containLeft = container.current.getBoundingClientRect().left;

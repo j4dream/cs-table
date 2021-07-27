@@ -8,7 +8,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App container">
         <h1>High performance table</h1>
 
         <div style={{ margin: 15 }}>

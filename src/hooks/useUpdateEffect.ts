@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default (fnc: Function, deps: [any]) => {
+export default (fnc: Function, deps: any[]) => {
   const isMountRef = useRef(false);
 
   useEffect(() => {
@@ -9,5 +9,5 @@ export default (fnc: Function, deps: [any]) => {
     } else {
       return fnc();
     }
-  }, deps as [any]);
+  }, deps);
 };

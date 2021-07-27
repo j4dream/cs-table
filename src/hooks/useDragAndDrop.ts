@@ -2,20 +2,20 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 type DropOpts = {
   handleDrop: (dragProp: string, dropProp: string) => void;
-}
+};
 
 type DropProps = {
   onDrop: React.DragEventHandler;
   onDragEnter: React.DragEventHandler;
   onDragLeave: React.DragEventHandler;
   onDragOver: React.DragEventHandler;
-}
+};
 
 type DropRes = {
   dropProps: DropProps;
   hoverProp: string;
   setHoverProp: (prop: string) => void;
-}
+};
 
 export const useDrop = (opts: DropOpts): DropRes => {
   const optsRef = useRef(opts);
@@ -54,14 +54,15 @@ export const useDrop = (opts: DropOpts): DropRes => {
 
 type DragOpts = {
   handleDrag: (dragProp: string) => void;
-}
+};
 
 type DragProps = {
-  
+  key: string;
+  draggable: string;
+  onDragStart: (e: React.DragEvent) => void;
 };
 
 type DragRes = (prop: string) => DragProps;
-
 
 export const useDrag = (opts: DragOpts): DragRes => {
   const optsRef = useRef(opts);

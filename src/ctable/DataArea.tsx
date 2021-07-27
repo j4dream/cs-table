@@ -2,16 +2,17 @@ import React, { useContext } from 'react';
 import { CTableContext } from './index';
 
 export default function (): JSX.Element {
-  const { cellWidth, cellHeight, dataAreaState, renderCell } = useContext(CTableContext);
+  const { renderCell, cellWidth = 120, cellHeight = 40, dataAreaState } = useContext(CTableContext);
 
-  const { processedData: data, rowStartIndex, fixedLeftCol } = dataAreaState;
+  const { processedHeader: header, processedData: data, rowStartIndex } = dataAreaState;
+
   return (
     <>
-      {data.map((_, rowIndex: number) =>
-        fixedLeftCol.map((h, colIndex: number) => (
+      {data.map((_, rowIndex) =>
+        header.map((h, colIndex) => (
           <div
-            className="cell fixed-left"
-            key={`f-c-${rowIndex}-${colIndex}`}
+            className="cell"
+            key={`d-a-${rowIndex}-${colIndex}`}
             style={{
               position: 'absolute',
               top: (rowIndex + rowStartIndex) * cellHeight,

@@ -57,7 +57,8 @@ export default memo(function () {
         data={data}
         cellWidth={200}
         preventScroll={preventScroll}
-        enableResize={true}
+        enableResize
+        enableSorting
         // keepScrollStatus={true}
         // renderCell={(record, prop) => record[prop]}
         // renderHeader={(header, prop) => header[prop]}

@@ -7,13 +7,12 @@ import FixedLeftColumn from './FixedLeftColumn';
 import FixedLeftHeader from './FixedLeftHeader';
 import NoData from '../share/NoData';
 
-function CTable() {
+function CTable(): JSX.Element {
   const {
     header,
     data,
     scrollBarWidth,
     // width,
-    compactHeight = true,
     height = 440,
     cellWidth = 120,
     cellHeight = 40,
@@ -48,7 +47,6 @@ function CTable() {
   const nodata = useMemo(() => !!(data && !data.length), [data]);
 
   const computedHeight = useMemo(() => {
-    if (!compactHeight) return height;
     // dataHeight + headerHeight;
     const realHeight = areaHeight + cellHeight;
     // for virtual scroll height;

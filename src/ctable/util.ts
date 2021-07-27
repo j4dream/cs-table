@@ -1,8 +1,4 @@
-type Header = {
-  left: number;
-  width: number;
-};
-
+import { CTableHeader } from './';
 type MutableIndexAndCount = {
   startIndex: number;
   count: number;
@@ -10,13 +6,13 @@ type MutableIndexAndCount = {
 
 type ProcessHeaderWidthRes = {
   totalWidth: number;
-  headers: Header[];
+  headers: CTableHeader[];
 };
 export function processHeaderWidth(
-  headers: Header[],
+  headers: CTableHeader[],
   defaultCellWidth: number,
 ): ProcessHeaderWidthRes {
-  const totalWidth = headers.reduce((acc: number, curr: Header) => {
+  const totalWidth = headers.reduce((acc: number, curr: CTableHeader) => {
     curr.left = acc;
     const accWidth = (curr.width || defaultCellWidth) + acc;
     return accWidth;
@@ -25,7 +21,7 @@ export function processHeaderWidth(
 }
 
 export function getMutableIndexAndCount(
-  header: Header[],
+  header: CTableHeader[],
   scrollWidth: number,
   dataAreaWidth: number,
   defaultCellWidth: number,

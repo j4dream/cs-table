@@ -1,14 +1,32 @@
-import React, { useRef, useState, useCallback, useMemo, FC } from 'react';
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  FC,
+  Dispatch,
+  UIEventHandler,
+  SetStateAction,
+} from 'react';
 import t from 'prop-types';
 import CTable from './CTable';
-import { getScrollBarWidth } from '../util';
 import { processHeaderWidth, getMutableIndexAndCount } from './util';
-import { switchNode } from '../util';
+import { getScrollBarWidth, switchNode } from '../util';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-type CTableHeader = {
+import { RefDOM } from '../types';
+
+import { defalCellRenderer, defalHeaderRenderer } from '../types';
+
+export type CTableHeader = {
   label: string;
   prop: string;
+  width: number;
+  height: number;
+  left: number;
+  fixed?: boolean;
+  renderCell: defalCellRenderer;
+  renderHeader?: defalHeaderRenderer;
 };
 
 type CTableDataItem = {
@@ -16,7 +34,15 @@ type CTableDataItem = {
 };
 
 type CTableData = CTableDataItem[];
-type CTableHeaders = CTableHeader[];
+type CTableHeaders = Array<CTableHeader>;
+type DataAreaState = {
+  processedHeader: CTableHeaders;
+  processedData: CTableData;
+  fixedLeftCol: CTableHeaders;
+  rowStartIndex: number;
+  colStartIndex: number;
+  dataAreaWidth: number;
+};
 
 interface CTableInterface {
   header: CTableHeaders;
@@ -26,24 +52,45 @@ interface CTableInterface {
   cellHeight: number;
   preventScroll: boolean;
   enableResize: boolean;
-  enableSorting: false;
-  keepScrollStatus?: false;
-  renderCell: (record: CTableDataItem, rowIndex: number, prop: string) => string;
-  renderHeader: (header: CTableHeader, prop: string) => string;
+  enableSorting: boolean;
+  notFoundData: JSX.Element;
+  emptyText: string;
+  renderCell: defalCellRenderer;
+  renderHeader: defalHeaderRenderer;
 }
 
-const CTableContext = React.createContext<CTableInterface>({});
+interface CTableContextInterface extends CTableInterface {
+  preventScroll: boolean;
+  enableResize: boolean;
+  dataAreaState: DataAreaState;
+  tableRef: RefDOM;
+  dataAreaRef: RefDOM;
+  headerRef: RefDOM;
+  fixedColLeftRef: RefDOM;
+  colResizeProxyRef: RefDOM;
+  scrollBarWidth: number;
+  fixedLeftColWidth: number;
+  handleScroll: UIEventHandler<any>;
+  handleSorting: (firstProp: string, secondProp: string) => void;
+  setDataAreaState: Dispatch<SetStateAction<DataAreaState>>;
+}
 
-const getRangeFromArr = (arr: any[], start: number, count: number): any[] => {
+interface CTableProps extends CTableInterface {
+  keepScrollStatus: boolean;
+}
+
+const CTableContext = React.createContext<CTableContextInterface>({} as CTableContextInterface);
+
+function getRangeFromArr<T>(arr: Array<T>, start: number, count: number): Array<T> {
   const res = [];
   for (let i = 0; i <= count; i++) {
     const record = arr[start + i];
     record && res.push(record);
   }
   return res;
-};
+}
 
-const Provider: FC<CTableInterface> = (props) => {
+const Provider: FC<CTableProps> = (props) => {
   const {
     header,
     data,
@@ -60,12 +107,12 @@ const Provider: FC<CTableInterface> = (props) => {
     ...restProps
   } = props;
 
-  const dataAreaRef = useRef();
-  const headerRef = useRef();
-  const fixedColLeftRef = useRef();
-  const scrollBarRef = useRef(getScrollBarWidth());
-  const colResizeProxyRef = useRef();
-  const tableRef = useRef();
+  const dataAreaRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const fixedColLeftRef = useRef<HTMLDivElement>(null);
+  const scrollBarRef = useRef<number>(getScrollBarWidth());
+  const colResizeProxyRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const restHeader = useMemo(
     () =>
@@ -102,12 +149,13 @@ const Provider: FC<CTableInterface> = (props) => {
   );
   const initHeightCountRef = useRef(Math.ceil(height / cellHeight));
 
-  const [dataAreaState, setDataAreaState] = useState(() => ({
-    processedHeader: getRangeFromArr(restHeader, 0, initWidthCountRef.current),
-    processedData: getRangeFromArr(data, 0, initHeightCountRef.current),
+  const [dataAreaState, setDataAreaState] = useState<DataAreaState>(() => ({
+    processedHeader: getRangeFromArr<CTableHeader>(restHeader, 0, initWidthCountRef.current),
+    processedData: getRangeFromArr<CTableDataItem>(data, 0, initHeightCountRef.current),
     fixedLeftCol: fixedLeft,
     rowStartIndex: 0,
     colStartIndex: 0,
+    dataAreaWidth: 0,
   }));
 
   // when data update, scroll to other pos, need to cache prev pos;
@@ -131,7 +179,7 @@ const Provider: FC<CTableInterface> = (props) => {
       const { colIndex, rowIndex, colCount, rowCount, scrollTop } = scrollStatusCacheRef.current;
 
       if (preData !== data) {
-        preState.processedData = getRangeFromArr(
+        preState.processedData = getRangeFromArr<CTableDataItem>(
           data,
           keepScrollStatus ? rowIndex : 0,
           rowCount || initHeightCountRef.current,
@@ -139,7 +187,7 @@ const Provider: FC<CTableInterface> = (props) => {
       }
 
       if (preHeader !== header) {
-        preState.processedHeader = getRangeFromArr(
+        preState.processedHeader = getRangeFromArr<CTableHeader>(
           restHeader,
           keepScrollStatus ? colIndex : 0,
           colCount || initWidthCountRef.current,
@@ -167,11 +215,12 @@ const Provider: FC<CTableInterface> = (props) => {
     (firstProp, secondProp) => {
       const fHeader = restHeader.find((item) => item.prop === firstProp);
       const sHeader = restHeader.find((item) => item.prop === secondProp);
+      if (!fHeader || !sHeader) return;
       switchNode(restHeader, restHeader.indexOf(fHeader), restHeader.indexOf(sHeader));
       processHeaderWidth(restHeader, cellWidth);
       setDataAreaState((pre) => {
         const { colIndex, colCount } = scrollStatusCacheRef.current;
-        const processedHeader = getRangeFromArr(restHeader, colIndex, colCount);
+        const processedHeader = getRangeFromArr<CTableHeader>(restHeader, colIndex, colCount);
         return {
           ...pre,
           processedHeader,
@@ -193,12 +242,12 @@ const Provider: FC<CTableInterface> = (props) => {
         offsetHeight: oHeight,
       } = cellTarget;
 
-      let colStartIndex, colRenderCount;
+      let colStartIndex: number, colRenderCount: number;
       if (enableResize) {
         const { startIndex, count } = getMutableIndexAndCount(
           restHeader,
           sLeft,
-          dataAreaRef.current.offsetWidth,
+          dataAreaRef.current ? dataAreaRef.current.offsetWidth : 0,
           cellWidth,
         );
         colStartIndex = startIndex;
@@ -231,8 +280,12 @@ const Provider: FC<CTableInterface> = (props) => {
       scrollStatus.rowCount = rowRenderCount;
       scrollStatus.scrollTop = sTop;
 
-      const processedHeader = getRangeFromArr(restHeader, colStartIndex, colRenderCount);
-      const processedData = getRangeFromArr(data, rowStartIndex, rowRenderCount);
+      const processedHeader = getRangeFromArr<CTableHeader>(
+        restHeader,
+        colStartIndex,
+        colRenderCount,
+      );
+      const processedData = getRangeFromArr<CTableDataItem>(data, rowStartIndex, rowRenderCount);
 
       setDataAreaState((prevState) => ({
         ...prevState,

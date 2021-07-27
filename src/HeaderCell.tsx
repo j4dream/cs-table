@@ -1,15 +1,17 @@
 import React, { useMemo } from 'react';
 import { useDrag, useDrop } from './hooks/useDragAndDrop';
 
+import { defalHeaderRenderer } from './types';
+
 interface Header {
-  top: number;
   left: number;
   width: number;
   height: number;
   prop: string;
   label: string;
-  renderHeader?: Function;
-  parent: Header;
+  renderHeader?: defalHeaderRenderer;
+  parent?: Header;
+  top?: number;
 }
 
 interface HeaderProps {
@@ -18,17 +20,17 @@ interface HeaderProps {
   dragParentRef: React.MutableRefObject<string>;
   handleSort: Function;
   enableSorting: boolean;
+  renderHeader: defalHeaderRenderer;
 }
 
 export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
-  const { top, left, width, height, prop, label, renderHeader } = header;
+  const { top = 0, left, width, height, prop, label, renderHeader } = header;
 
   const getDragProps = useDrag({
     handleDrag: () => {
       if (header.parent) {
         dragParentRef.current = header.parent.prop;
       }
-      
     },
   });
 
@@ -51,8 +53,10 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
             ...dropProps,
           }
         : {},
-    [prop],
+    [enableSorting, prop, getDragProps, dropProps],
   );
+
+  console.log(hoverProp === dragParentRef.current);
 
   return (
     <div
@@ -67,7 +71,7 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
         outlineOffset: -2,
       }}
       data-prop={prop}
-      data-parent-prop={header.parent ? header.parent.prop : ""}
+      data-parent-prop={header.parent ? header.parent.prop : ''}
       {...sortingProps}
       {...resizeProps}
     >

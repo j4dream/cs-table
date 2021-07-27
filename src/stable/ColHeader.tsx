@@ -1,8 +1,22 @@
 import React, { useMemo, useCallback, useRef } from 'react';
+import { STableHeaders, RefDOM } from "./"
 import { getScrollBarWidth } from '../util';
 import useResize from '../hooks/useResize';
 import { getLastNode } from './util';
 import HeaderCell from '../HeaderCell';
+
+interface ColHeaderProps {
+  dynColHeader: STableHeaders;
+  colHeaderWidth: number;
+  colHeaderHeight: number;
+  enableColResize: boolean;
+  enableRowResize: boolean;
+  enableColSorting: boolean;
+  containerRef: RefDOM;
+  colResizeProxyRef: RefDOM;
+  onUpdate: Function;
+  handleColSort: Function;
+}
 
 const ColHeader = ({
   dynColHeader,

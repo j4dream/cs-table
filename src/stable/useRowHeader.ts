@@ -9,22 +9,30 @@ import {
   calcDeepsetNodePathOffset,
   switchPosByProps,
 } from './util';
+import { STableHeaders } from './';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 import useForceUpdate from '../hooks/useForceUpdate';
 
-export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeight }: UseRowHeaderParams) {
+type UseRowHeaderParams = {
+  rowHeader: STableHeaders;
+  cellWidth: number;
+  cellHeight: number;
+};
+
+export default function useRowHeader({
+  rowHeader: rawHeader,
+  cellWidth,
+  cellHeight,
+}: UseRowHeaderParams) {
   const rawHeaderRef = useRef(rawHeader);
   const { forceUpdate, updateCount } = useForceUpdate();
 
-  const { flattenRow, allColumns } = useMemo(
-    () => {
-      if (updateCount) {
-        console.warn('forceupdate');
-      }
-      return processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
-    },
-    [updateCount, cellWidth],
-  );
+  const { flattenRow, allColumns } = useMemo(() => {
+    if (updateCount) {
+      console.warn('forceupdate');
+    }
+    return processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth });
+  }, [updateCount, cellWidth]);
 
   const buildHeaderTree = useCallback(() => {
     // use leaf nodes calc width & prop

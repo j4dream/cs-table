@@ -1,5 +1,5 @@
 import React from 'react';
-import Sheet from './index';
+import Sheet, { STableProps } from './';
 import { useSize } from '../hooks/useSize';
 
 export default function (props: STableProps): JSX.Element {

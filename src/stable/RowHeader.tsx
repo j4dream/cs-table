@@ -1,7 +1,23 @@
 import React, { useMemo, useCallback, useRef } from 'react';
+import { STableHeaders, RefDOM } from "./";
 import { getScrollBarWidth } from '../util';
 import useResize from '../hooks/useResize';
 import HeaderCell from '../HeaderCell';
+
+interface RowHeaderProps {
+  dynRowHeader: STableHeaders;
+  rowHeaderWidth: number;
+  rowHeaderHeight: number;
+  rowDeepestPath: STableHeaders;
+  enableColResize: boolean;
+  enableRowResize: boolean;
+  containerRef: RefDOM;
+  colResizeProxyRef: RefDOM;
+  onUpdate: Function;
+  handleRowSort: Function;
+  enableRowSorting: boolean;
+}
+
 
 const RowHeader = ({
   dynRowHeader,

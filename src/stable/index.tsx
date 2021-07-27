@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, LegacyRef } from 'react';
 import t from 'prop-types';
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
@@ -6,6 +6,52 @@ import { getSubTreeFromStartNode, binSearch } from './util';
 import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
+
+export type RefDOM = LegacyRef<HTMLDivElement> | undefined;
+
+export type STableHeader = {
+  prop: string;
+  label: string;
+  level: number;
+  left: number;
+  top: number;
+  rowSpan: number;
+  colSpan: number;
+  children: STableHeader[];
+  parent: STableHeader;
+  isLeaf: boolean;
+  height: number;
+  width: number;
+};
+
+export type STableHeaders = STableHeader[];
+
+type STableDataItem = { [colProp: string]: any };
+type STableData = {
+  [rowProp: string]: STableDataItem;
+};
+
+type defalCellRenderer = (
+  record: any,
+  rowProp: string,
+  colProp: string,
+  data: STableDataItem,
+) => STableDataItem;
+
+export interface STableProps {
+  colHeader: STableHeaders;
+  rowHeader: STableHeaders;
+  data: STableData;
+  height: number;
+  width: number;
+  cellHeight: number;
+  cellWidth: number;
+  renderCell: defalCellRenderer;
+  enableColResize: boolean;
+  enableRowResize: boolean;
+  enableColSorting: boolean;
+  enableRowSorting: boolean;
+}
 
 function STable(props: STableProps): JSX.Element {
   const {

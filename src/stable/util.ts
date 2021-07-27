@@ -1,3 +1,4 @@
+import { STableHeader, STableHeaders } from './';
 import { switchNode } from '../util';
 
 // note: for loop faster than forEach;

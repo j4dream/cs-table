@@ -1,4 +1,4 @@
-export type RefDOM = LegacyRef<HTMLDivElement> | undefined;
+type RefDOM = LegacyRef<HTMLDivElement> | undefined;
 
 export type Header = {
   label: string;
@@ -16,7 +16,7 @@ export type DataCell = {
 
 export type defalCellRenderer = (
   record: any,
-  rowIndex: number,
+  rowIndex: string | number,
   prop: string,
   header: CTableHeader,
 ) => CTableDataItem;

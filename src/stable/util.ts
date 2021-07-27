@@ -1,25 +1,7 @@
 import { switchNode } from '../util';
-import { Header } from '../types';
-import { type } from 'os';
 
 // note: for loop faster than forEach;
 // https://www.incredible-web.com/blog/performance-of-for-loops-with-javascript/
-
-type STableHeader = {
-  level: number;
-  left: number;
-  top: number;
-  rowSpan: number;
-  colSpan: number;
-  children: [STableHeader];
-  parent: STableHeader;
-  isLeaf: boolean;
-  height: number;
-  width: number;
-  prop: string;
-};
-
-type STableHeaders = STableHeader[];
 
 // BFS traverse;
 function falttenTree(tree: STableHeaders): STableHeaders {
@@ -35,8 +17,8 @@ function falttenTree(tree: STableHeaders): STableHeaders {
 type SpanSeq = ['rowSpan', 'colSpan'] | ['colSpan', 'rowSpan'];
 
 type ProcessTreeOpts = {
-  calcTop: number;
-  calcLeft: number;
+  calcTop?: number;
+  calcLeft?: number;
 };
 
 type ProcessTreeRes = {

@@ -20,7 +20,7 @@ interface HeaderProps {
   dragParentRef: React.MutableRefObject<string>;
   handleSort: Function;
   enableSorting: boolean;
-  renderHeader: defalHeaderRenderer;
+  renderHeader?: defalHeaderRenderer;
 }
 
 export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
@@ -55,8 +55,6 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
         : {},
     [enableSorting, prop, getDragProps, dropProps],
   );
-
-  console.log(hoverProp === dragParentRef.current);
 
   return (
     <div

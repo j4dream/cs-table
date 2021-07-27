@@ -12,7 +12,7 @@ import {
 import useUpdateEffect from '../hooks/useUpdateEffect';
 import useForceUpdate from '../hooks/useForceUpdate';
 
-export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeight }) {
+export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeight }: UseRowHeaderParams) {
   const rawHeaderRef = useRef(rawHeader);
   const { forceUpdate, updateCount } = useForceUpdate();
 

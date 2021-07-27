@@ -15,10 +15,11 @@ const ColHeader = ({
   onUpdate,
   handleColSort,
   enableColSorting,
-}) => {
+}: ColHeaderProps): JSX.Element => {
   const onResizeStop = useCallback(
     (offset, prop) => {
       let h = dynColHeader.find((h) => h.prop === prop);
+      if (!h) return;
       if (!h.isLeaf) {
         h = getLastNode(h);
       }
@@ -42,10 +43,10 @@ const ColHeader = ({
     () =>
       enableColResize || enableRowResize
         ? {
-          onMouseMove: handleMouseMove,
-          onMouseOut: handleMouseOut,
-          onMouseDown: handleMouseDown,
-        }
+            onMouseMove: handleMouseMove,
+            onMouseOut: handleMouseOut,
+            onMouseDown: handleMouseDown,
+          }
         : {},
     [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
@@ -72,6 +73,6 @@ const ColHeader = ({
       ))}
     </div>
   );
-}
+};
 
 export default React.memo(ColHeader);

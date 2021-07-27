@@ -15,10 +15,11 @@ const RowHeader = ({
   onUpdate,
   handleRowSort,
   enableRowSorting = true,
-}) => {
+}: RowHeaderProps): JSX.Element => {
   const onResizeStop = useCallback(
     (offset, prop) => {
       let h = dynRowHeader.find((h) => h.prop === prop);
+      if (!h) return;
 
       h = rowDeepestPath[h.level];
 
@@ -41,10 +42,10 @@ const RowHeader = ({
     () =>
       enableColResize || enableRowResize
         ? {
-          onMouseMove: handleMouseMove,
-          onMouseOut: handleMouseOut,
-          onMouseDown: handleMouseDown,
-        }
+            onMouseMove: handleMouseMove,
+            onMouseOut: handleMouseOut,
+            onMouseDown: handleMouseDown,
+          }
         : {},
     [enableColResize, enableRowResize, handleMouseMove, handleMouseOut, handleMouseDown],
   );
@@ -71,6 +72,6 @@ const RowHeader = ({
       ))}
     </div>
   );
-}
+};
 
 export default React.memo(RowHeader);

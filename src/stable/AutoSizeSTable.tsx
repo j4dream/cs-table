@@ -2,7 +2,7 @@ import React from 'react';
 import Sheet from './index';
 import { useSize } from '../hooks/useSize';
 
-export default function (props) {
+export default function (props: STableProps): JSX.Element {
   const [state, ref] = useSize();
   const { width, height } = state;
 

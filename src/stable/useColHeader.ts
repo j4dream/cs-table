@@ -11,7 +11,7 @@ import {
 import useForceUpdate from '../hooks/useForceUpdate';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-export default function useColHeader({ colHeader: rawHeader, cellWidth, cellHeight }) {
+export default function useColHeader({ colHeader: rawHeader, cellWidth, cellHeight }: UseColHeaderParams) {
   const rawHeaderRef = useRef(rawHeader);
   const { forceUpdate, updateCount } = useForceUpdate();
 

@@ -7,7 +7,18 @@ export default {
         {
           label: '广州',
           prop: 'gd-gz',
-          children: [],
+          children: [
+            {
+              label: '天河区',
+              prop: 'gd-gz-th',
+              children: [],
+            },
+            {
+              label: '白云区',
+              prop: 'gd-gz-by',
+              children: [],
+            },
+          ],
         },
         {
           label: '佛山',
@@ -25,6 +36,11 @@ export default {
           children: [],
         },
       ],
+    },
+    {
+      label: '北京',
+      prop: 'bj',
+      children: [],
     },
     {
       label: '江苏',
@@ -114,7 +130,23 @@ export default {
         {
           label: 'Q1',
           prop: '2018-Q1',
-          children: [],
+          children: [
+            {
+              label: 'Q1-01',
+              prop: '2018-Q1-01',
+              children: [],
+            },
+            {
+              label: 'Q2-02',
+              prop: '2018-Q2-2',
+              children: [],
+            },
+            {
+              label: 'Q3-03',
+              prop: '2018-Q3-03',
+              children: [],
+            },
+          ],
         },
         {
           label: 'Q2',
@@ -132,6 +164,11 @@ export default {
           children: [],
         },
       ],
+    },
+    {
+      label: 'total',
+      prop: 'total',
+      children: [],
     },
     {
       label: '2019',
@@ -213,6 +250,39 @@ export default {
     },
   ],
   data: {
+    'gd-gz-th': {
+      total: 123,
+      '2018-Q1': 1,
+      '2018-Q2': 2,
+      '2018-Q3': 3,
+      '2018-Q4': 4,
+      '2019-Q1': 5,
+      '2019-Q2': 6,
+      '2019-Q3': 7,
+      '2019-Q4': 8,
+    },
+    'gd-gz-by': {
+      total: 8765,
+      '2018-Q1': 1,
+      '2018-Q2': 2,
+      '2018-Q3': 3,
+      '2018-Q4': 4,
+      '2019-Q1': 5,
+      '2019-Q2': 6,
+      '2019-Q3': 7,
+      '2019-Q4': 8,
+    },
+    bj: {
+      total: 23423,
+      '2018-Q1': 1,
+      '2018-Q2': 2,
+      '2018-Q3': 3,
+      '2018-Q4': 4,
+      '2019-Q1': 5,
+      '2019-Q2': 6,
+      '2019-Q3': 7,
+      '2019-Q4': 8,
+    },
     'gd-gz': {
       '2018-Q1': 1,
       '2018-Q2': 2,

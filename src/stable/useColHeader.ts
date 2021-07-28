@@ -33,12 +33,12 @@ export default function useColHeader({
     return processTree(rawHeaderRef.current, ['colSpan', 'rowSpan'], { calcTop: cellHeight });
   }, [updateCount, cellHeight]);
 
-  const buildHeaderTree = useCallback(() => {
+  const buildHeaderTree = useCallback((rebuild?: boolean) => {
     // use leaf nodes calc width & prop
     const leafNodes = getLeafNodes(rawHeaderRef.current);
 
     // calculate width;
-    travelToRootFromLeafNodes(leafNodes, 'width', cellWidth);
+    travelToRootFromLeafNodes(leafNodes, 'width', cellWidth, rebuild);
 
     // calculate left;
     calcNodeOffsetFormFalttenHeader(flattenRow, 'left', 'width');
@@ -70,7 +70,7 @@ export default function useColHeader({
   );
 
   const rebuildColHeader = useCallback(() => {
-    setMeasure(buildHeaderTree());
+    setMeasure(buildHeaderTree(true));
   }, [buildHeaderTree, setMeasure]);
 
   useUpdateEffect(() => {

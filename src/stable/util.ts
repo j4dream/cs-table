@@ -53,7 +53,7 @@ export function processTree(
       }
     } else {
       column.level = 0;
-      column.levelInfo = "0";
+      column.levelInfo = '0';
       if (opts.calcTop) {
         column.top = 0;
       }
@@ -151,24 +151,29 @@ export function travelToRootFromLeafNodes(
   leafNodes: STableHeaders,
   measure: Measure,
   defaultValue: number,
+  resetMeasure?: boolean,
 ): void {
   // leaf nodes; Complexity: O(leaf.length * deepest);
-  const set = new Set();
+  const visitedSet = new Set();
+
   leafNodes.forEach((node) => {
     node[measure] = node[measure] || defaultValue;
-    let accValue = node[measure] || 0;
-    let parent = node.parent;
 
-    // reset measure, when rebuild tree, this value incorrect
-    if (parent && !set.has(parent)) {
-      parent[measure] = 0;
-      set.add(parent);
+    let parent = node.parent;
+    // restet to 0, otherwise the measuer values will accumulation.
+    if (resetMeasure) {
+      let resetParentRef = node.parent;
+      while(resetParentRef && !visitedSet.has(resetParentRef)) {
+        // use set to confirm reset once.
+        visitedSet.add(resetParentRef);
+        resetParentRef[measure] = 0;
+        resetParentRef = resetParentRef.parent;
+      }
     }
 
     while (parent) {
       let parentProp = parent[measure] || 0;
-      parent[measure] = parentProp + accValue;
-      accValue = parentProp + accValue;
+      parent[measure] = parentProp + node[measure];
       parent = parent.parent;
     }
   });
@@ -179,12 +184,16 @@ export function calcNodeOffsetFormFalttenHeader(
   offset: Offset,
   measure: Measure,
 ): void {
-  for (let i = 0, iLength = flattenRow.length; i < iLength; i++) {
+  for (let row = 0, rowLength = flattenRow.length; row < rowLength; row++) {
     let acc = 0;
-    for (let j = 0, jLength = flattenRow[i].length; j < jLength; j++) {
-      const curr = flattenRow[i][j];
+    let parentRef;
+    for (let col = 0, colLength = flattenRow[row].length; col < colLength; col++) {
+      const curr = flattenRow[row][col];
 
-      acc = acc === 0 ? (curr.parent ? curr.parent[offset] : 0) : acc;
+      if (curr.parent && curr.parent !== parentRef) {
+        parentRef = curr.parent;
+        acc = curr.parent[offset];
+      }
 
       curr[offset] = acc;
       acc += curr[measure] || 0;

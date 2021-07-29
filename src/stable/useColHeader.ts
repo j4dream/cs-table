@@ -4,6 +4,7 @@ import {
   calcNodeOffsetFormFalttenHeader,
   getLeafNodes,
   travelToRootFromLeafNodes,
+  calcDeepsetNodePathOffset,
   calcMeasureFromDeepestPath,
   getDeepestNodePath,
   switchPosByProps,
@@ -33,29 +34,34 @@ export default function useColHeader({
     return processTree(rawHeaderRef.current, ['colSpan', 'rowSpan'], { calcTop: cellHeight });
   }, [updateCount, cellHeight]);
 
-  const buildHeaderTree = useCallback((rebuild?: boolean) => {
-    // use leaf nodes calc width & prop
-    const leafNodes = getLeafNodes(rawHeaderRef.current);
+  const buildHeaderTree = useCallback(
+    (rebuild?: boolean) => {
+      // use leaf nodes calc width & prop
+      const leafNodes = getLeafNodes(rawHeaderRef.current);
 
-    // calculate width;
-    travelToRootFromLeafNodes(leafNodes, 'width', cellWidth, rebuild);
+      // calculate width;
+      travelToRootFromLeafNodes(leafNodes, 'width', cellWidth, rebuild);
 
-    // calculate left;
-    calcNodeOffsetFormFalttenHeader(flattenRow, 'left', 'width');
+      // calculate left;
+      calcNodeOffsetFormFalttenHeader(flattenRow, 'left', 'width');
 
-    // use deepestnode store height
-    const deepestNodePath = getDeepestNodePath(allColumns, cellWidth, cellHeight);
-    calcMeasureFromDeepestPath(allColumns, deepestNodePath, 'height');
+      // use deepestnode store height
+      const deepestNodePath = getDeepestNodePath(allColumns, cellWidth, cellHeight);
+      calcDeepsetNodePathOffset(deepestNodePath, 'height');
+      calcMeasureFromDeepestPath(allColumns, deepestNodePath, 'height');
 
-    const colHeaderHeight = deepestNodePath.reduce((acc, curr) => acc + curr.height, 0);
-    const colHeaderWidth = leafNodes.reduce((acc, curr) => acc + curr.width, 0);
+      const colHeaderHeight = deepestNodePath.reduce((acc, curr) => acc + curr.height, 0);
+      const colHeaderWidth = leafNodes.reduce((acc, curr) => acc + curr.width, 0);
 
-    return {
-      colHeaderHeight,
-      colHeaderWidth,
-      colHeaderLeaf: leafNodes,
-    };
-  }, [flattenRow, allColumns, cellHeight, cellWidth]);
+      return {
+        colHeaderHeight,
+        colHeaderWidth,
+        colDeepestPath: deepestNodePath,
+        colHeaderLeaf: leafNodes,
+      };
+    },
+    [flattenRow, allColumns, cellHeight, cellWidth],
+  );
 
   const [measure, setMeasure] = useState(() => buildHeaderTree());
 

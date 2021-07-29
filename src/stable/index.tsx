@@ -74,6 +74,7 @@ function STable(props: STableProps): JSX.Element {
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
+    colDeepestPath,
     rebuildColHeader,
     handleColSort,
   } = useColHeader({ colHeader, cellWidth, cellHeight });
@@ -92,6 +93,7 @@ function STable(props: STableProps): JSX.Element {
   const rowHeaderRef = useRef<HTMLDivElement>(null);
   const colHeaderRef = useRef<HTMLDivElement>(null);
   const colResizeProxyRef = useRef<HTMLDivElement>(null);
+  const rowResizeProxyRef = useRef<HTMLDivElement>(null);
 
   // component state
   const [{ dynColHeader, dynRowHeader }, setState] = useState(() => {
@@ -188,10 +190,12 @@ function STable(props: STableProps): JSX.Element {
       >
         <ColHeader
           dynColHeader={dynColHeader}
+          colDeepestPath={colDeepestPath}
           colHeaderHeight={colHeaderHeight}
           colHeaderWidth={colHeaderWidth}
           containerRef={sTableRef}
           colResizeProxyRef={colResizeProxyRef}
+          rowResizeProxyRef={rowResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
           enableColSorting={enableColSorting}
@@ -216,6 +220,7 @@ function STable(props: STableProps): JSX.Element {
           rowHeaderWidth={rowHeaderWidth}
           containerRef={sTableRef}
           colResizeProxyRef={colResizeProxyRef}
+          rowResizeProxyRef={rowResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
           enableRowSorting={enableRowSorting}
@@ -263,6 +268,7 @@ function STable(props: STableProps): JSX.Element {
       </div>
 
       <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
+      <div className="resize-row-proxy" ref={rowResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
   );
 }

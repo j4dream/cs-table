@@ -14,6 +14,8 @@ interface ColHeaderProps {
   enableColSorting: boolean;
   containerRef: RefDOM;
   colResizeProxyRef: RefDOM;
+  rowResizeProxyRef: RefDOM;
+  colDeepestPath: STableHeaders;
   onUpdate: Function;
   handleColSort: Function;
 }
@@ -26,20 +28,30 @@ const ColHeader = ({
   enableRowResize,
   containerRef,
   colResizeProxyRef,
+  rowResizeProxyRef,
+  colDeepestPath,
   onUpdate,
   handleColSort,
   enableColSorting,
 }: ColHeaderProps): JSX.Element => {
   const onResizeStop = useCallback(
-    (offset, prop) => {
+    (offset, prop, type) => {
       let h = dynColHeader.find((h) => h.prop === prop);
       if (!h) return;
-      if (!h.isLeaf) {
-        h = getLastNode(h);
+      if (type === 'row') {
+        h = colDeepestPath[h.level];
+        if (h && offset) {
+          h.height = Math.max(h.height + offset, 30);
+        }
       }
 
-      if (h && offset) {
-        h.width = Math.max(h.width + offset, 30);
+      if (type === 'col') {
+        if (!h.isLeaf) {
+          h = getLastNode(h);
+        }
+        if (h && offset) {
+          h.width = Math.max(h.width + offset, 30);
+        }
       }
 
       onUpdate && onUpdate();
@@ -50,6 +62,7 @@ const ColHeader = ({
   const { handleMouseMove, handleMouseOut, handleMouseDown } = useResize({
     container: containerRef,
     colResizeProxy: colResizeProxyRef,
+    rowResizeProxy: rowResizeProxyRef,
     onResizeStop,
   });
 

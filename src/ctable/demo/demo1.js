@@ -50,8 +50,6 @@ export default memo(function () {
       <button onClick={() => setPreventScroll(!preventScroll)}>Toggle fix scroll</button>
       <p>{count}</p> */}
 
-      <p style={{ margin: 23 }}> 10 * 100000 (col * row)</p>
-
       <Table
         header={h}
         data={data}

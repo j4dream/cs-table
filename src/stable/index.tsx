@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useState, LegacyRef } from 'react';
 import t from 'prop-types';
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
-import { getSubTreeFromStartNode, binSearch } from './util';
+import { getDynHeders, binSearch } from './util';
 import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
@@ -96,12 +96,28 @@ function STable(props: STableProps): JSX.Element {
   const rowResizeProxyRef = useRef<HTMLDivElement>(null);
 
   // component state
-  const [{ dynColHeader, dynRowHeader }, setState] = useState(() => {
-    return {
-      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf, 'width', width),
-      dynRowHeader: getSubTreeFromStartNode(0, rowHeaderLeaf, 'height', height),
-    };
-  });
+  const [{ dynColHeader, dynColLeafNodes, dynRowHeader, dynRowLeafNodes }, setState] = useState(
+    () => {
+      const { dynHeaders: dynColHeader, dynLeafNodes: dynColLeafNodes } = getDynHeders(
+        0,
+        colHeaderLeaf,
+        'width',
+        width,
+      );
+      const { dynHeaders: dynRowHeader, dynLeafNodes: dynRowLeafNodes } = getDynHeders(
+        0,
+        rowHeaderLeaf,
+        'height',
+        height,
+      );
+      return {
+        dynColHeader,
+        dynColLeafNodes,
+        dynRowHeader,
+        dynRowLeafNodes,
+      };
+    },
+  );
 
   const cacheRef = useRef({
     colIndexCache: 0,
@@ -125,24 +141,40 @@ function STable(props: STableProps): JSX.Element {
       // if stay on same cell, do not rerender table.
       if (colIndexCache === currColIndex && rowIndexCache === currRowIndex) return;
 
-      let newCol: STableHeaders;
+      let newCol: STableHeaders, newColLeaf: STableHeaders;
       if (colIndexCache !== currColIndex) {
-        // todo get sub tree;
-        newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf, 'width', clientWidth);
+        // Get sub tree & sub leaf;
+        const { dynHeaders, dynLeafNodes } = getDynHeders(
+          currColIndex,
+          colHeaderLeaf,
+          'width',
+          clientWidth,
+        );
+        newCol = dynHeaders;
+        newColLeaf = dynLeafNodes;
         cacheRef.current.colIndexCache = currColIndex;
       }
 
-      let newRow: STableHeaders;
+      let newRow: STableHeaders, newRowLeaf: STableHeaders;
       if (rowIndexCache !== currRowIndex) {
-        // todo get sub tree;
-        newRow = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
+        // Get sub tree & sub leaf;
+        const { dynHeaders, dynLeafNodes } = getDynHeders(
+          currRowIndex,
+          rowHeaderLeaf,
+          'height',
+          clientHeight,
+        );
+        newRow = dynHeaders;
+        newRowLeaf = dynLeafNodes;
         cacheRef.current.rowIndexCache = currRowIndex;
       }
 
       setState((pre) => {
         return {
           dynColHeader: newCol ? newCol : pre.dynColHeader,
+          dynColLeafNodes: newColLeaf ? newColLeaf : pre.dynColLeafNodes,
           dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+          dynRowLeafNodes: newRowLeaf ? newRowLeaf : pre.dynRowLeafNodes,
         };
       });
     },
@@ -152,12 +184,15 @@ function STable(props: STableProps): JSX.Element {
   // sorting effect.
   useUpdateEffect(() => {
     const { colIndexCache, rowIndexCache } = cacheRef.current;
-    const newCol = getSubTreeFromStartNode(colIndexCache, colHeaderLeaf, 'width', width);
-    const newRow = getSubTreeFromStartNode(rowIndexCache, rowHeaderLeaf, 'height', height);
+    const { dynHeaders: newCol, dynLeafNodes: newColLeafs } = getDynHeders(colIndexCache, colHeaderLeaf, 'width', width);
+    const { dynHeaders: newRow, dynLeafNodes: newRowLeafs } = getDynHeders(rowIndexCache, rowHeaderLeaf, 'height', height);
     setState((pre) => {
       return {
         dynColHeader: newCol ? newCol : pre.dynColHeader,
+        dynColLeafNodes: newColLeafs ? newColLeafs : pre.dynColLeafNodes,
         dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+        dynRowLeafNodes: newRowLeafs ? newRowLeafs : pre.dynRowLeafNodes,
+
       };
     });
   }, [colHeaderLeaf, rowHeaderLeaf, width, height]);
@@ -247,8 +282,8 @@ function STable(props: STableProps): JSX.Element {
             height: rowHeaderHeight,
           }}
         >
-          {rowHeaderLeaf.map((row, rowIndex) =>
-            colHeaderLeaf.map((col, colIndex) => (
+          {dynRowLeafNodes.map((row, rowIndex) =>
+            dynColLeafNodes.map((col, colIndex) => (
               <div
                 className="cell"
                 key={`d-a-${rowIndex}-${colIndex}`}

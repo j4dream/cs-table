@@ -163,7 +163,7 @@ export function travelToRootFromLeafNodes(
     // restet to 0, otherwise the measuer values will accumulation.
     if (resetMeasure) {
       let resetParentRef = node.parent;
-      while(resetParentRef && !visitedSet.has(resetParentRef)) {
+      while (resetParentRef && !visitedSet.has(resetParentRef)) {
         // use set to confirm reset once.
         visitedSet.add(resetParentRef);
         resetParentRef[measure] = 0;
@@ -246,36 +246,43 @@ export function binSearch(scroll: number, arr: any[], measure: Measure): number 
   return start;
 }
 
-export function getSubTreeFromStartNode(
+type DynHederRes = {
+  dynHeaders: STableHeaders;
+  dynLeafNodes: STableHeaders;
+};
+export function getDynHeders(
   startIndex: number,
   leafNodes: STableHeaders,
   measure: Measure,
   measuerLength: number,
-): STableHeaders {
+): DynHederRes {
   let acc = 0;
   const parentHeaderInView: STableHeaders = [];
-  const subLeafNode = [];
+  const subLeafNodes = [];
 
   for (let i = startIndex, l = leafNodes.length; i < l; i++) {
     acc += leafNodes[i][measure];
-    subLeafNode.push(leafNodes[i]);
+    subLeafNodes.push(leafNodes[i]);
     if (acc > measuerLength) {
       // add 1 more node to prevent empty;
       const nextIndex = i + 1;
-      leafNodes[nextIndex] && subLeafNode.push(leafNodes[nextIndex]);
+      leafNodes[nextIndex] && subLeafNodes.push(leafNodes[nextIndex]);
       break;
     }
   }
 
   const ws = new WeakSet();
-  subLeafNode.forEach((n) => {
+  subLeafNodes.forEach((n) => {
     while (n.parent && !ws.has(n.parent)) {
       parentHeaderInView.push(n.parent);
       ws.add(n.parent);
     }
   });
 
-  return [...parentHeaderInView, ...subLeafNode];
+  return {
+    dynHeaders: [...parentHeaderInView, ...subLeafNodes],
+    dynLeafNodes: subLeafNodes,
+  };
 }
 
 // get the last child

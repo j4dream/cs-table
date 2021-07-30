@@ -1,10 +1,10 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 
 interface NoDataProps {
   emptyText: string;
 }
 
-export default ({ emptyText }: NoDataProps): ReactElement => (
+export default ({ emptyText }: NoDataProps): JSX.Element => (
   <div>
     <svg stroke="" width="64" height="41" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(0 1)" fill="none" fill-rule="evenodd">

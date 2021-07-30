@@ -90,7 +90,7 @@ function getRangeFromArr<T>(arr: Array<T>, start: number, count: number): Array<
   return res;
 }
 
-const Provider: FC<CTableProps> = (props) => {
+const Provider: FC<CTableProps> = (props): JSX.Element => {
   const {
     header,
     data,

@@ -24,7 +24,7 @@ interface HeaderProps {
   renderHeader?: defalHeaderRenderer;
 }
 
-export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
+export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps): JSX.Element => {
   const { top = 0, left, width, height, prop, label, renderHeader, levelInfo } = header;
 
   const getDragProps = useDrag({

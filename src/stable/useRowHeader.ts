@@ -60,7 +60,7 @@ export default function useRowHeader({
     };
   }, [flattenRow, allColumns, cellHeight, cellWidth]);
 
-  const [measure, setMeasure] = useState(() => buildHeaderTree());
+  const [measure, setMeasure] = useState(() => buildHeaderTree(true));
 
   const handleRowSort = useCallback(
     (p1, p2) => {

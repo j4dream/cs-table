@@ -12,6 +12,7 @@
     "src/index.js",
     "src/logo.svg",
     "src/react-app-env.d.ts",
-    "src/serviceWorker.js"
+    "src/serviceWorker.js",
+    "src/**/demo"
   ]
 }

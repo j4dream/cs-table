@@ -7,26 +7,19 @@ export default function () {
   const { rowHeader, colHeader, data } = simpleData;
   return (
     <div>
-      {/* <Sheet
-        rowHeader={rowHeader}
-        colHeader={colHeader}
-        data={data}
-        enableResize
-        enableSortHeader
-      /> */}
-
       <div
         style={{
-          height: 400,
+          height: 500,
         }}
       >
         <AutoSizeSheet
           rowHeader={rowHeader}
           colHeader={colHeader}
           data={data}
-          cellWidth={120}
-          cellHeight={44}
+          cellWidth={100}
+          cellHeight={40}
           enableColResize
+          enableRowResize
           enableColSorting
           enableRowSorting
         />

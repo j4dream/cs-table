@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, memo } from 'react';
 import Table from '../index';
 
@@ -49,14 +50,13 @@ export default memo(function () {
       <button onClick={() => setPreventScroll(!preventScroll)}>Toggle fix scroll</button>
       <p>{count}</p> */}
 
-      <p style={{ margin: 23 }}> 10 * 100000 (col * row)</p>
-
       <Table
         header={h}
         data={data}
         cellWidth={200}
         preventScroll={preventScroll}
-        enableResize={true}
+        enableResize
+        enableSorting
         // keepScrollStatus={true}
         // renderCell={(record, prop) => record[prop]}
         // renderHeader={(header, prop) => header[prop]}

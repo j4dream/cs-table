@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
 
-type ForceUpdateRes = {
+interface ForceUpdateRes {
   updateCount: number;
   forceUpdate: Function;
-};
+}
 
 export default (): ForceUpdateRes => {
-  const [updateCount, update] = useState(0);
+  const [updateCount, update] = useState<number>(0);
 
   const forceUpdate = useCallback(() => {
     update((p: number) => p + 1);

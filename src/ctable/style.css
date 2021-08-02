@@ -47,6 +47,17 @@
   z-index: 10;
 }
 
+.s-table .resize-row-proxy {
+  position: absolute;
+  left: 0;
+  top: 200px;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed #333333;
+  z-index: 10;
+}
+
+
 .c-table .header .draggable,
 .s-table .header .draggable {
   width: 20px;

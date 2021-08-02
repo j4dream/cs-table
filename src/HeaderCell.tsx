@@ -1,15 +1,18 @@
 import React, { useMemo } from 'react';
 import { useDrag, useDrop } from './hooks/useDragAndDrop';
 
+import { defalHeaderRenderer } from './types';
+
 interface Header {
-  top: number;
   left: number;
   width: number;
   height: number;
   prop: string;
   label: string;
-  renderHeader?: Function;
-  parent: Header;
+  levelInfo?: string;
+  renderHeader?: defalHeaderRenderer;
+  parent?: Header;
+  top?: number;
 }
 
 interface HeaderProps {
@@ -18,17 +21,15 @@ interface HeaderProps {
   dragParentRef: React.MutableRefObject<string>;
   handleSort: Function;
   enableSorting: boolean;
+  renderHeader?: defalHeaderRenderer;
 }
 
-export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps) => {
-  const { top, left, width, height, prop, label, renderHeader } = header;
+export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting }: HeaderProps): JSX.Element => {
+  const { top = 0, left, width, height, prop, label, renderHeader, levelInfo } = header;
 
   const getDragProps = useDrag({
     handleDrag: () => {
-      if (header.parent) {
-        dragParentRef.current = header.parent.prop;
-      }
-      
+      dragParentRef.current = levelInfo || "-";
     },
   });
 
@@ -51,7 +52,7 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
             ...dropProps,
           }
         : {},
-    [prop],
+    [enableSorting, prop, getDragProps, dropProps],
   );
 
   return (
@@ -67,7 +68,7 @@ export default ({ header, resizeProps, dragParentRef, handleSort, enableSorting 
         outlineOffset: -2,
       }}
       data-prop={prop}
-      data-parent-prop={header.parent ? header.parent.prop : ""}
+      data-level-info={levelInfo || '-'}
       {...sortingProps}
       {...resizeProps}
     >

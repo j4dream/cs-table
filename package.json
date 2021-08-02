@@ -1,6 +1,6 @@
 {
   "name": "virtualized-sc-table",
-  "version": "0.5.5",
+  "version": "0.6.1",
   "private": false,
   "main": "./dist/main",
   "files": [
@@ -15,11 +15,10 @@
     "resizable",
     "resize"
   ],
-  "dependencies": {
-    "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+
+  "peerDependencies": {
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,7 +31,8 @@
     "commit": "git-cz",
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "prettier": "prettier -c --write \"**/*\"",
-    "publish:npm": "babel ./src -d dist --extensions \".ts,.js,.tsx\" --copy-files --no-copy-ignored",
+    "npm:build": "babel ./src -d dist --extensions \".ts,.js,.tsx\" --copy-files --no-copy-ignored",
+    "npm:publish": "npm publish",
     "predeploy": "npm run docz:build",
     "deploy": "gh-pages -d .docz/dist"
   },
@@ -57,11 +57,13 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
+    "@babel/cli": "^7.14.8",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.10.1",
     "@types/jest": "^25.2.3",
     "@types/node": "^14.0.9",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "cz-conventional-changelog": "^3.2.0",
     "docz": "^2.3.1",
     "gh-pages": "^2.2.0",
@@ -69,6 +71,8 @@
     "lodash.differenceby": "^4.8.0",
     "lodash.remove": "^4.7.0",
     "prettier": "^2.0.5",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-scripts": "^3.4.1",
     "typescript": "^3.9.3"
   }

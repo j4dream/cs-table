@@ -1,13 +1,60 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, LegacyRef } from 'react';
 import t from 'prop-types';
 import useColHeader from './useColHeader';
 import useRowHeader from './useRowHeader';
-import { getSubTreeFromStartNode, binSearch } from './util';
+import { getDynHeders, binSearch } from './util';
 import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 
-function STable(props) {
+export type RefDOM = LegacyRef<HTMLDivElement> | undefined;
+
+export type STableHeader = {
+  prop: string;
+  label: string;
+  level: number;
+  left: number;
+  levelInfo: string;
+  top: number;
+  rowSpan: number;
+  colSpan: number;
+  children: STableHeader[];
+  parent: STableHeader;
+  isLeaf: boolean;
+  height: number;
+  width: number;
+};
+
+export type STableHeaders = STableHeader[];
+
+type STableDataItem = { [colProp: string]: any };
+type STableData = {
+  [rowProp: string]: STableDataItem;
+};
+
+type defalCellRenderer = (
+  record: any,
+  rowProp: string,
+  colProp: string,
+  data: STableDataItem,
+) => STableDataItem;
+
+export interface STableProps {
+  colHeader: STableHeaders;
+  rowHeader: STableHeaders;
+  data: STableData;
+  height: number;
+  width: number;
+  cellHeight: number;
+  cellWidth: number;
+  renderCell: defalCellRenderer;
+  enableColResize: boolean;
+  enableRowResize: boolean;
+  enableColSorting: boolean;
+  enableRowSorting: boolean;
+}
+
+function STable(props: STableProps): JSX.Element {
   const {
     colHeader,
     rowHeader,
@@ -27,6 +74,7 @@ function STable(props) {
     colHeaderWidth,
     colHeaderHeight,
     colHeaderLeaf,
+    colDeepestPath,
     rebuildColHeader,
     handleColSort,
   } = useColHeader({ colHeader, cellWidth, cellHeight });
@@ -40,19 +88,36 @@ function STable(props) {
     handleRowSort,
   } = useRowHeader({ rowHeader, cellWidth, cellHeight });
 
-  const sTableRef = useRef();
-  const dataAreaRef = useRef();
-  const rowHeaderRef = useRef();
-  const colHeaderRef = useRef();
-  const colResizeProxyRef = useRef();
+  const sTableRef = useRef<HTMLDivElement>(null);
+  const dataAreaRef = useRef<HTMLDivElement>(null);
+  const rowHeaderRef = useRef<HTMLDivElement>(null);
+  const colHeaderRef = useRef<HTMLDivElement>(null);
+  const colResizeProxyRef = useRef<HTMLDivElement>(null);
+  const rowResizeProxyRef = useRef<HTMLDivElement>(null);
 
   // component state
-  const [{ dynColHeader, dynRowHeader }, setState] = useState(() => {
-    return {
-      dynColHeader: getSubTreeFromStartNode(0, colHeaderLeaf, 'width', width),
-      dynRowHeader: getSubTreeFromStartNode(0, rowHeaderLeaf, 'height', height),
-    };
-  });
+  const [{ dynColHeader, dynColLeafNodes, dynRowHeader, dynRowLeafNodes }, setState] = useState(
+    () => {
+      const { dynHeaders: dynColHeader, dynLeafNodes: dynColLeafNodes } = getDynHeders(
+        0,
+        colHeaderLeaf,
+        'width',
+        width,
+      );
+      const { dynHeaders: dynRowHeader, dynLeafNodes: dynRowLeafNodes } = getDynHeders(
+        0,
+        rowHeaderLeaf,
+        'height',
+        height,
+      );
+      return {
+        dynColHeader,
+        dynColLeafNodes,
+        dynRowHeader,
+        dynRowLeafNodes,
+      };
+    },
+  );
 
   const cacheRef = useRef({
     colIndexCache: 0,
@@ -65,8 +130,8 @@ function STable(props) {
       const target = e.currentTarget;
       if (!target) return;
       const { scrollTop, scrollLeft, clientHeight, clientWidth } = target;
-      colHeaderRef.current.scrollLeft = scrollLeft;
-      rowHeaderRef.current.scrollTop = scrollTop;
+      colHeaderRef.current!.scrollLeft = scrollLeft;
+      rowHeaderRef.current!.scrollTop = scrollTop;
 
       const { colIndexCache, rowIndexCache } = cacheRef.current;
 
@@ -76,24 +141,40 @@ function STable(props) {
       // if stay on same cell, do not rerender table.
       if (colIndexCache === currColIndex && rowIndexCache === currRowIndex) return;
 
-      let newCol;
+      let newCol: STableHeaders, newColLeaf: STableHeaders;
       if (colIndexCache !== currColIndex) {
-        // todo get sub tree;
-        newCol = getSubTreeFromStartNode(currColIndex, colHeaderLeaf, 'width', clientWidth);
+        // Get sub tree & sub leaf;
+        const { dynHeaders, dynLeafNodes } = getDynHeders(
+          currColIndex,
+          colHeaderLeaf,
+          'width',
+          clientWidth,
+        );
+        newCol = dynHeaders;
+        newColLeaf = dynLeafNodes;
         cacheRef.current.colIndexCache = currColIndex;
       }
 
-      let newRow;
+      let newRow: STableHeaders, newRowLeaf: STableHeaders;
       if (rowIndexCache !== currRowIndex) {
-        // todo get sub tree;
-        newRow = getSubTreeFromStartNode(currRowIndex, rowHeaderLeaf, 'height', clientHeight);
+        // Get sub tree & sub leaf;
+        const { dynHeaders, dynLeafNodes } = getDynHeders(
+          currRowIndex,
+          rowHeaderLeaf,
+          'height',
+          clientHeight,
+        );
+        newRow = dynHeaders;
+        newRowLeaf = dynLeafNodes;
         cacheRef.current.rowIndexCache = currRowIndex;
       }
 
       setState((pre) => {
         return {
           dynColHeader: newCol ? newCol : pre.dynColHeader,
+          dynColLeafNodes: newColLeaf ? newColLeaf : pre.dynColLeafNodes,
           dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+          dynRowLeafNodes: newRowLeaf ? newRowLeaf : pre.dynRowLeafNodes,
         };
       });
     },
@@ -103,12 +184,15 @@ function STable(props) {
   // sorting effect.
   useUpdateEffect(() => {
     const { colIndexCache, rowIndexCache } = cacheRef.current;
-    const newCol = getSubTreeFromStartNode(colIndexCache, colHeaderLeaf, 'width', width);
-    const newRow = getSubTreeFromStartNode(rowIndexCache, rowHeaderLeaf, 'height', height);
+    const { dynHeaders: newCol, dynLeafNodes: newColLeafs } = getDynHeders(colIndexCache, colHeaderLeaf, 'width', width);
+    const { dynHeaders: newRow, dynLeafNodes: newRowLeafs } = getDynHeders(rowIndexCache, rowHeaderLeaf, 'height', height);
     setState((pre) => {
       return {
         dynColHeader: newCol ? newCol : pre.dynColHeader,
+        dynColLeafNodes: newColLeafs ? newColLeafs : pre.dynColLeafNodes,
         dynRowHeader: newRow ? newRow : pre.dynRowHeader,
+        dynRowLeafNodes: newRowLeafs ? newRowLeafs : pre.dynRowLeafNodes,
+
       };
     });
   }, [colHeaderLeaf, rowHeaderLeaf, width, height]);
@@ -141,10 +225,12 @@ function STable(props) {
       >
         <ColHeader
           dynColHeader={dynColHeader}
+          colDeepestPath={colDeepestPath}
           colHeaderHeight={colHeaderHeight}
           colHeaderWidth={colHeaderWidth}
           containerRef={sTableRef}
           colResizeProxyRef={colResizeProxyRef}
+          rowResizeProxyRef={rowResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
           enableColSorting={enableColSorting}
@@ -169,6 +255,7 @@ function STable(props) {
           rowHeaderWidth={rowHeaderWidth}
           containerRef={sTableRef}
           colResizeProxyRef={colResizeProxyRef}
+          rowResizeProxyRef={rowResizeProxyRef}
           enableColResize={enableColResize}
           enableRowResize={enableRowResize}
           enableRowSorting={enableRowSorting}
@@ -195,8 +282,8 @@ function STable(props) {
             height: rowHeaderHeight,
           }}
         >
-          {rowHeaderLeaf.map((row, rowIndex) =>
-            colHeaderLeaf.map((col, colIndex) => (
+          {dynRowLeafNodes.map((row, rowIndex) =>
+            dynColLeafNodes.map((col, colIndex) => (
               <div
                 className="cell"
                 key={`d-a-${rowIndex}-${colIndex}`}
@@ -216,6 +303,7 @@ function STable(props) {
       </div>
 
       <div className="resize-col-proxy" ref={colResizeProxyRef} style={{ visibility: 'hidden' }} />
+      <div className="resize-row-proxy" ref={rowResizeProxyRef} style={{ visibility: 'hidden' }} />
     </div>
   );
 }
@@ -224,17 +312,17 @@ STable.displayName = 'STable';
 
 STable.propTypes = {
   /**
-   * 列表头，树结构  
+   * 列表头，树结构
    * [{ label: '2018', prop: '2018', children: []}, ...]
    */
   colHeader: t.array.isRequired,
   /**
-  * 行表头，树结构  
-  * [{ label: '广东', prop: 'gd', children: []}, ...]
-  */
+   * 行表头，树结构
+   * [{ label: '广东', prop: 'gd', children: []}, ...]
+   */
   rowHeader: t.array.isRequired,
   /**
-   * 对象，key 分别对应 行列表头  
+   * 对象，key 分别对应 行列表头
    * {
    *    "gd": {
    *      "2018": value,
@@ -259,7 +347,7 @@ STable.propTypes = {
    */
   cellHeight: t.number,
   /**
-   * 自定义渲染单元格  
+   * 自定义渲染单元格
    * (record, rowProp, colProp, data) => record
    */
   renderCell: t.func,
@@ -284,7 +372,7 @@ STable.defaultProps = {
   width: 800,
   cellHeight: 40,
   cellWidth: 100,
-  renderCell: (record, rowProp, colProp, data) => record,
+  renderCell: (record: any, rowProp: any, colProp: any, data: any) => record,
   enableColResize: false,
   enableRowResize: false,
   enableColSorting: false,

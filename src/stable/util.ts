@@ -1,10 +1,11 @@
+import { STableHeader, STableHeaders } from './';
 import { switchNode } from '../util';
 
 // note: for loop faster than forEach;
 // https://www.incredible-web.com/blog/performance-of-for-loops-with-javascript/
 
 // BFS traverse;
-function falttenTree(tree) {
+function falttenTree(tree: STableHeaders): STableHeaders {
   const allNodes = [];
   const queue = [...tree];
   for (let i = 0; queue[i]; i++) {
@@ -14,12 +15,28 @@ function falttenTree(tree) {
   return allNodes;
 }
 
-export function processTree(columns = [], spanSeq, opts) {
+type SpanSeq = ['rowSpan', 'colSpan'] | ['colSpan', 'rowSpan'];
+
+type ProcessTreeOpts = {
+  calcTop?: number;
+  calcLeft?: number;
+};
+
+type ProcessTreeRes = {
+  flattenRow: STableHeaders[];
+  allColumns: STableHeaders;
+};
+
+export function processTree(
+  columns: STableHeaders = [],
+  spanSeq: SpanSeq,
+  opts: ProcessTreeOpts,
+): ProcessTreeRes {
   let maxLevel = 1;
 
   const [firstSpan, secondSpan] = spanSeq;
 
-  function traverse(column, parent) {
+  function traverse(column: STableHeader, parent?: STableHeader) {
     if (parent) {
       if (opts.calcTop) {
         column.top = parent.top + opts.calcTop;
@@ -29,12 +46,14 @@ export function processTree(columns = [], spanSeq, opts) {
       }
 
       column.level = parent.level + 1;
+      column.levelInfo = `${parent.levelInfo}.${parent.prop}`;
       column.parent = parent;
       if (maxLevel < column.level) {
         maxLevel = column.level;
       }
     } else {
       column.level = 0;
+      column.levelInfo = '0';
       if (opts.calcTop) {
         column.top = 0;
       }
@@ -59,7 +78,7 @@ export function processTree(columns = [], spanSeq, opts) {
     traverse(column);
   });
 
-  const rows = [];
+  const rows: STableHeaders[] = [];
   for (let i = 0; i <= maxLevel; i++) {
     rows.push([]);
   }
@@ -81,8 +100,8 @@ export function processTree(columns = [], spanSeq, opts) {
   };
 }
 
-export function getLeafNodes(nodes = []) {
-  const result = [];
+export function getLeafNodes(nodes: STableHeaders = []): STableHeaders {
+  const result: STableHeaders = [];
   nodes.forEach((node) => {
     if (node.children && node.children.length) {
       result.push(...getLeafNodes(node.children));
@@ -94,7 +113,11 @@ export function getLeafNodes(nodes = []) {
   return result;
 }
 
-export function getDeepestNodePath(allNode = [], cellWidth, cellHeight) {
+export function getDeepestNodePath(
+  allNode: STableHeaders = [],
+  cellWidth: number,
+  cellHeight: number,
+): STableHeaders {
   // deepest node
   let dn = allNode[allNode.length - 1];
   const deepestPath = [];
@@ -112,52 +135,77 @@ export function getDeepestNodePath(allNode = [], cellWidth, cellHeight) {
   return deepestPath;
 }
 
-export function calcDeepsetNodePathOffset(deepestPath, measure) {
+type Measure = 'width' | 'height';
+
+type Offset = 'top' | 'left';
+
+export function calcDeepsetNodePathOffset(deepestPath: STableHeaders, measure: Measure): void {
   const offsetType = measure === 'width' ? 'left' : 'top';
-  deepestPath.reduce((acc, curr) => {
+  deepestPath.reduce((acc: number, curr: STableHeader) => {
     curr[offsetType] = acc;
-    return acc + curr[measure];
+    return acc + (curr[measure] || 0);
   }, 0);
 }
 
-export function travelToRootFromLeafNodes(leafNodes, prop, defaultValue) {
+export function travelToRootFromLeafNodes(
+  leafNodes: STableHeaders,
+  measure: Measure,
+  defaultValue: number,
+  resetMeasure?: boolean,
+): void {
   // leaf nodes; Complexity: O(leaf.length * deepest);
-  const set = new Set();
-  leafNodes.forEach((node) => {
-    node[prop] = node[prop] || defaultValue;
-    let accValue = node[prop];
-    let parent = node.parent;
+  const visitedSet = new Set();
 
-    // reset measure, when rebuild tree, this value incorrect
-    if (parent && !set.has(parent)) {
-      parent[prop] = 0;
-      set.add(parent);
+  leafNodes.forEach((node) => {
+    node[measure] = node[measure] || defaultValue;
+
+    let parent = node.parent;
+    // restet to 0, otherwise the measuer values will accumulation.
+    if (resetMeasure) {
+      let resetParentRef = node.parent;
+      while (resetParentRef && !visitedSet.has(resetParentRef)) {
+        // use set to confirm reset once.
+        visitedSet.add(resetParentRef);
+        resetParentRef[measure] = 0;
+        resetParentRef = resetParentRef.parent;
+      }
     }
 
     while (parent) {
-      let parentProp = parent[prop] || 0;
-      parent[prop] = parentProp + accValue;
-      accValue = parentProp + accValue;
+      let parentProp = parent[measure] || 0;
+      parent[measure] = parentProp + node[measure];
       parent = parent.parent;
     }
   });
 }
 
-export function calcNodeOffsetFormFalttenHeader(flattenRow, prop, measure) {
-  for (let i = 0, iLength = flattenRow.length; i < iLength; i++) {
+export function calcNodeOffsetFormFalttenHeader(
+  flattenRow: STableHeaders[],
+  offset: Offset,
+  measure: Measure,
+): void {
+  for (let row = 0, rowLength = flattenRow.length; row < rowLength; row++) {
     let acc = 0;
-    for (let j = 0, jLength = flattenRow[i].length; j < jLength; j++) {
-      const curr = flattenRow[i][j];
+    let parentRef;
+    for (let col = 0, colLength = flattenRow[row].length; col < colLength; col++) {
+      const curr = flattenRow[row][col];
 
-      acc = acc === 0 ? (curr.parent ? curr.parent[prop] : 0) : acc;
+      if (curr.parent && curr.parent !== parentRef) {
+        parentRef = curr.parent;
+        acc = curr.parent[offset];
+      }
 
-      curr[prop] = acc;
-      acc += curr[measure];
+      curr[offset] = acc;
+      acc += curr[measure] || 0;
     }
   }
 }
 
-export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
+export function calcMeasureFromDeepestPath(
+  allNode: STableHeaders,
+  deepestPath: STableHeaders,
+  measure: Measure,
+): void {
   const offsetType = measure === 'width' ? 'left' : 'top';
   for (let i = 0, iLength = allNode.length; i < iLength; i++) {
     const node = allNode[i];
@@ -175,7 +223,7 @@ export function calcMeasureFromDeepestPath(allNode, deepestPath, measure) {
   }
 }
 
-export function binSearch(scroll, arr, measure) {
+export function binSearch(scroll: number, arr: any[], measure: Measure): number {
   let start = 0,
     mid = Math.floor(arr.length / 2),
     end = arr.length;
@@ -198,35 +246,47 @@ export function binSearch(scroll, arr, measure) {
   return start;
 }
 
-export function getSubTreeFromStartNode(startIndex, leafNodes, measure, measuerLength) {
+type DynHederRes = {
+  dynHeaders: STableHeaders;
+  dynLeafNodes: STableHeaders;
+};
+export function getDynHeders(
+  startIndex: number,
+  leafNodes: STableHeaders,
+  measure: Measure,
+  measuerLength: number,
+): DynHederRes {
   let acc = 0;
-  const parentHeaderInView = [];
-  const subLeafNode = [];
+  const parentHeaderInView: STableHeaders = [];
+  const subLeafNodes = [];
 
   for (let i = startIndex, l = leafNodes.length; i < l; i++) {
     acc += leafNodes[i][measure];
-    subLeafNode.push(leafNodes[i]);
+    subLeafNodes.push(leafNodes[i]);
     if (acc > measuerLength) {
       // add 1 more node to prevent empty;
       const nextIndex = i + 1;
-      leafNodes[nextIndex] && subLeafNode.push(leafNodes[nextIndex]);
+      leafNodes[nextIndex] && subLeafNodes.push(leafNodes[nextIndex]);
       break;
     }
   }
 
   const ws = new WeakSet();
-  subLeafNode.forEach((n) => {
+  subLeafNodes.forEach((n) => {
     while (n.parent && !ws.has(n.parent)) {
       parentHeaderInView.push(n.parent);
       ws.add(n.parent);
     }
   });
 
-  return [...parentHeaderInView, ...subLeafNode];
+  return {
+    dynHeaders: [...parentHeaderInView, ...subLeafNodes],
+    dynLeafNodes: subLeafNodes,
+  };
 }
 
 // get the last child
-export function getLastNode(node) {
+export function getLastNode(node: STableHeader): STableHeader {
   let tn = node;
   while (tn && tn.children.length) {
     const l = tn.children.length;
@@ -235,9 +295,9 @@ export function getLastNode(node) {
   return tn;
 }
 
-export function getNodeByProp(rawHeader, prop) {
+export function getNodeByProp(rawHeader: STableHeaders, prop: string): STableHeader | null {
   let foundNode = null;
-  const recursion = (node) => {
+  const recursion = (node: STableHeader) => {
     if (node.prop === prop) {
       foundNode = node;
       return true;
@@ -255,7 +315,11 @@ export function getNodeByProp(rawHeader, prop) {
   return foundNode;
 }
 
-export function switchPosByProps(rawHeader, firstProp, secondProp) {
+export function switchPosByProps(
+  rawHeader: STableHeaders,
+  firstProp: string,
+  secondProp: string,
+): boolean {
   const firstNode = getNodeByProp(rawHeader, firstProp),
     secondNode = getNodeByProp(rawHeader, secondProp);
 

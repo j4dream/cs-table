@@ -9,29 +9,37 @@ import {
   calcDeepsetNodePathOffset,
   switchPosByProps,
 } from './util';
+import { STableHeaders } from './';
 import useUpdateEffect from '../hooks/useUpdateEffect';
 import useForceUpdate from '../hooks/useForceUpdate';
 
-export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeight }) {
+type UseRowHeaderParams = {
+  rowHeader: STableHeaders;
+  cellWidth: number;
+  cellHeight: number;
+};
+
+export default function useRowHeader({
+  rowHeader: rawHeader,
+  cellWidth,
+  cellHeight,
+}: UseRowHeaderParams) {
   const rawHeaderRef = useRef(rawHeader);
   const { forceUpdate, updateCount } = useForceUpdate();
 
-  const { flattenRow, allColumns } = useMemo(
-    () => {
-      if (updateCount) {
-        console.warn('forceupdate');
-      }
-      return processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth })
-    },
-    [updateCount, cellWidth],
-  );
+  const { flattenRow, allColumns } = useMemo(() => {
+    if (updateCount) {
+      console.warn('forceupdate');
+    }
+    return processTree(rawHeaderRef.current, ['rowSpan', 'colSpan'], { calcLeft: cellWidth });
+  }, [updateCount, cellWidth]);
 
-  const buildHeaderTree = useCallback(() => {
+  const buildHeaderTree = useCallback((rebuild?: boolean) => {
     // use leaf nodes calc width & prop
     const leafNodes = getLeafNodes(rawHeaderRef.current);
 
     // caculate height;
-    travelToRootFromLeafNodes(leafNodes, 'height', cellHeight);
+    travelToRootFromLeafNodes(leafNodes, 'height', cellHeight, rebuild);
 
     // caculate top;
     calcNodeOffsetFormFalttenHeader(flattenRow, 'top', 'height');
@@ -52,7 +60,7 @@ export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeig
     };
   }, [flattenRow, allColumns, cellHeight, cellWidth]);
 
-  const [measure, setMeasure] = useState(() => buildHeaderTree());
+  const [measure, setMeasure] = useState(() => buildHeaderTree(true));
 
   const handleRowSort = useCallback(
     (p1, p2) => {
@@ -65,7 +73,7 @@ export default function useRowHeader({ rowHeader: rawHeader, cellWidth, cellHeig
   );
 
   const rebuildRowHeader = useCallback(() => {
-    setMeasure(buildHeaderTree());
+    setMeasure(buildHeaderTree(true));
   }, [buildHeaderTree, setMeasure]);
 
   useUpdateEffect(() => {

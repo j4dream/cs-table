@@ -55,6 +55,24 @@ for (let r = 0; r < 10000; r++) {
 />;
 ```
 
+## STable
+
+Sheet can support grouping column header and row header.
+
+| props | default | Desc |
+| --- | --- | --- |
+| colHeader: Array | [] | required \*, table header [{ label: 'Name', prop: 'name' }] |
+| rowHeader: Array | [] | required \*, table header [{ label: 'Name', prop: 'name' }] |
+| data: Array | [] | required \*, tabel data [{ name: 'DDR' }] |
+| renderCell: Function | (record, rowProp, colProp, data) => record |
+| cellWidth: number | 100 | config cell Width |
+| cellHeight: number | 40 | config cell Height |
+| enableColResize: boolean | false | support resize col|
+| enableColSorting: boolean | false | support drag & drog to sort colunm header |
+| enableRowResize: boolean | false | support resize col|
+| enableRowSorting: boolean | false | support drag & drog to sort row headr |
+
+
 ## CTable
 
 | props | default | Desc |
@@ -67,18 +85,3 @@ for (let r = 0; r < 10000; r++) {
 | renderCell: Function | (record, rowIndex, prop, header) => record |
 | renderHeader: Function | (header, prop) => header.label |
 
-## STable
-
-Sheet can support grouping column header and row header.
-
-| props | default | Desc |
-| --- | --- | --- |
-| colHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
-| rowHeader: Array | [] | required \_, table header [{ label: 'Name', prop: 'name' }] |
-| data: Array | [] | required \_, tabel data [{ name: 'DDR' }] |
-| renderCell: Function | (record, rowProp, colProp, data) => record |
-| cellWidth: number | 100 | config cell Width |
-| cellHeight: number | 40 | config cell Height |
-| enableColResize: boolean | false | support resize resize |
-| enableColSorting: boolean | false | support drag & drog to sort col header |
-| enableRowSorting: boolean | false | support drag & drog to sort row headr |

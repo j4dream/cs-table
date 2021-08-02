@@ -8,17 +8,16 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <h1>High performance table</h1>
-
-        <div style={{ margin: 15 }}>
-          <CTable />
-        </div>
-
-        <h1>Sheet</h1>
+      <div className="App container">
+        <h2 className="text-center">XX 公司季度销售量统计表</h2>
         <div style={{ margin: 15 }}>
           <Sheet />
         </div>
+
+        {/* <h2 className="text-center">普通表格</h2>
+        <div style={{ margin: 15 }}>
+          <CTable />
+        </div> */}
       </div>
     );
   }

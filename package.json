@@ -25,16 +25,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "docz:dev": "docz dev",
-    "docz:build": "docz build",
-    "docz:serve": "docz build && docz serve",
     "commit": "git-cz",
     "lint:prettier": "prettier --check \"**/*\" --end-of-line auto",
     "prettier": "prettier -c --write \"**/*\"",
     "npm:build": "babel ./src -d dist --extensions \".ts,.js,.tsx\" --copy-files --no-copy-ignored",
-    "npm:publish": "npm publish",
-    "predeploy": "npm run docz:build",
-    "deploy": "gh-pages -d .docz/dist"
+    "npm:publish": "npm publish"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -65,7 +60,6 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "cz-conventional-changelog": "^3.2.0",
-    "docz": "^2.3.1",
     "gh-pages": "^2.2.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.differenceby": "^4.8.0",

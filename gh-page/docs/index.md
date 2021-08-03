@@ -5,7 +5,7 @@ route: /
 ---
 ## 用 React Hooks 写的虚拟化表格
 
-![image](https://github.com/j4dream/dc-table/blob/master/gh-page/assets/stable.gif)
+![image](https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/30362ec0-6160-4873-be5a-3b39551a5a27/5539ea9f0cf2a3b799810f25/placeholder/demo.gif)
 
 前端一个常见的性能问题，在JS中操作渲染大量 DOM（长列表问题），会导致浏览器严重卡顿，甚至出现假死状态。  
 通常解决这种情况有以下三种办法：

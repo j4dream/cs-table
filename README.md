@@ -2,10 +2,14 @@
 
 Supports large amounts of data, built using react hooks.
 
+![image](https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/30362ec0-6160-4873-be5a-3b39551a5a27/5539ea9f0cf2a3b799810f25/placeholder/demo.gif)
+
 Install
 
 ```
 npm i virtualized-sc-table
+// or
+yarn add virtualized-sc-table
 ```
 
 [文档 Docs](https://j4dream.github.io/cs-table/)  

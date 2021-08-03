@@ -1,7 +1,5 @@
 let scrollBarWidth: number;
 export function getScrollBarWidth(): number {
-  // fix ssr document undefined issue.
-  if (typeof document === 'undefined') return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
   const dom = document.createElement('div');
   const body = document.body || dom;
